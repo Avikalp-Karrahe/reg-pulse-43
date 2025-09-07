@@ -361,29 +361,6 @@ export const LandingPage = () => {
               </motion.div>
             </motion.div>
 
-            <motion.div
-              className="flex justify-center mb-8"
-              variants={itemVariants}
-            >
-              <div
-                onMouseEnter={() => setIsHoveringLaunchButton(true)}
-                onMouseLeave={() => setIsHoveringLaunchButton(false)}
-                style={{ padding: '60px' }} // Large hover area
-              >
-                <Button
-                  asChild
-                  size="lg"
-                  className={`h-16 px-12 text-lg font-bold ${isHoveringLaunchButton ? 'text-emerald-400 border-emerald-500/50' : 'text-red-500 border-red-500/30'} bg-transparent border-2 hover:bg-transparent transition-all duration-300 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl`}
-                  aria-label="Go to dashboard"
-                >
-                  <Link to="/dashboard" className="flex items-center">
-                    <Play className="w-6 h-6 mr-3" aria-hidden="true" />
-                    <span className="tracking-wide">Launch Dashboard</span>
-                  </Link>
-                </Button>
-              </div>
-            </motion.div>
-
             {/* Quick Navigation Cards */}
             <motion.div 
               variants={itemVariants}
