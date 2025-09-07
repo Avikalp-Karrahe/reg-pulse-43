@@ -97,7 +97,7 @@ export const LandingPage = () => {
 
   const particles = useMemo(
     () =>
-      Array.from({ length: 50 }).map((_, i) => ({
+      Array.from({ length: 150 }).map((_, i) => ({
         leftPct: Math.random() * 100,
         topPct: Math.random() * 100,
         dur: 6 + Math.random() * 15,
