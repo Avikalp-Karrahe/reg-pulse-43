@@ -9,7 +9,7 @@ import { CallHistoryPage } from "@/components/CallHistoryPage";
 import { LazyAnalytics } from "@/components/LazyAnalytics";
 import { AudioInputSetup } from "@/components/AudioInputSetup";
 import { LandingPage } from "@/components/LandingPage";
-import { DemoBanner } from "@/components/DemoBanner";
+
 import { AgentOpsConsole } from "@/components/AgentOpsConsole";
 import { PresenterPanel } from "@/components/PresenterPanel";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -50,10 +50,6 @@ export const App = () => {
         <AppSidebar />
         
         <div className="flex-1 flex flex-col">
-          {/* Demo Banner */}
-          {isDemoActive() && (
-            <DemoBanner className="mx-6 mt-4" />
-          )}
           
           {/* Header */}
           <header className="h-14 flex items-center justify-between border-b border-border bg-card px-6">
