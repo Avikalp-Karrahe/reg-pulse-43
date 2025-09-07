@@ -222,48 +222,6 @@ export const LandingPage = () => {
       )}
 
       <div className="relative z-10">
-        {/* Header */}
-        <motion.header
-          className="flex items-center justify-between p-6 lg:p-8 backdrop-blur-md bg-background/80 border-b border-border/50"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          role="banner"
-          aria-label="RegCompliance header"
-        >
-          <div className="flex items-center space-x-4">
-            <motion.div
-              className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-400 via-cyan-400 to-indigo-500 flex items-center justify-center shadow-lg"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              aria-hidden="true"
-            >
-              <Shield className="w-7 h-7 text-white" aria-hidden="true" />
-            </motion.div>
-            <div>
-              <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
-                RegCompliance
-              </h1>
-              <p className="text-sm lg:text-base text-muted-foreground font-medium">Neural Risk Intelligence Platform</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground hover:text-foreground"
-              onClick={() => setShowDashboard(true)}
-            >
-              <Activity className="w-4 h-4 mr-2" />
-              Preview
-            </Button>
-            <Badge className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white border-0 px-4 py-1">
-              <Sparkles className="w-3 h-3 mr-1" />
-              Premium
-            </Badge>
-          </div>
-        </motion.header>
 
         {/* Hero Section */}
         <motion.main
