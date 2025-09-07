@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion, useInView, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import { motion, useReducedMotion, useInView } from "framer-motion";
 import { Link } from "react-router-dom";
 import { 
   Play, 
@@ -16,10 +16,7 @@ import {
   Activity,
   AlertTriangle,
   History,
-  Settings,
-  ChevronDown,
-  Lock,
-  Unlock
+  Settings
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -77,46 +74,10 @@ export const LandingPage = () => {
   const [showDashboard, setShowDashboard] = useState(false);
   const [isHoveringLaunchButton, setIsHoveringLaunchButton] = useState(false);
   const [isHoveringBottomCTA, setIsHoveringBottomCTA] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [unlockedSections, setUnlockedSections] = useState(new Set());
   const rafRef = useRef<number | null>(null);
   const lastTsRef = useRef(0);
   const heroRef = useRef(null);
-  const containerRef = useRef(null);
   const isHeroInView = useInView(heroRef, { once: true, margin: "-100px" });
-  
-  // Scroll tracking for cinematic effects
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  });
-  
-  // Transform values for parallax effects
-  const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -100]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const backgroundY = useTransform(scrollYProgress, [0, 1], [0, -300]);
-  const particleY = useTransform(scrollYProgress, [0, 1], [0, -200]);
-
-  // Scroll progress tracking
-  useEffect(() => {
-    const updateScrollProgress = () => {
-      const scrolled = window.scrollY;
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = Math.min(scrolled / maxScroll, 1);
-      setScrollProgress(progress);
-      
-      // Unlock sections based on scroll
-      const newUnlocked = new Set(unlockedSections);
-      if (progress > 0.1) newUnlocked.add('stats');
-      if (progress > 0.25) newUnlocked.add('dashboard');
-      if (progress > 0.5) newUnlocked.add('testimonials');
-      if (progress > 0.75) newUnlocked.add('cta');
-      setUnlockedSections(newUnlocked);
-    };
-
-    window.addEventListener('scroll', updateScrollProgress);
-    return () => window.removeEventListener('scroll', updateScrollProgress);
-  }, [unlockedSections]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -155,69 +116,26 @@ export const LandingPage = () => {
   }
 
   return (
-    <div ref={containerRef} className="min-h-screen relative overflow-hidden bg-background">
-      {/* Cinematic scroll progress indicator */}
-      <motion.div 
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-cyan-500 to-indigo-500 z-50 origin-left"
-        style={{ scaleX: scrollYProgress }}
-      />
-      
-      {/* Unlock notification */}
-      <AnimatePresence>
-        {scrollProgress > 0.1 && scrollProgress < 0.15 && (
-          <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            className="fixed top-8 left-1/2 transform -translate-x-1/2 z-40 bg-emerald-500/20 backdrop-blur-lg border border-emerald-500/30 rounded-full px-6 py-2"
-          >
-            <div className="flex items-center gap-2 text-emerald-400">
-              <Unlock className="w-4 h-4" />
-              <span className="text-sm font-mono">Neural pathways activated</span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <motion.div 
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-cyan-500 to-indigo-500 z-50 origin-left"
-        style={{ scaleX: scrollYProgress }}
-      />
-      
-      {/* Unlock notification */}
-      <AnimatePresence>
-        {scrollProgress > 0.1 && scrollProgress < 0.15 && (
-          <motion.div
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            className="fixed top-8 left-1/2 transform -translate-x-1/2 z-40 bg-emerald-500/20 backdrop-blur-lg border border-emerald-500/30 rounded-full px-6 py-2"
-          >
-            <div className="flex items-center gap-2 text-emerald-400">
-              <Unlock className="w-4 h-4" />
-              <span className="text-sm font-mono">Neural pathways activated</span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      {/* Animated parallax mesh background */}
-      <motion.div 
-        className="mesh-background opacity-40" 
-        style={{ y: backgroundY }}
-        aria-hidden="true" 
-      />
+    <div className="min-h-screen relative overflow-hidden bg-background">
+      {/* Skip link for a11y */}
+      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:top-4 focus:left-4 focus:px-3 focus:py-2 focus:rounded-md focus:bg-background focus:text-foreground">
+        Skip to content
+      </a>
 
-      {/* Interactive gradient spotlight with parallax */}
+      {/* Animated mesh background (decorative) */}
+      <div className="mesh-background opacity-40" aria-hidden="true" />
+
+      {/* Interactive gradient spotlight */}
       {!prefersReducedMotion && (
         <motion.div
           aria-hidden="true"
           className="pointer-events-none fixed inset-0 z-0"
           style={{
-            y: particleY,
             background: `
-              radial-gradient(800px circle at ${mousePosition.x}px ${mousePosition.y}px, 
-                hsla(var(--emerald-500), ${0.15 + scrollProgress * 0.1}) 0%, 
-                hsla(var(--cyan-500), ${0.08 + scrollProgress * 0.05}) 25%, 
-                hsla(var(--primary), ${0.04 + scrollProgress * 0.03}) 50%,
+              radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, 
+                hsla(var(--emerald-500), 0.12) 0%, 
+                hsla(var(--cyan-500), 0.08) 25%, 
+                hsla(var(--primary), 0.04) 50%,
                 transparent 70%
               )
             `,
@@ -323,12 +241,11 @@ export const LandingPage = () => {
 
       <div className="relative z-10">
 
-        {/* Hero Section with Parallax */}
+        {/* Hero Section */}
         <motion.main
           ref={heroRef}
           id="main"
-          className="container mx-auto px-6 lg:px-8 pt-16 lg:pt-24 relative"
-          style={{ y: heroY, opacity: heroOpacity }}
+          className="container mx-auto px-6 lg:px-8 pt-16 lg:pt-24"
           variants={containerVariants}
           initial="hidden"
           animate={isHeroInView ? "visible" : "hidden"}
@@ -472,107 +389,29 @@ export const LandingPage = () => {
               </Button>
             </motion.div>
 
-            {/* Trust Indicators with Cinematic Unlock */}
-            <AnimatePresence>
-              {unlockedSections.has('stats') && (
-                <motion.div 
-                  initial={{ opacity: 0, y: 100, scale: 0.8 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ duration: 0.8, ease: "easeOut", staggerChildren: 0.2 }}
-                  className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto relative"
-                >
-                  {/* Unlock flash effect */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 2 }}
-                    animate={{ opacity: [0, 1, 0], scale: [2, 1.5, 3] }}
-                    transition={{ duration: 1.5, ease: "easeOut" }}
-                    className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 via-cyan-500/20 to-indigo-500/20 rounded-3xl blur-3xl"
-                    aria-hidden="true"
-                  />
-                  
-                  {stats.map((stat, index) => {
-                    const Icon = stat.icon;
-                    return (
-                      <motion.div 
-                        key={stat.label} 
-                        initial={{ opacity: 0, y: 50, rotateX: -90 }}
-                        animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                        transition={{ 
-                          duration: 0.6, 
-                          delay: index * 0.1,
-                          ease: "easeOut",
-                          type: "spring",
-                          stiffness: 100
-                        }}
-                        className="text-center group p-6 rounded-2xl backdrop-blur-sm bg-card/30 hover:bg-card/50 border border-border/20 hover:border-emerald-500/30 transition-all duration-300 relative overflow-hidden"
-                        whileHover={{ 
-                          scale: 1.05, 
-                          rotateY: 5,
-                          boxShadow: "0 20px 40px rgba(16, 185, 129, 0.2)"
-                        }}
-                      >
-                        {/* Animated background pulse */}
-                        <motion.div
-                          className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-cyan-500/10"
-                          animate={{
-                            opacity: [0.2, 0.5, 0.2],
-                            scale: [1, 1.05, 1]
-                          }}
-                          transition={{
-                            duration: 3,
-                            repeat: Infinity,
-                            delay: index * 0.5
-                          }}
-                        />
-                        
-                        <Icon className="w-10 h-10 text-emerald-400 mx-auto mb-4 group-hover:scale-110 group-hover:text-emerald-300 transition-all duration-300 relative z-10" />
-                        <div className="text-2xl lg:text-3xl font-bold text-foreground mb-2 group-hover:text-emerald-400 transition-colors font-mono relative z-10">{stat.value}</div>
-                        <div className="text-sm text-muted-foreground font-medium mb-1 relative z-10">{stat.label}</div>
-                        <div className="text-xs text-muted-foreground/70 font-mono relative z-10">{stat.detail}</div>
-                      </motion.div>
-                    );
-                  })}
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* Trust Indicators */}
+            <motion.div 
+              variants={itemVariants}
+              className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto"
+            >
+              {stats.map((stat, index) => {
+                const Icon = stat.icon;
+                return (
+                  <div key={stat.label} className="text-center group p-6 rounded-2xl backdrop-blur-sm bg-card/30 hover:bg-card/50 border border-border/20 hover:border-emerald-500/30 transition-all duration-300">
+                    <Icon className="w-10 h-10 text-emerald-400 mx-auto mb-4 group-hover:scale-110 group-hover:text-emerald-300 transition-all duration-300" />
+                    <div className="text-2xl lg:text-3xl font-bold text-foreground mb-2 group-hover:text-emerald-400 transition-colors font-mono">{stat.value}</div>
+                    <div className="text-sm text-muted-foreground font-medium mb-1">{stat.label}</div>
+                    <div className="text-xs text-muted-foreground/70 font-mono">{stat.detail}</div>
+                  </div>
+                );
+              })}
+            </motion.div>
           </div>
 
-          {/* Cinematic Dashboard Preview with Unlock */}
-          <AnimatePresence>
-            {unlockedSections.has('dashboard') && (
-              <motion.div 
-                initial={{ opacity: 0, y: 200, rotateX: -45 }}
-                animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                transition={{ 
-                  duration: 1.2, 
-                  ease: "easeOut",
-                  type: "spring",
-                  stiffness: 60
-                }}
-                className="relative max-w-7xl mx-auto mt-16 perspective-1000"
-              >
-                {/* Dramatic unlock flash */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ 
-                    opacity: [0, 1, 0.8, 0],
-                    scale: [0.5, 2, 1.2, 4] 
-                  }}
-                  transition={{ duration: 2, ease: "easeOut" }}
-                  className="absolute inset-0 bg-gradient-conic from-emerald-500/30 via-cyan-500/30 to-indigo-500/30 rounded-3xl blur-3xl"
-                  aria-hidden="true" 
-                />
-                
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-indigo-500/10 rounded-3xl blur-3xl" aria-hidden="true" />
-                <Card className="card-premium p-8 lg:p-12 mb-16 overflow-hidden relative backdrop-blur-xl border border-border/50 transform-gpu"
-                      style={{
-                        boxShadow: `
-                          0 0 100px rgba(16, 185, 129, 0.3),
-                          0 0 200px rgba(6, 182, 212, 0.2),
-                          inset 0 1px 0 rgba(255, 255, 255, 0.1)
-                        `
-                      }}
-                >
+          {/* Hero Visual Dashboard Preview */}
+          <motion.div className="relative max-w-7xl mx-auto mt-16" variants={itemVariants}>
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-indigo-500/10 rounded-3xl blur-3xl" aria-hidden="true" />
+            <Card className="card-premium p-8 lg:p-12 mb-16 overflow-hidden relative backdrop-blur-xl border border-border/50">
               <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 lg:gap-12">
                 {/* Enhanced Risk Visualization */}
                 <div className="xl:col-span-2">
@@ -754,10 +593,8 @@ export const LandingPage = () => {
                   </div>
                 </div>
               </div>
-                </Card>
-              </motion.div>
-            )}
-          </AnimatePresence>
+            </Card>
+          </motion.div>
 
           {/* Enhanced Feature Showcase */}
           <motion.section className="py-16" variants={itemVariants}>
@@ -837,97 +674,28 @@ export const LandingPage = () => {
             </div>
           </motion.section>
 
-          {/* Cinematic Final CTA - Research Grade */}
-          <AnimatePresence>
-            {unlockedSections.has('cta') && (
-              <motion.div 
-                initial={{ opacity: 0, y: 150, scale: 0.8, rotateY: -45 }}
-                animate={{ opacity: 1, y: 0, scale: 1, rotateY: 0 }}
-                transition={{ 
-                  duration: 1.5, 
-                  ease: "easeOut",
-                  type: "spring",
-                  stiffness: 50
-                }}
-                className="text-center py-20 relative"
+          {/* Final CTA - Research Grade */}
+          <motion.div className="text-center py-20" variants={itemVariants}>
+            <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-foreground">Deploy Research-Grade <span className="text-emerald-400">Intelligence</span></h2>
+            <p className="text-xl text-muted-foreground mb-4 max-w-4xl mx-auto leading-relaxed">
+              Experience neural compliance detection powered by Stanford-research architectures, 
+              production-optimized for enterprise deployment with 99.94% accuracy guarantees.
+            </p>
+            <div className="flex justify-center">
+              <Button 
+                asChild
+                size="lg" 
+                className={`h-16 px-12 text-lg font-bold ${isHoveringBottomCTA ? 'text-emerald-400 border-emerald-500/50' : 'text-red-500 border-red-500/30'} bg-transparent border-2 hover:bg-transparent transition-all duration-300 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl`}
+                onMouseEnter={() => setIsHoveringBottomCTA(true)}
+                onMouseLeave={() => setIsHoveringBottomCTA(false)}
               >
-                {/* Epic unlock flash effect */}
-                <motion.div
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ 
-                    opacity: [0, 1, 0.6, 0],
-                    scale: [0, 3, 2, 6],
-                    rotate: [0, 180, 360]
-                  }}
-                  transition={{ duration: 3, ease: "easeOut" }}
-                  className="absolute inset-0 bg-gradient-conic from-emerald-500/40 via-cyan-500/40 via-indigo-500/40 to-emerald-500/40 rounded-full blur-3xl"
-                  aria-hidden="true"
-                />
-                
-                <motion.h2 
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5, duration: 0.8 }}
-                  className="text-4xl lg:text-5xl font-bold mb-6 text-foreground relative z-10"
-                >
-                  Deploy Research-Grade <span className="text-emerald-400">Intelligence</span>
-                </motion.h2>
-                
-                <motion.p 
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.7, duration: 0.8 }}
-                  className="text-xl text-muted-foreground mb-8 max-w-4xl mx-auto leading-relaxed relative z-10"
-                >
-                  Experience neural compliance detection powered by Stanford-research architectures, 
-                  production-optimized for enterprise deployment with 99.94% accuracy guarantees.
-                </motion.p>
-                
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 1, duration: 0.8, type: "spring" }}
-                  className="flex justify-center relative z-10"
-                >
-                  <motion.div
-                    whileHover={{ 
-                      scale: 1.05, 
-                      boxShadow: "0 0 100px rgba(16, 185, 129, 0.5)" 
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    <Button 
-                      asChild
-                      size="lg" 
-                      className={`h-16 px-12 text-lg font-bold ${isHoveringBottomCTA ? 'text-emerald-400 border-emerald-500/50' : 'text-red-500 border-red-500/30'} bg-transparent border-2 hover:bg-transparent transition-all duration-300 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl relative overflow-hidden`}
-                      onMouseEnter={() => setIsHoveringBottomCTA(true)}
-                      onMouseLeave={() => setIsHoveringBottomCTA(false)}
-                    >
-                      <Link to="/dashboard" className="flex items-center relative z-10">
-                        <motion.div
-                          animate={isHoveringBottomCTA ? { rotate: 360 } : { rotate: 0 }}
-                          transition={{ duration: 0.5 }}
-                        >
-                          <Play className="w-6 h-6 mr-3" />
-                        </motion.div>
-                        <span className="tracking-wide">Launch Dashboard</span>
-                        
-                        {/* Button glow effect */}
-                        <motion.div
-                          className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-cyan-500/20 rounded-xl"
-                          animate={isHoveringBottomCTA ? { 
-                            opacity: [0.2, 0.6, 0.2],
-                            scale: [1, 1.1, 1]
-                          } : { opacity: 0 }}
-                          transition={{ duration: 1, repeat: Infinity }}
-                        />
-                      </Link>
-                    </Button>
-                  </motion.div>
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                <Link to="/dashboard" className="flex items-center">
+                  <Play className="w-6 h-6 mr-3" />
+                  <span className="tracking-wide">Launch Dashboard</span>
+                </Link>
+              </Button>
+            </div>
+          </motion.div>
         </motion.main>
       </div>
     </div>
