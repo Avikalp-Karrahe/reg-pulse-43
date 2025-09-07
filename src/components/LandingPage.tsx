@@ -515,7 +515,7 @@ export const LandingPage = () => {
 
           {/* Final CTA */}
           <motion.div className="text-center py-20" variants={itemVariants}>
-            <h2 className="text-4xl font-bold mb-6">Ready to Transform Compliance?</h2>
+            <h2 className="text-4xl font-bold mb-6 text-black">Ready to Transform Compliance?</h2>
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
               Experience AI-powered risk detection with our live demo.
             </p>
