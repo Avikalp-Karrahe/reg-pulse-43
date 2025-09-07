@@ -128,15 +128,22 @@ export const LandingPage = () => {
           className="pointer-events-none fixed inset-0 z-0"
           style={{
             background: `
-              radial-gradient(800px circle at ${mousePosition.x}px ${mousePosition.y}px, 
-                hsla(var(--emerald-500), 0.08) 0%, 
-                hsla(var(--cyan-500), 0.04) 25%, 
-                transparent 50%
+              radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, 
+                hsla(var(--emerald-500), 0.12) 0%, 
+                hsla(var(--cyan-500), 0.08) 25%, 
+                hsla(var(--primary), 0.04) 50%,
+                transparent 70%
               )
             `,
           }}
         />
       )}
+
+      {/* Additional ambient lighting */}
+      <div 
+        className="fixed inset-0 bg-gradient-to-t from-emerald-500/5 via-transparent to-cyan-500/5 pointer-events-none z-0" 
+        aria-hidden="true" 
+      />
 
       {/* Floating particles */}
       {!prefersReducedMotion && (
@@ -168,7 +175,7 @@ export const LandingPage = () => {
       <div className="relative z-10">
         {/* Header */}
         <motion.header
-          className="flex items-center justify-between p-6 lg:p-8 backdrop-blur-sm"
+          className="flex items-center justify-between p-6 lg:p-8 backdrop-blur-md bg-background/80 border-b border-border/50"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -185,10 +192,10 @@ export const LandingPage = () => {
               <Shield className="w-7 h-7 text-white" aria-hidden="true" />
             </motion.div>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+              <h1 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
                 RegCompliance
               </h1>
-              <p className="text-sm text-muted-foreground font-medium">AI Risk Intelligence</p>
+              <p className="text-sm lg:text-base text-muted-foreground font-medium">AI Risk Intelligence</p>
             </div>
           </div>
 
@@ -213,7 +220,7 @@ export const LandingPage = () => {
         <motion.main
           ref={heroRef}
           id="main"
-          className="container mx-auto px-6 lg:px-8 pt-20 lg:pt-32"
+          className="container mx-auto px-6 lg:px-8 pt-16 lg:pt-24"
           variants={containerVariants}
           initial="hidden"
           animate={isHeroInView ? "visible" : "hidden"}
@@ -233,18 +240,18 @@ export const LandingPage = () => {
             </motion.div>
 
             <motion.h2
-              className="text-6xl lg:text-8xl font-bold mb-8 leading-none"
+              className="text-5xl lg:text-7xl xl:text-8xl font-bold mb-8 leading-[0.9] tracking-tight"
               variants={itemVariants}
             >
-              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-sm">
                 Live Risk
               </span>
               <br />
-              <span className="text-foreground">Intelligence</span>
+              <span className="text-foreground drop-shadow-sm">Intelligence</span>
             </motion.h2>
 
             <motion.p
-              className="text-xl lg:text-2xl text-muted-foreground mb-12 leading-relaxed max-w-4xl mx-auto font-medium"
+              className="text-lg lg:text-xl xl:text-2xl text-muted-foreground mb-12 leading-relaxed max-w-4xl mx-auto font-medium"
               variants={itemVariants}
             >
               Transform your compliance monitoring with AI that <span className="text-emerald-400 font-semibold">detects violations in real-time</span>,
@@ -281,10 +288,10 @@ export const LandingPage = () => {
               </Button>
             </motion.div>
 
-            {/* Quick Navigation */}
+            {/* Quick Navigation Cards */}
             <motion.div 
               variants={itemVariants}
-              className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8"
+              className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-12"
             >
               <Button asChild variant="ghost" className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 border border-border/50 hover:border-emerald-500/30 transition-colors">
                 <Link to="/history">
@@ -310,18 +317,18 @@ export const LandingPage = () => {
               </Button>
             </motion.div>
 
-            {/* Trust indicators */}
+            {/* Trust Indicators */}
             <motion.div 
               variants={itemVariants}
-              className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto"
+              className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto"
             >
               {stats.map((stat, index) => {
                 const Icon = stat.icon;
                 return (
-                  <div key={stat.label} className="text-center group">
-                    <Icon className="w-8 h-8 text-emerald-400 mx-auto mb-3 group-hover:scale-110 transition-transform" />
-                    <div className="text-3xl font-bold text-foreground mb-1">{stat.value}</div>
-                    <div className="text-sm text-muted-foreground">{stat.label}</div>
+                  <div key={stat.label} className="text-center group p-6 rounded-2xl backdrop-blur-sm bg-card/30 hover:bg-card/50 border border-border/20 hover:border-emerald-500/30 transition-all duration-300">
+                    <Icon className="w-10 h-10 text-emerald-400 mx-auto mb-4 group-hover:scale-110 group-hover:text-emerald-300 transition-all duration-300" />
+                    <div className="text-2xl lg:text-3xl font-bold text-foreground mb-2 group-hover:text-emerald-400 transition-colors">{stat.value}</div>
+                    <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
                   </div>
                 );
               })}
@@ -329,9 +336,10 @@ export const LandingPage = () => {
           </div>
 
           {/* Hero Visual Dashboard Preview */}
-          <motion.div className="relative max-w-7xl mx-auto" variants={itemVariants}>
-            <Card className="card-premium p-12 mb-16 overflow-hidden">
-              <div className="grid grid-cols-1 xl:grid-cols-5 gap-12">
+          <motion.div className="relative max-w-7xl mx-auto mt-16" variants={itemVariants}>
+            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-indigo-500/10 rounded-3xl blur-3xl" aria-hidden="true" />
+            <Card className="card-premium p-8 lg:p-12 mb-16 overflow-hidden relative backdrop-blur-xl border border-border/50">
+              <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 lg:gap-12">
                 {/* Enhanced Risk Visualization */}
                 <div className="xl:col-span-2">
                   <div className="text-center mb-8">
@@ -502,7 +510,12 @@ export const LandingPage = () => {
           </motion.div>
 
           {/* Enhanced Feature Showcase */}
-          <motion.div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20" variants={itemVariants}>
+          <motion.section className="py-16" variants={itemVariants}>
+            <div className="text-center mb-16">
+              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Powerful AI Features</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">Discover how our advanced AI technology transforms compliance monitoring</p>
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <Card className="card-glass p-8 h-full group hover:scale-105 transition-all duration-500" role="region" aria-label="Real-time Detection feature">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <Zap className="w-8 h-8 text-emerald-400" aria-hidden="true" />
@@ -544,7 +557,8 @@ export const LandingPage = () => {
                 Predictive risk modeling
               </div>
             </Card>
-          </motion.div>
+            </div>
+          </motion.section>
 
           {/* Final CTA */}
           <motion.div className="text-center py-20" variants={itemVariants}>
