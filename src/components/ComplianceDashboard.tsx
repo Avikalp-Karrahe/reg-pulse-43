@@ -287,11 +287,12 @@ export const ComplianceDashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Active Sessions</p>
-                  <p className="text-3xl font-bold text-emerald-400">0</p>
+                  <p className="text-sm text-muted-foreground mb-1">Ready to Start</p>
+                  <p className="text-3xl font-bold text-emerald-400">Start Now</p>
+                  <p className="text-xs text-emerald-300/70 mt-1">Begin monitoring</p>
                 </div>
                 <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-colors">
-                  <Activity className="w-6 h-6 text-emerald-400" />
+                  <PlayCircle className="w-6 h-6 text-emerald-400" />
                 </div>
               </div>
             </CardContent>
@@ -301,8 +302,24 @@ export const ComplianceDashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Avg Risk Score</p>
-                  <p className="text-3xl font-bold text-amber-400">23.5%</p>
+                  <p className="text-sm text-muted-foreground mb-1">Setup Time</p>
+                  <p className="text-3xl font-bold text-cyan-400">30s</p>
+                  <p className="text-xs text-cyan-300/70 mt-1">Quick setup</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 flex items-center justify-center group-hover:bg-cyan-500/30 transition-colors">
+                  <Clock className="w-6 h-6 text-cyan-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="card-glass overflow-hidden group hover:scale-105 transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Risk Reduction</p>
+                  <p className="text-3xl font-bold text-amber-400">85%</p>
+                  <p className="text-xs text-amber-300/70 mt-1">Average savings</p>
                 </div>
                 <div className="w-12 h-12 rounded-2xl bg-amber-500/20 flex items-center justify-center group-hover:bg-amber-500/30 transition-colors">
                   <Shield className="w-6 h-6 text-amber-400" />
@@ -315,25 +332,12 @@ export const ComplianceDashboard = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground mb-1">Total Calls</p>
-                  <p className="text-3xl font-bold text-cyan-400">1,247</p>
-                </div>
-                <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 flex items-center justify-center group-hover:bg-cyan-500/30 transition-colors">
-                  <Phone className="w-6 h-6 text-cyan-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="card-glass overflow-hidden group hover:scale-105 transition-all duration-300">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Compliance Rate</p>
-                  <p className="text-3xl font-bold text-green-400">97.8%</p>
+                  <p className="text-sm text-muted-foreground mb-1">AI Accuracy</p>
+                  <p className="text-3xl font-bold text-green-400">99.2%</p>
+                  <p className="text-xs text-green-300/70 mt-1">Detection rate</p>
                 </div>
                 <div className="w-12 h-12 rounded-2xl bg-green-500/20 flex items-center justify-center group-hover:bg-green-500/30 transition-colors">
-                  <BarChart3 className="w-6 h-6 text-green-400" />
+                  <Eye className="w-6 h-6 text-green-400" />
                 </div>
               </div>
             </CardContent>
@@ -390,43 +394,6 @@ export const ComplianceDashboard = () => {
           </Card>
         </motion.div>
 
-        {/* Audio Setup Prompt */}
-        <AnimatePresence>
-          {showAudioSetupPrompt && (
-            <motion.div
-              initial={{ opacity: 0, y: -20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Alert className="border-amber-500/30 bg-amber-500/5">
-                <Settings className="w-5 h-5 text-amber-400" />
-                <AlertTitle className="text-amber-400">Audio Input Setup Required</AlertTitle>
-                <AlertDescription className="flex items-center justify-between mt-2">
-                  <span className="text-muted-foreground">
-                    Configure your microphone and virtual audio cable for optimal compliance monitoring and analysis.
-                  </span>
-                  <div className="flex items-center space-x-3">
-                    <Button asChild variant="outline" size="sm" className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10">
-                      <Link to="/settings">
-                        <Settings className="w-4 h-4 mr-2" />
-                        Open Audio Setup
-                      </Link>
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={() => setShowAudioSetupPrompt(false)}
-                      className="text-muted-foreground hover:text-foreground"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </AlertDescription>
-              </Alert>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Main Action Center */}
         <motion.div 
