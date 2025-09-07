@@ -147,35 +147,60 @@ export const LandingPage = () => {
         aria-hidden="true" 
       />
 
-      {/* Enhanced floating particles with elegant movement */}
+      {/* Enhanced floating particles with cursor interaction */}
       {!prefersReducedMotion && (
         <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
-          {particles.map((particle) => (
-            <motion.div
-              key={particle.key}
-              className="absolute rounded-full bg-emerald-400"
-              style={{
-                left: `${particle.leftPct}%`,
-                top: `${particle.topPct}%`,
-                width: `${particle.size}px`,
-                height: `${particle.size}px`,
-                opacity: particle.opacity,
-              }}
-              animate={{
-                y: [0, -200, -50, -180, 0],
-                x: [0, Math.sin(particle.key) * 150, Math.cos(particle.key) * 120, Math.sin(particle.key + 2) * 100, 0],
-                opacity: [particle.opacity, particle.opacity * 3, particle.opacity * 1.5, particle.opacity * 2.5, particle.opacity],
-                scale: [0.3, 2, 1, 1.8, 0.3],
-                rotate: [0, 180, 90, 270, 360],
-              }}
-              transition={{
-                duration: particle.dur,
-                repeat: Infinity,
-                delay: particle.delay,
-                ease: "easeInOut"
-              }}
-            />
-          ))}
+          {particles.map((particle) => {
+            // Calculate distance from cursor to particle
+            const particleX = (particle.leftPct / 100) * window.innerWidth;
+            const particleY = (particle.topPct / 100) * window.innerHeight;
+            const distanceX = mousePosition.x - particleX;
+            const distanceY = mousePosition.y - particleY;
+            const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+            
+            // Cursor influence (attraction within 200px, repulsion within 100px)
+            const maxDistance = 200;
+            const repelDistance = 100;
+            let cursorInfluenceX = 0;
+            let cursorInfluenceY = 0;
+            
+            if (distance < maxDistance && distance > 0) {
+              const influence = distance < repelDistance ? -1 : 1;
+              const strength = distance < repelDistance ? 
+                (repelDistance - distance) / repelDistance : 
+                (maxDistance - distance) / maxDistance;
+              
+              cursorInfluenceX = (distanceX / distance) * strength * influence * 50;
+              cursorInfluenceY = (distanceY / distance) * strength * influence * 50;
+            }
+
+            return (
+              <motion.div
+                key={particle.key}
+                className="absolute rounded-full bg-emerald-400"
+                style={{
+                  left: `${particle.leftPct}%`,
+                  top: `${particle.topPct}%`,
+                  width: `${particle.size}px`,
+                  height: `${particle.size}px`,
+                  opacity: particle.opacity,
+                }}
+                animate={{
+                  y: [0, -200 + cursorInfluenceY, -50 + cursorInfluenceY, -180 + cursorInfluenceY, 0],
+                  x: [0, Math.sin(particle.key) * 150 + cursorInfluenceX, Math.cos(particle.key) * 120 + cursorInfluenceX, Math.sin(particle.key + 2) * 100 + cursorInfluenceX, 0],
+                  opacity: [particle.opacity, particle.opacity * (3 + (distance < 150 ? 1 : 0)), particle.opacity * 1.5, particle.opacity * 2.5, particle.opacity],
+                  scale: [0.3, 2 + (distance < 100 ? 0.5 : 0), 1, 1.8, 0.3],
+                  rotate: [0, 180, 90, 270, 360],
+                }}
+                transition={{
+                  duration: particle.dur,
+                  repeat: Infinity,
+                  delay: particle.delay,
+                  ease: "easeInOut"
+                }}
+              />
+            );
+          })}
         </div>
       )}
 
