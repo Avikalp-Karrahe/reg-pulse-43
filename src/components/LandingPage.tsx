@@ -135,7 +135,7 @@ export const LandingPage = () => {
                       delay: 1
                     }} className="neon-glow" />
                     </svg>
-                    <div className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-full bg-slate-950/80 backdrop-blur-sm">
+                    <div className="absolute inset-0 flex items-center justify-center">
                       {/* Cinematic backdrop with film grain */}
                       <motion.div style={{
                       background: `radial-gradient(circle at 50% 50%, 
@@ -150,7 +150,7 @@ export const LandingPage = () => {
                       duration: 6,
                       repeat: Infinity,
                       ease: [0.25, 0.46, 0.45, 0.94]
-                    }} className="absolute inset-0 opacity-30 mx-[67px] my-0 px-[37px] py-[37px]" />
+                    }} className="absolute inset-4 rounded-full" />
 
                       {/* Dynamic particle field */}
                       {[...Array(12)].map((_, i) => <motion.div key={i} className="absolute w-1 h-1 bg-orange-400 rounded-full opacity-60" style={{
@@ -170,11 +170,11 @@ export const LandingPage = () => {
                     }} />)}
 
                       {/* Rotating energy rings with depth */}
-                      <motion.div className="absolute w-40 h-40 border border-orange-500/20 rounded-full" style={{
+                      <motion.div className="absolute inset-1 border border-orange-500/20 rounded-full" style={{
                       filter: 'blur(1px)'
                     }} animate={{
                       rotate: 360,
-                      scale: [1, 1.3, 1],
+                      scale: [1, 1.1, 1],
                       opacity: [0.2, 0.4, 0.2]
                     }} transition={{
                       rotate: {
@@ -194,9 +194,9 @@ export const LandingPage = () => {
                       }
                     }} />
                       
-                      <motion.div className="absolute w-32 h-32 border-2 border-orange-400/40 rounded-full" animate={{
+                      <motion.div className="absolute inset-6 border-2 border-orange-400/40 rounded-full" animate={{
                       rotate: -360,
-                      scale: [1, 1.2, 1],
+                      scale: [1, 1.1, 1],
                       opacity: [0.4, 0.1, 0.4]
                     }} transition={{
                       rotate: {
@@ -218,7 +218,7 @@ export const LandingPage = () => {
                     }} />
 
                       {/* Pulsing core with cinematic glow */}
-                      <motion.div className="absolute w-28 h-28 rounded-full" style={{
+                      <motion.div className="absolute inset-8 rounded-full" style={{
                       background: `conic-gradient(from 0deg, 
                             rgba(255, 69, 0, 0.3), 
                             rgba(255, 140, 0, 0.2), 
@@ -226,7 +226,7 @@ export const LandingPage = () => {
                       filter: 'blur(8px)'
                     }} animate={{
                       rotate: 360,
-                      scale: [0.8, 1.4, 0.8],
+                      scale: [0.8, 1.2, 0.8],
                       opacity: [0.3, 0.6, 0.3]
                     }} transition={{
                       rotate: {
@@ -248,14 +248,14 @@ export const LandingPage = () => {
 
                       {/* Atmospheric layers */}
                       <motion.div animate={{
-                      scale: [1, 1.5, 1],
+                      scale: [1, 1.3, 1],
                       opacity: [0.1, 0.3, 0.1]
                     }} transition={{
                       duration: 8,
                       repeat: Infinity,
                       ease: [0.25, 0.46, 0.45, 0.94],
                       delay: 1
-                    }} className="absolute w-36 h-36 bg-gradient-radial from-orange-500/10 via-red-500/5 to-transparent rounded-full mx-[62px] px-0 py-0" />
+                    }} className="absolute inset-2 bg-gradient-radial from-orange-500/10 via-red-500/5 to-transparent rounded-full" />
 
                       {/* Film-style vignette effect */}
                       <div style={{
@@ -264,8 +264,10 @@ export const LandingPage = () => {
                             transparent 40%, 
                             rgba(0, 0, 0, 0.1) 70%, 
                             rgba(0, 0, 0, 0.3) 100%)`
-                    }} className="absolute inset-0 rounded-full mx-0" />
-                      <div className="text-center">
+                    }} className="absolute inset-0 rounded-full" />
+                      
+                      {/* Score display */}
+                      <div className="relative z-10 text-center">
                         <motion.div className="text-3xl font-bold text-orange-400" initial={{
                         opacity: 0,
                         scale: 0.5
