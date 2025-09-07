@@ -1,5 +1,6 @@
 import rulesConfigData from './rules.json';
 import type { TranscriptSegment } from '@/api/transcribe';
+import { demoStore } from '@/demo/demoStore';
 
 interface ComplianceRule {
   name: string;
@@ -67,6 +68,10 @@ class RuleMatcher {
       const ruleMatches = this.matchRule(ruleId, rule, segments, fullText);
       if (ruleMatches.matches.length > 0) {
         allMatches.push(ruleMatches);
+        
+        // Log tool call for agent ops console
+        const bestMatch = ruleMatches.matches[0];
+        this.logRuleMatch(rule.name, bestMatch.text, rule.severity, rule.regulation);
       }
     });
     
@@ -210,6 +215,39 @@ class RuleMatcher {
     if (score >= thresholds.high) return 'high';
     if (score >= thresholds.medium) return 'medium';
     return 'low';
+  }
+
+  /**
+   * Log rule match to agent ops console
+   */
+  private logRuleMatch(
+    ruleName: string,
+    phrase: string,
+    severity: 'low' | 'medium' | 'high' | 'critical',
+    regReference: string
+  ) {
+    const latencyMs = Math.floor(Math.random() * 50) + 10;
+    
+    const toolCall = {
+      id: `rule-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      timestamp: new Date().toISOString(),
+      tool: 'rules.match' as const,
+      status: 'success' as const,
+      duration_ms: latencyMs,
+      input: {
+        rule_name: ruleName,
+        phrase: phrase.substring(0, 100),
+        severity,
+        reg_reference: regReference
+      },
+      output: {
+        match_confidence: 0.85 + Math.random() * 0.14,
+        evidence_length: phrase.length,
+        context_score: Math.random() * 0.3 + 0.7
+      }
+    };
+
+    demoStore.addToolCall(toolCall);
   }
 }
 

@@ -13,8 +13,11 @@ class DemoStore {
     lastModified: string;
   };
 
+  private listeners: (() => void)[] = [];
+
   constructor() {
     this.data = this.loadFromStorage() || this.getDefaultData();
+    this.state.toolCalls = this.loadToolCallsFromStorage();
   }
 
   private getDefaultData() {
@@ -153,34 +156,75 @@ class DemoStore {
 
   // Legacy compatibility methods for existing components
   subscribe(listener: () => void): () => void {
-    return () => {}; // No-op for demo mode
+    this.listeners.push(listener);
+    return () => {
+      this.listeners = this.listeners.filter(l => l !== listener);
+    };
+  }
+
+  notify() {
+    this.listeners.forEach(listener => listener());
   }
 
   addIssue(issue: any) {
     // No-op for demo mode
   }
 
-  addToolCall(toolCall: any) {
-    // No-op for demo mode
+  addToolCall(toolCall: ToolCall) {
+    this.state.toolCalls.unshift(toolCall);
+    // Keep only last 100 tool calls
+    if (this.state.toolCalls.length > 100) {
+      this.state.toolCalls = this.state.toolCalls.slice(0, 100);
+    }
+    this.saveToolCallsToStorage();
+    this.notify();
   }
 
   addTranscriptEntry(entry: any) {
-    // No-op for demo mode
+    this.state.transcript.push(entry);
+    this.notify();
   }
 
-  getToolCalls() {
-    return [];
+  getToolCalls(): ToolCall[] {
+    return [...this.state.toolCalls];
+  }
+
+  clearToolCalls() {
+    this.state.toolCalls = [];
+    this.saveToolCallsToStorage();
+    this.notify();
+  }
+
+  private saveToolCallsToStorage() {
+    if (typeof window === 'undefined') return;
+    
+    try {
+      localStorage.setItem('regCompliance_tool_calls', JSON.stringify(this.state.toolCalls));
+    } catch (error) {
+      console.warn('Failed to save tool calls to storage:', error);
+    }
+  }
+
+  private loadToolCallsFromStorage(): ToolCall[] {
+    if (typeof window === 'undefined') return [];
+    
+    try {
+      const stored = localStorage.getItem('regCompliance_tool_calls');
+      return stored ? JSON.parse(stored) : [];
+    } catch (error) {
+      console.warn('Failed to load tool calls from storage:', error);
+      return [];
+    }
   }
 
   state = { 
     isDemoMode: true, 
-    toolCalls: [],
+    toolCalls: [] as ToolCall[],
     calls: [],
     issues: [],
     transcript: [],
     settings: { enableSlackEscalation: true, reducedMotion: false }
   };
-  notify() {}
 }
 
 export const demoStore = new DemoStore();

@@ -11,12 +11,28 @@ import { Analytics } from "@/components/Analytics";
 import { AudioInputSetup } from "@/components/AudioInputSetup";
 import { LandingPage } from "@/components/LandingPage";
 import { DemoBanner } from "@/components/DemoBanner";
+import { AgentOpsConsole } from "@/components/AgentOpsConsole";
 import { isDemoActive } from "@/app/dataAdapter";
 import NotFound from "./pages/NotFound";
+import { useState, useEffect } from "react";
 
 const queryClient = new QueryClient();
 
 const App = () => {
+  const [isAgentOpsOpen, setIsAgentOpsOpen] = useState(false);
+
+  // Keyboard shortcut for Agent Ops Console
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'o' || event.key === 'O') {
+        setIsAgentOpsOpen(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -53,6 +69,13 @@ const App = () => {
                         </div>
                       </div>
                       <div className="flex items-center space-x-3">
+                        <button
+                          onClick={() => setIsAgentOpsOpen(!isAgentOpsOpen)}
+                          className="px-3 py-1 text-xs font-mono border rounded hover:bg-accent transition-colors"
+                          title="Toggle Agent Ops Console (Press 'O')"
+                        >
+                          Agent Ops {isAgentOpsOpen ? '🟢' : '⚫'}
+                        </button>
                         <NavLink 
                           to="/settings" 
                           className="text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -78,6 +101,11 @@ const App = () => {
                       </Routes>
                     </main>
                   </div>
+                  
+                  <AgentOpsConsole 
+                    isOpen={isAgentOpsOpen} 
+                    onClose={() => setIsAgentOpsOpen(false)} 
+                  />
                 </div>
               </SidebarProvider>
             } />
