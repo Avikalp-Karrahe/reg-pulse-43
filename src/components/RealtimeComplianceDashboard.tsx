@@ -10,8 +10,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { CircularRiskMeter } from "./CircularRiskMeter";
 import { FuturisticStats } from "./FuturisticStats";
+import { useToast } from "@/hooks/use-toast";
 
 export const RealtimeComplianceDashboard = () => {
+  const { toast } = useToast();
   const [textInput, setTextInput] = useState('');
   const [callDuration, setCallDuration] = useState(0);
   const [callActive, setCallActive] = useState(false);
@@ -43,19 +45,36 @@ export const RealtimeComplianceDashboard = () => {
   }, [callActive]);
 
   const handleStartCall = async () => {
-    if (!isConnected) {
-      await connect();
+    try {
+      if (!isConnected) {
+        await connect();
+      }
+      await startRecording();
+      setCallActive(true);
+      setCallDuration(0);
+      resetSession();
+    } catch (error) {
+      console.error('Error starting call:', error);
+      toast({
+        title: "Error Starting Call",
+        description: "Failed to start recording. Please check microphone permissions.",
+        variant: "destructive",
+      });
     }
-    await startRecording();
-    setCallActive(true);
-    setCallDuration(0);
-    resetSession();
   };
 
   const handleEndCall = () => {
     stopRecording();
     setCallActive(false);
     setCallDuration(0);
+  };
+
+  const handleToggleRecording = async () => {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      await startRecording();
+    }
   };
 
   const handleSendText = () => {
@@ -198,13 +217,33 @@ export const RealtimeComplianceDashboard = () => {
             {/* Live conversation */}
             <Card className="h-[500px] bg-card/50 backdrop-blur-sm border-cyan-500/20">
               <CardHeader>
-                <CardTitle className="text-lg text-cyan-400 flex items-center gap-2">
-                  {isRecording ? (
-                    <Mic className="w-5 h-5 text-green-500" />
-                  ) : (
-                    <MicOff className="w-5 h-5 text-muted-foreground" />
-                  )}
-                  Live Conversation
+                <CardTitle className="text-lg text-cyan-400 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {isRecording ? (
+                      <Mic className="w-5 h-5 text-green-500" />
+                    ) : (
+                      <MicOff className="w-5 h-5 text-muted-foreground" />
+                    )}
+                    Live Conversation
+                  </div>
+                  <Button
+                    onClick={handleToggleRecording}
+                    size="sm"
+                    variant={isRecording ? "destructive" : "default"}
+                    className={isRecording ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}
+                  >
+                    {isRecording ? (
+                      <>
+                        <MicOff className="w-4 h-4 mr-1" />
+                        Stop Mic
+                      </>
+                    ) : (
+                      <>
+                        <Mic className="w-4 h-4 mr-1" />
+                        Start Mic
+                      </>
+                    )}
+                  </Button>
                 </CardTitle>
               </CardHeader>
               <CardContent className="h-[400px] flex flex-col">
