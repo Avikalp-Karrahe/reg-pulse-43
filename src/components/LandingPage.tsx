@@ -327,7 +327,7 @@ export const LandingPage = () => {
             </motion.div>
 
             <motion.div
-              className="flex flex-col sm:flex-row gap-6 justify-center mb-16"
+              className="flex justify-center mb-16"
               variants={itemVariants}
             >
               <Button
@@ -339,19 +339,6 @@ export const LandingPage = () => {
                 <Link to="/dashboard">
                   <Play className="w-6 h-6 mr-3" aria-hidden="true" />
                   Launch Dashboard
-                </Link>
-              </Button>
-
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="h-16 px-12 text-lg border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/50"
-                aria-label="View detailed analytics"
-              >
-                <Link to="/analytics">
-                  <BarChart3 className="w-6 h-6 mr-3" aria-hidden="true" />
-                  View Analytics
                 </Link>
               </Button>
             </motion.div>
@@ -686,7 +673,7 @@ export const LandingPage = () => {
               <span className="text-emerald-400">•</span>
               <span>Enterprise Security</span>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex justify-center">
               <Button 
                 asChild
                 size="lg" 
@@ -694,18 +681,7 @@ export const LandingPage = () => {
               >
                 <Link to="/dashboard">
                   <Play className="w-5 h-5 mr-2" />
-                  Start Dashboard
-                </Link>
-              </Button>
-              <Button 
-                asChild
-                variant="outline"
-                size="lg" 
-                className="h-16 px-12 text-lg border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10" 
-              >
-                <Link to="/analytics">
-                  <BarChart3 className="w-5 h-5 mr-2" />
-                  View Analytics
+                  Launch Dashboard
                 </Link>
               </Button>
             </div>
