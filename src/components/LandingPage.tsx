@@ -354,27 +354,9 @@ export const LandingPage = () => {
               </Button>
             </motion.div>
 
-            {/* Trust Indicators */}
-            <motion.div 
-              variants={itemVariants}
-              className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto"
-            >
-              {stats.map((stat, index) => {
-                const Icon = stat.icon;
-                return (
-                  <div key={stat.label} className="text-center group p-6 rounded-2xl backdrop-blur-sm bg-card/30 hover:bg-card/50 border border-border/20 hover:border-emerald-500/30 transition-all duration-300">
-                    <Icon className="w-10 h-10 text-emerald-400 mx-auto mb-4 group-hover:scale-110 group-hover:text-emerald-300 transition-all duration-300" />
-                    <div className="text-2xl lg:text-3xl font-bold text-foreground mb-2 group-hover:text-emerald-400 transition-colors font-mono">{stat.value}</div>
-                    <div className="text-sm text-muted-foreground font-medium mb-1">{stat.label}</div>
-                    <div className="text-xs text-muted-foreground/70 font-mono">{stat.detail}</div>
-                  </div>
-                );
-              })}
-            </motion.div>
-
             {/* Elegant Scroll Indicator */}
             <motion.div 
-              className="flex flex-col items-center mt-16 mb-8"
+              className="flex flex-col items-center mt-12 mb-16"
               variants={itemVariants}
             >
               <div className="text-sm text-muted-foreground/70 font-mono mb-3 tracking-wider">
@@ -429,6 +411,24 @@ export const LandingPage = () => {
                   </svg>
                 </motion.div>
               </motion.div>
+            </motion.div>
+
+            {/* Trust Indicators */}
+            <motion.div 
+              variants={itemVariants}
+              className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto"
+            >
+              {stats.map((stat, index) => {
+                const Icon = stat.icon;
+                return (
+                  <div key={stat.label} className="text-center group p-6 rounded-2xl backdrop-blur-sm bg-card/30 hover:bg-card/50 border border-border/20 hover:border-emerald-500/30 transition-all duration-300">
+                    <Icon className="w-10 h-10 text-emerald-400 mx-auto mb-4 group-hover:scale-110 group-hover:text-emerald-300 transition-all duration-300" />
+                    <div className="text-2xl lg:text-3xl font-bold text-foreground mb-2 group-hover:text-emerald-400 transition-colors font-mono">{stat.value}</div>
+                    <div className="text-sm text-muted-foreground font-medium mb-1">{stat.label}</div>
+                    <div className="text-xs text-muted-foreground/70 font-mono">{stat.detail}</div>
+                  </div>
+                );
+              })}
             </motion.div>
           </div>
 
