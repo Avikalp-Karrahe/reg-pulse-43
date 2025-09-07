@@ -112,14 +112,14 @@ export const LandingPage = () => {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-background via-background to-secondary/20">
       {/* Skip link for a11y */}
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:top-4 focus:left-4 focus:px-3 focus:py-2 focus:rounded-md focus:bg-background focus:text-foreground">
         Skip to content
       </a>
 
       {/* Animated mesh background (decorative) */}
-      <div className="mesh-background" aria-hidden="true" />
+      <div className="mesh-background opacity-40" aria-hidden="true" />
 
       {/* Interactive gradient spotlight */}
       {!prefersReducedMotion && (
@@ -240,11 +240,11 @@ export const LandingPage = () => {
                 Live Risk
               </span>
               <br />
-              <span className="text-black">Intelligence</span>
+              <span className="text-foreground">Intelligence</span>
             </motion.h2>
 
             <motion.p
-              className="text-2xl text-muted-foreground mb-12 leading-relaxed max-w-4xl mx-auto"
+              className="text-xl lg:text-2xl text-muted-foreground mb-12 leading-relaxed max-w-4xl mx-auto font-medium"
               variants={itemVariants}
             >
               Transform your compliance monitoring with AI that <span className="text-emerald-400 font-semibold">detects violations in real-time</span>,
@@ -286,27 +286,27 @@ export const LandingPage = () => {
               variants={itemVariants}
               className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8"
             >
-              <Button asChild variant="ghost" className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10">
+              <Button asChild variant="ghost" className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 border border-border/50 hover:border-emerald-500/30 transition-colors">
                 <Link to="/history">
                   <History className="w-6 h-6 mb-2 text-emerald-400" />
-                  <span className="text-sm text-black">Call History</span>
+                  <span className="text-sm text-foreground">Call History</span>
                 </Link>
               </Button>
               
-              <Button asChild variant="ghost" className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10">
+              <Button asChild variant="ghost" className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 border border-border/50 hover:border-emerald-500/30 transition-colors">
                 <Link to="/settings">
                   <Settings className="w-6 h-6 mb-2 text-emerald-400" />
-                  <span className="text-sm text-black">Settings</span>
+                  <span className="text-sm text-foreground">Settings</span>
                 </Link>
               </Button>
               
               <Button 
                 variant="ghost" 
-                className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 md:col-span-1 col-span-2"
+                className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 md:col-span-1 col-span-2 border border-border/50 hover:border-emerald-500/30 transition-colors"
                 onClick={() => setShowDashboard(true)}
               >
                 <Activity className="w-6 h-6 mb-2 text-emerald-400" />
-                <span className="text-sm text-black">Preview</span>
+                <span className="text-sm text-foreground">Preview</span>
               </Button>
             </motion.div>
 
@@ -318,10 +318,10 @@ export const LandingPage = () => {
               {stats.map((stat, index) => {
                 const Icon = stat.icon;
                 return (
-                  <div key={stat.label} className="text-center">
-                    <Icon className="w-8 h-8 text-emerald-400 mx-auto mb-3" />
-                    <div className="text-3xl font-bold text-black mb-1">{stat.value}</div>
-                    <div className="text-sm text-black">{stat.label}</div>
+                  <div key={stat.label} className="text-center group">
+                    <Icon className="w-8 h-8 text-emerald-400 mx-auto mb-3 group-hover:scale-110 transition-transform" />
+                    <div className="text-3xl font-bold text-foreground mb-1">{stat.value}</div>
+                    <div className="text-sm text-muted-foreground">{stat.label}</div>
                   </div>
                 );
               })}
@@ -548,8 +548,8 @@ export const LandingPage = () => {
 
           {/* Final CTA */}
           <motion.div className="text-center py-20" variants={itemVariants}>
-            <h2 className="text-4xl font-bold mb-6 text-black">Ready to Transform Compliance?</h2>
-            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-foreground">Ready to Transform Compliance?</h2>
+            <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
               Experience AI-powered risk detection across all our features.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
