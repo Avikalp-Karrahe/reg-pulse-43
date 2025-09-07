@@ -103,8 +103,8 @@ export const transcribeAudio = async (request: TranscribeRequest): Promise<Trans
       throw new Error('No audio data or text provided');
     }
     
-    // Generate call ID if not provided
-    const callId = request.callId || `call_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    // Generate call ID if not provided - use crypto.randomUUID() for proper UUID format
+    const callId = request.callId || crypto.randomUUID();
     
     return {
       success: true,
