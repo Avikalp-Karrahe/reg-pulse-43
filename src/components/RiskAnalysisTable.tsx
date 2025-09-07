@@ -2,6 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Clock, User, UserCheck, AlertTriangle, Shield, TrendingUp } from "lucide-react";
+import { EvidenceLens } from "./EvidenceLens";
+import { useState } from "react";
 
 interface ComplianceIssue {
   category: string;
@@ -9,6 +11,10 @@ interface ComplianceIssue {
   rationale: string;
   reg_reference: string;
   timestamp: string;
+  evidence_snippet?: string;
+  evidence_start_ms?: number;
+  evidence_end_ms?: number;
+  model_rationale?: string;
 }
 
 interface RiskAnalysisTableProps {
@@ -17,6 +23,13 @@ interface RiskAnalysisTableProps {
 }
 
 export const RiskAnalysisTable = ({ callId, issues }: RiskAnalysisTableProps) => {
+  const [selectedIssue, setSelectedIssue] = useState<ComplianceIssue | null>(null);
+  const [isEvidenceLensOpen, setIsEvidenceLensOpen] = useState(false);
+
+  const handleRowClick = (issue: ComplianceIssue) => {
+    setSelectedIssue(issue);
+    setIsEvidenceLensOpen(true);
+  };
   // Transform real issues data for the table, or use mock data if no issues
   const riskAnalysis = issues.length > 0 ? issues.map((issue, index) => ({
     id: `${callId}-${index}`,
@@ -169,9 +182,15 @@ export const RiskAnalysisTable = ({ callId, issues }: RiskAnalysisTableProps) =>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {riskAnalysis.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-mono text-xs">{item.timestamp}</TableCell>
+                {riskAnalysis.map((item, index) => {
+                  const originalIssue = issues[index];
+                  return (
+                    <TableRow 
+                      key={item.id} 
+                      className="cursor-pointer hover:bg-muted/50 transition-colors"
+                      onClick={() => originalIssue && handleRowClick(originalIssue)}
+                    >
+                      <TableCell className="font-mono text-xs">{item.timestamp}</TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-1">
                         {item.speaker === 'advisor' ? (
@@ -204,8 +223,9 @@ export const RiskAnalysisTable = ({ callId, issues }: RiskAnalysisTableProps) =>
                         {item.recommendation}
                       </div>
                     </TableCell>
-                  </TableRow>
-                ))}
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           ) : (
@@ -246,6 +266,13 @@ export const RiskAnalysisTable = ({ callId, issues }: RiskAnalysisTableProps) =>
           </CardContent>
         </Card>
       )}
+
+      {/* Evidence Lens Dialog */}
+      <EvidenceLens
+        isOpen={isEvidenceLensOpen}
+        onClose={() => setIsEvidenceLensOpen(false)}
+        issue={selectedIssue}
+      />
     </div>
   );
 };
