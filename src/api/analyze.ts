@@ -180,11 +180,14 @@ const insertCallAndIssues = async (
 ): Promise<void> => {
   try {
     // Insert call record
+    const { data: { user } } = await supabase.auth.getUser();
+    
     const { error: callError } = await supabase
       .from('calls')
       .insert({
         id: callId,
         call_id: callId,
+        user_id: user?.id, // Add user_id for RLS compliance
         started_at: new Date().toISOString(),
         ended_at: new Date(Date.now() + duration * 1000).toISOString(),
         duration_sec: Math.round(duration),
