@@ -272,7 +272,7 @@ export const LandingPage = () => {
                 Neural Compliance
               </span>
               <br />
-              <span className="text-foreground drop-shadow-sm">Intelligence</span>
+              <span className="text-emerald-400 drop-shadow-sm">Intelligence</span>
             </motion.h2>
 
             <motion.p
