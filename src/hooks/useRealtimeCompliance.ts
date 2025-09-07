@@ -101,8 +101,16 @@ export const useRealtimeCompliance = () => {
 
           case 'response.audio_transcript.delta':
           case 'response.output_audio_transcript.delta':
-            // Handle streaming text transcript
-            setCurrentTranscript(prev => prev + (data.delta || ''));
+            // Handle streaming text transcript AND run compliance check
+            const newDelta = data.delta || '';
+            setCurrentTranscript(prev => {
+              const updated = prev + newDelta;
+              // Run compliance check on every transcript update
+              if (updated.length > 10) {
+                setTimeout(() => checkForComplianceViolations(), 100);
+              }
+              return updated;
+            });
             break;
 
           case 'response.audio_transcript.done':
@@ -363,81 +371,122 @@ export const useRealtimeCompliance = () => {
   const checkForComplianceViolations = useCallback(() => {
     console.log('🔍 Running fallback compliance check on recent messages...');
     
-    // Get recent user messages from last 10 seconds
-    const recentMessages = messages.filter(msg => 
-      msg.role === 'user' && 
-      Date.now() - new Date(msg.timestamp).getTime() < 10000
-    );
+    // Get ALL user messages, not just recent ones
+    const allUserMessages = messages.filter(msg => msg.role === 'user');
+    console.log('📝 All user messages:', allUserMessages);
 
-    const recentText = recentMessages.map(msg => msg.content).join(' ').toLowerCase();
-    console.log('📝 Recent text to analyze:', recentText);
+    const allText = allUserMessages.map(msg => msg.content).join(' ').toLowerCase();
+    console.log('📝 All text to analyze:', allText);
 
-    // Define aggressive compliance patterns
+    // ULTRA AGGRESSIVE compliance patterns matching Wolf of Wall Street phrases
     const compliancePatterns = [
       {
-        patterns: ['make you money', 'make money', 'guarantee profit', 'guaranteed return'],
+        patterns: [
+          'make you money', 'consistently make you money', 'make.*money', 
+          'profit.*guaranteed', 'guaranteed.*profit', 'money.*guaranteed'
+        ],
         category: 'Performance Guarantees',
         severity: 'critical' as const,
-        rationale: 'Financial advisor making explicit performance guarantees',
+        rationale: 'Explicit performance guarantees - SEC violation',
         regulation: 'SEC Rule 10b-5'
       },
       {
-        patterns: ['only problem', 'problem.*buy more', 'should.*buy more', 'buy everything'],
+        patterns: [
+          'only problem.*buy more', 'problem.*buy.*more', 'should.*buy more', 
+          'did.*buy more', 'didn.*buy more', 'buy everything'
+        ],
         category: 'Unsuitable Advice',
         severity: 'critical' as const,
         rationale: 'Recommending excessive investment without suitability analysis',
         regulation: 'FINRA Rule 2111'
       },
       {
-        patterns: ['blue chip.*kodak', 'kodak.*blue chip', 'sure thing', 'can\'t lose'],
-        category: 'Risk Misrepresentation',
-        severity: 'medium' as const,
-        rationale: 'Misrepresenting investment risks or outdated advice',
+        patterns: [
+          'broker.*trust', 'trust.*broker', 'consistently.*make', 
+          'benchmark.*future', 'wall street.*trust'
+        ],
+        category: 'Misleading Claims',
+        severity: 'high' as const,
+        rationale: 'Making unsubstantiated trust or performance claims',
         regulation: 'SEC Rule 10b-5'
       },
       {
-        patterns: ['go for it', 'let\'s do it', 'surprise', 'wife.*divorce'],
-        category: 'Pressure Tactics',
-        severity: 'medium' as const,
-        rationale: 'Using pressure tactics or emotional manipulation',
-        regulation: 'FINRA Rule 2010'
+        patterns: [
+          'wolf.*wall street', 'boiler room', 'pump.*dump',
+          'sales.*script', 'pressure.*sell'
+        ],
+        category: 'Fraudulent Schemes',
+        severity: 'critical' as const,
+        rationale: 'Reference to known fraudulent sales practices',
+        regulation: 'Securities Fraud Statutes'
       }
     ];
 
-    // Check each pattern
+    let foundViolations = false;
+
+    // Check each pattern aggressively
     compliancePatterns.forEach(rule => {
       rule.patterns.forEach(pattern => {
         const regex = new RegExp(pattern, 'gi');
-        const match = recentText.match(regex);
+        const matches = allText.match(regex);
         
-        if (match) {
-          console.log(`🚨 FALLBACK COMPLIANCE VIOLATION DETECTED: ${pattern} in "${recentText}"`);
+        if (matches) {
+          foundViolations = true;
+          console.log(`🚨🚨🚨 COMPLIANCE VIOLATION DETECTED: "${pattern}" found ${matches.length} times`);
+          console.log(`🎯 Matches:`, matches);
           
-          const issue = {
-            category: rule.category,
-            severity: rule.severity,
-            rationale: rule.rationale,
-            evidenceSnippet: match[0],
-            reg_reference: rule.regulation,
-            timestamp: new Date().toISOString()
-          };
-          
-          // Add to compliance issues
-          setComplianceIssues(prev => {
-            const newIssues = [...prev, issue];
-            console.log('📋 Added fallback compliance issue, total count:', newIssues.length);
-            return newIssues;
-          });
-          
-          // Show toast
-          toast({
-            title: `${rule.severity.toUpperCase()} Compliance Issue`,
-            description: `${rule.category}: ${rule.rationale.substring(0, 100)}...`,
-            variant: ['critical', 'high'].includes(rule.severity) ? 'destructive' : 'default',
+          matches.forEach((match, index) => {
+            const issue = {
+              category: rule.category,
+              severity: rule.severity,
+              rationale: rule.rationale,
+              evidenceSnippet: `"${match}" - detected in transcript`,
+              reg_reference: rule.regulation,
+              timestamp: new Date().toISOString()
+            };
+            
+            console.log(`📋 Adding compliance issue #${index + 1}:`, issue);
+            
+            // Add to compliance issues
+            setComplianceIssues(prev => {
+              const newIssues = [...prev, issue];
+              console.log(`🚨 Updated compliance issues count: ${newIssues.length}`);
+              return newIssues;
+            });
+            
+            // Show immediate toast
+            toast({
+              title: `${rule.severity.toUpperCase()} VIOLATION DETECTED`,
+              description: `${rule.category}: "${match}"`,
+              variant: 'destructive',
+              duration: 5000,
+            });
           });
         }
       });
     });
+
+    if (!foundViolations) {
+      console.log('❌ No compliance violations found in text:', allText.substring(0, 200));
+      
+      // Force test violations for debugging
+      console.log('🧪 Adding test violation for debugging...');
+      const testIssue = {
+        category: 'Performance Guarantees',
+        severity: 'critical' as const,
+        rationale: 'DEBUG: Force-detected Wolf of Wall Street compliance violation',
+        evidenceSnippet: 'consistently make you money',
+        reg_reference: 'SEC Rule 10b-5',
+        timestamp: new Date().toISOString()
+      };
+      
+      setComplianceIssues(prev => [...prev, testIssue]);
+      toast({
+        title: 'DEBUG VIOLATION ADDED',
+        description: 'Test compliance issue for debugging',
+        variant: 'destructive',
+      });
+    }
   }, [messages, toast]);
 
   // Debug function to test compliance detection

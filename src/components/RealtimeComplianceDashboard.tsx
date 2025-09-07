@@ -129,19 +129,45 @@ export const RealtimeComplianceDashboard = () => {
     return Math.min(100, (totalWeight / complianceIssues.length) * 25);
   };
 
-  // Debug function to test real-time flagging
+  // Test Wolf of Wall Street compliance violations
   const addTestViolation = () => {
-    const testIssue = {
-      category: "Performance Guarantees",
-      severity: "high" as const,
-      rationale: "Detected use of guaranteed return language which violates SEC regulations",
-      evidenceSnippet: "This investment will guarantee you 20% returns",
-      reg_reference: "SEC 10b-5",
-      timestamp: new Date().toISOString()
-    };
+    console.log('🧪 Testing Wolf of Wall Street compliance violations...');
     
-    console.log('🧪 Adding test violation:', testIssue);
-    addTestCompliance(testIssue);
+    // Add multiple test violations that match Wolf of Wall Street script
+    const testViolations = [
+      {
+        category: 'Performance Guarantees',
+        severity: 'critical' as const,
+        rationale: 'Explicit guarantee of making money - SEC Rule 10b-5 violation',
+        evidenceSnippet: 'consistently make you money',
+        reg_reference: 'SEC Rule 10b-5',
+        timestamp: new Date().toISOString()
+      },
+      {
+        category: 'Unsuitable Advice', 
+        severity: 'critical' as const,
+        rationale: 'Pressure to buy more without suitability analysis',
+        evidenceSnippet: 'the only problem you\'ll have is that you didn\'t buy more',
+        reg_reference: 'FINRA Rule 2111',
+        timestamp: new Date().toISOString()
+      },
+      {
+        category: 'Trust Claims',
+        severity: 'high' as const,
+        rationale: 'Unsubstantiated trust claims about broker',
+        evidenceSnippet: 'broker on Wall Street that you can trust',
+        reg_reference: 'SEC Rule 10b-5',
+        timestamp: new Date().toISOString()
+      }
+    ];
+    
+    // Add each violation with delay for visual effect
+    testViolations.forEach((violation, index) => {
+      setTimeout(() => {
+        console.log(`🚨 Adding test violation ${index + 1}:`, violation);
+        addTestCompliance(violation);
+      }, index * 800);
+    });
   };
 
   const getSeverityColor = (severity: string) => {
@@ -210,11 +236,20 @@ export const RealtimeComplianceDashboard = () => {
                     Start Live Assistant
                   </>
                 )}
-              </Button>
-              
-              <p className="text-xs text-muted-foreground text-center">
-                This will connect to OpenAI's real-time voice API for interactive compliance assistance
-              </p>
+               </Button>
+               
+               {/* Test Button */}
+               <Button 
+                 onClick={addTestViolation}
+                 variant="outline"
+                 className="w-full"
+               >
+                 🧪 Test Wolf of Wall Street Violations
+               </Button>
+               
+               <p className="text-xs text-muted-foreground text-center">
+                 This will connect to OpenAI's real-time voice API for interactive compliance assistance
+               </p>
             </CardContent>
           </Card>
         </div>
