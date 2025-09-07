@@ -247,7 +247,7 @@ export const LandingPage = () => {
                     }} />
 
                       {/* Atmospheric layers */}
-                      <motion.div className="absolute w-36 h-36 bg-gradient-radial from-orange-500/10 via-red-500/5 to-transparent rounded-full" animate={{
+                      <motion.div animate={{
                       scale: [1, 1.5, 1],
                       opacity: [0.1, 0.3, 0.1]
                     }} transition={{
@@ -255,7 +255,7 @@ export const LandingPage = () => {
                       repeat: Infinity,
                       ease: [0.25, 0.46, 0.45, 0.94],
                       delay: 1
-                    }} />
+                    }} className="absolute w-36 h-36 bg-gradient-radial from-orange-500/10 via-red-500/5 to-transparent rounded-full mx-[62px] px-0 py-0" />
 
                       {/* Film-style vignette effect */}
                       <div style={{
