@@ -5,12 +5,15 @@ export class AudioRecorder {
   private audioContext: AudioContext | null = null;
   private processor: ScriptProcessorNode | null = null;
   private source: MediaStreamAudioSourceNode | null = null;
+  private isRecording = false;
+  private audioBuffer: Float32Array[] = [];
+  private sendInterval: number | null = null;
 
   constructor(private onAudioData: (audioData: Float32Array) => void) {}
 
   async start() {
     try {
-      console.log('🎤 Starting audio recorder...');
+      console.log('🎤 Starting continuous audio recorder...');
       
       // Check if microphone permission is granted
       try {
@@ -24,7 +27,7 @@ export class AudioRecorder {
         console.warn('⚠️ Could not check microphone permissions:', permError);
       }
       
-      console.log('📡 Requesting microphone access...');
+      console.log('📡 Requesting continuous microphone access...');
       this.stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           sampleRate: 24000,
@@ -35,32 +38,75 @@ export class AudioRecorder {
         }
       });
       
-      console.log('✅ Microphone access granted, creating audio context...');
+      console.log('✅ Continuous microphone access granted, creating audio context...');
 
       this.audioContext = new AudioContext({
         sampleRate: 24000,
+        latencyHint: 'interactive' // Prioritize low latency
       });
 
+      // Resume audio context if suspended
+      if (this.audioContext.state === 'suspended') {
+        await this.audioContext.resume();
+      }
+
       this.source = this.audioContext.createMediaStreamSource(this.stream);
-      this.processor = this.audioContext.createScriptProcessor(4096, 1, 1);
+      
+      // Use smaller buffer for more responsive streaming
+      this.processor = this.audioContext.createScriptProcessor(2048, 1, 1);
+      
+      this.isRecording = true;
       
       this.processor.onaudioprocess = (e) => {
+        if (!this.isRecording) return;
+        
         const inputData = e.inputBuffer.getChannelData(0);
-        this.onAudioData(new Float32Array(inputData));
+        const audioChunk = new Float32Array(inputData);
+        
+        // Buffer audio data for consistent streaming
+        this.audioBuffer.push(audioChunk);
+        
+        // Send immediately for real-time processing
+        this.onAudioData(audioChunk);
       };
 
       this.source.connect(this.processor);
       this.processor.connect(this.audioContext.destination);
       
-      console.log('Audio recorder started successfully');
+      // Set up continuous audio sending every 100ms
+      this.sendInterval = window.setInterval(() => {
+        if (this.audioBuffer.length > 0) {
+          // Combine buffered audio chunks
+          const totalLength = this.audioBuffer.reduce((sum, chunk) => sum + chunk.length, 0);
+          const combinedBuffer = new Float32Array(totalLength);
+          let offset = 0;
+          
+          for (const chunk of this.audioBuffer) {
+            combinedBuffer.set(chunk, offset);
+            offset += chunk.length;
+          }
+          
+          this.onAudioData(combinedBuffer);
+          this.audioBuffer = []; // Clear buffer
+        }
+      }, 100); // Send every 100ms for continuous stream
+      
+      console.log('✅ Continuous audio recorder started successfully');
     } catch (error) {
-      console.error('Error accessing microphone:', error);
+      console.error('❌ Error accessing microphone:', error);
       throw error;
     }
   }
 
   stop() {
-    console.log('Stopping audio recorder...');
+    console.log('🛑 Stopping continuous audio recorder...');
+    
+    this.isRecording = false;
+    
+    if (this.sendInterval) {
+      clearInterval(this.sendInterval);
+      this.sendInterval = null;
+    }
     
     if (this.source) {
       this.source.disconnect();
@@ -73,7 +119,10 @@ export class AudioRecorder {
     }
     
     if (this.stream) {
-      this.stream.getTracks().forEach(track => track.stop());
+      this.stream.getTracks().forEach(track => {
+        track.stop();
+        console.log('🎤 Microphone track stopped');
+      });
       this.stream = null;
     }
     
@@ -82,7 +131,8 @@ export class AudioRecorder {
       this.audioContext = null;
     }
     
-    console.log('Audio recorder stopped');
+    this.audioBuffer = [];
+    console.log('✅ Continuous audio recorder stopped');
   }
 }
 

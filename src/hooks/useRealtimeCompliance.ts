@@ -255,19 +255,27 @@ export const useRealtimeCompliance = () => {
     }
 
     try {
-      console.log('Starting audio recording...');
+      console.log('🎤 Starting continuous audio recording...');
       
       // Clear any existing audio queue
       clearAudioQueue();
 
       const recorder = new AudioRecorder((audioData) => {
+        // Ensure WebSocket is still connected before sending
         if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-          const base64Audio = encodeAudioForAPI(audioData);
-          const message = {
-            type: 'input_audio_buffer.append',
-            audio: base64Audio
-          };
-          wsRef.current.send(JSON.stringify(message));
+          try {
+            const base64Audio = encodeAudioForAPI(audioData);
+            const message = {
+              type: 'input_audio_buffer.append',
+              audio: base64Audio
+            };
+            wsRef.current.send(JSON.stringify(message));
+            console.log('📡 Audio data sent to OpenAI, size:', base64Audio.length);
+          } catch (error) {
+            console.error('❌ Error sending audio data:', error);
+          }
+        } else {
+          console.warn('⚠️ WebSocket not connected, skipping audio send');
         }
       });
 
@@ -275,10 +283,27 @@ export const useRealtimeCompliance = () => {
       audioRecorderRef.current = recorder;
       setIsRecording(true);
 
+      console.log('✅ Continuous recording started successfully');
       toast({
-        title: "Recording Started",
-        description: "Real-time compliance monitoring is active",
+        title: "🎤 Continuous Recording Active",
+        description: "Real-time compliance monitoring is now continuously listening",
+        duration: 2000,
       });
+
+      // Keep WebSocket alive with periodic pings
+      const keepAliveInterval = setInterval(() => {
+        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+          // Send a small keep-alive message
+          try {
+            wsRef.current.send(JSON.stringify({ type: 'ping' }));
+          } catch (error) {
+            console.error('Keep-alive ping failed:', error);
+          }
+        }
+      }, 30000); // Every 30 seconds
+
+      // Store interval ID for cleanup
+      (audioRecorderRef.current as any).keepAliveInterval = keepAliveInterval;
 
     } catch (error) {
       console.error('Error starting recording:', error);
@@ -291,9 +316,15 @@ export const useRealtimeCompliance = () => {
   }, [toast]);
 
   const stopRecording = useCallback(() => {
-    console.log('Stopping audio recording...');
+    console.log('🛑 Stopping continuous audio recording...');
     
     if (audioRecorderRef.current) {
+      // Clear keep-alive interval
+      const keepAliveInterval = (audioRecorderRef.current as any).keepAliveInterval;
+      if (keepAliveInterval) {
+        clearInterval(keepAliveInterval);
+      }
+      
       audioRecorderRef.current.stop();
       audioRecorderRef.current = null;
     }
@@ -301,8 +332,9 @@ export const useRealtimeCompliance = () => {
     setIsRecording(false);
     
     toast({
-      title: "Recording Stopped",
-      description: "Compliance monitoring session ended",
+      title: "🛑 Recording Stopped",
+      description: "Continuous compliance monitoring session ended",
+      duration: 2000,
     });
   }, [toast]);
 
