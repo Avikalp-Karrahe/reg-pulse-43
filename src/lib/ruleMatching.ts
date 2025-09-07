@@ -229,12 +229,10 @@ class RuleMatcher {
     const latencyMs = Math.floor(Math.random() * 50) + 10;
     
     const toolCall = {
-      id: `rule-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      timestamp: new Date().toISOString(),
       tool: 'rules.match' as const,
+      action: 'analyze',
       status: 'success' as const,
-      duration_ms: latencyMs,
-      duration: latencyMs,
+      latency_ms: latencyMs,
       input: {
         rule_name: ruleName,
         phrase: phrase.substring(0, 100),

@@ -11,13 +11,13 @@ import { AudioInputSetup } from "@/components/AudioInputSetup";
 import { LandingPage } from "@/components/LandingPage";
 import { DemoBanner } from "@/components/DemoBanner";
 import { AgentOpsConsole } from "@/components/AgentOpsConsole";
-import { LazyPresenterPanel } from "@/components/LazyPresenterPanel";
+import { PresenterPanel } from "@/components/PresenterPanel";
 import { AppSidebar } from "@/components/AppSidebar";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import NotFound from "@/pages/NotFound";
 import { NavLink } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { demoStore } from "@/demo/demoStore";
+import { dataAdapter, isDemoActive } from "@/app/dataAdapter";
 
 const queryClient = new QueryClient();
 
@@ -41,7 +41,7 @@ export const App = () => {
   }, []);
 
   // Check if demo mode is active - always true for this demo app
-  const isDemoActive = () => true;
+  const isDemoActive = () => dataAdapter.isDemo;
 
   // Main app layout component
   const MainAppLayout = ({ children }: { children: React.ReactNode }) => (
@@ -107,7 +107,7 @@ export const App = () => {
           isOpen={isAgentOpsOpen} 
           onClose={() => setIsAgentOpsOpen(false)} 
         />
-        <LazyPresenterPanel 
+        <PresenterPanel 
           isOpen={presenterPanelOpen} 
           onClose={() => setPresenterPanelOpen(false)} 
         />

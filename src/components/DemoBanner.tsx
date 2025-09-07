@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { X, Settings, Eye } from 'lucide-react';
-import { toggleDemoMode, DEMO_BANNER_MESSAGE } from '@/lib/demoConfig';
+import { X, Settings, Eye, RotateCcw } from 'lucide-react';
+import { dataAdapter, resetDemoData } from '@/app/dataAdapter';
+import { useToast } from '@/hooks/use-toast';
 
 interface DemoBannerProps {
   className?: string;
@@ -14,7 +15,7 @@ export const DemoBanner = ({ className = '', showToggle = true }: DemoBannerProp
   const [isVisible, setIsVisible] = useState(true);
 
   const handleToggleDemoMode = () => {
-    toggleDemoMode(false);
+    dataAdapter.toggleDemoMode(false);
   };
 
   const handleDismiss = () => {
@@ -29,13 +30,13 @@ export const DemoBanner = ({ className = '', showToggle = true }: DemoBannerProp
       <div className="flex items-center justify-between w-full">
         <div className="flex-1">
           <AlertTitle className="flex items-center gap-2">
-            {DEMO_BANNER_MESSAGE.title}
+            RegCompliance Demo Mode
             <Badge variant="outline" className="bg-amber-100 text-amber-700 border-amber-300">
               DEMO
             </Badge>
           </AlertTitle>
           <AlertDescription className="mt-1">
-            {DEMO_BANNER_MESSAGE.description}
+            You're viewing simulated compliance data for demonstration purposes.
           </AlertDescription>
         </div>
         
@@ -48,7 +49,7 @@ export const DemoBanner = ({ className = '', showToggle = true }: DemoBannerProp
               className="text-amber-700 border-amber-300 hover:bg-amber-100"
             >
               <Settings className="w-3 h-3 mr-1" />
-              {DEMO_BANNER_MESSAGE.action}
+              Exit Demo
             </Button>
           )}
           
@@ -68,34 +69,62 @@ export const DemoBanner = ({ className = '', showToggle = true }: DemoBannerProp
 
 // Demo mode toggle component for settings
 export const DemoModeToggle = () => {
-  const [isEnabled, setIsEnabled] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('regCompliance_demoMode') === 'true';
-    }
-    return false;
-  });
-
+  const { toast } = useToast();
+  
   const handleToggle = () => {
-    const newState = toggleDemoMode(!isEnabled);
-    setIsEnabled(newState);
+    dataAdapter.toggleDemoMode();
+    toast({
+      title: dataAdapter.isDemo ? "Demo Mode Enabled" : "Demo Mode Disabled",
+      description: dataAdapter.isDemo ? "Now using simulated data" : "Now using live data",
+    });
+  };
+
+  const handleResetDemo = () => {
+    resetDemoData();
+    toast({
+      title: "Demo Data Reset",
+      description: "Demo data has been reset to initial state.",
+    });
   };
 
   return (
-    <div className="flex items-center justify-between p-4 border rounded-lg">
-      <div>
-        <h3 className="font-medium">Demo Mode</h3>
-        <p className="text-sm text-muted-foreground">
-          Enable demo mode to view sample compliance data for testing and demonstration.
-        </p>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between p-4 border rounded-lg">
+        <div>
+          <h3 className="font-medium">Demo Mode</h3>
+          <p className="text-sm text-muted-foreground">
+            Enable demo mode to view sample compliance data for testing and demonstration.
+          </p>
+        </div>
+        
+        <Button
+          variant={dataAdapter.isDemo ? "default" : "outline"}
+          onClick={handleToggle}
+          className={dataAdapter.isDemo ? "bg-amber-600 hover:bg-amber-700" : ""}
+        >
+          {dataAdapter.isDemo ? 'Disable' : 'Enable'} Demo
+        </Button>
       </div>
       
-      <Button
-        variant={isEnabled ? "default" : "outline"}
-        onClick={handleToggle}
-        className={isEnabled ? "bg-amber-600 hover:bg-amber-700" : ""}
-      >
-        {isEnabled ? 'Disable' : 'Enable'} Demo
-      </Button>
+      {dataAdapter.isDemo && (
+        <div className="flex items-center justify-between p-4 border rounded-lg bg-muted/50">
+          <div>
+            <h3 className="font-medium">Reset Demo Data</h3>
+            <p className="text-sm text-muted-foreground">
+              Reset all demo data back to the initial seed state.
+            </p>
+          </div>
+          
+          <Button
+            variant="outline"
+            onClick={handleResetDemo}
+            className="ml-4"
+          >
+            <RotateCcw className="w-3 h-3 mr-1" />
+            Reset Demo Data
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

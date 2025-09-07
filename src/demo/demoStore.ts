@@ -54,6 +54,8 @@ class DemoStore {
   private listeners: (() => void)[] = [];
 
   constructor() {
+    // Initialize demo mode
+    window.__DEMO__ = true;
     this.loadFromStorage();
     this.initializeIfEmpty();
   }
@@ -101,7 +103,7 @@ class DemoStore {
       const issuesModule = await import('./seeds/issues.json');
       
       this.calls = callsModule.default;
-      this.issues = issuesModule.default;
+      this.issues = issuesModule.default as Issue[];
       this.toolCalls = [];
       
       this.saveToStorage();

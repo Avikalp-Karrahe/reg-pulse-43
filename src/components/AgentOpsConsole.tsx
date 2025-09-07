@@ -150,7 +150,7 @@ export function AgentOpsConsole({ isOpen, onClose }: AgentOpsConsoleProps) {
                         </div>
                         
                         <div className="flex items-center justify-between text-xs text-muted-foreground">
-                          <span>{formatDuration(call.duration_ms)}</span>
+                          <span>{formatDuration(call.latency_ms)}</span>
                           <span>{new Date(call.timestamp).toLocaleTimeString()}</span>
                         </div>
                       </motion.div>
