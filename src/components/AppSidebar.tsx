@@ -1,4 +1,4 @@
-import { Phone, History, BarChart3 } from "lucide-react";
+import { Phone, History, BarChart3, Settings } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 
 import {
@@ -18,6 +18,7 @@ const menuItems = [
   { title: "Record", url: "/", icon: Phone },
   { title: "Call History", url: "/history", icon: History },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
+  { title: "Settings", url: "/settings", icon: Settings },
 ];
 
 export function AppSidebar() {
