@@ -126,145 +126,53 @@ export const LandingPage = () => {
                   <div className="relative w-48 h-48">
                     <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                       <circle cx="50" cy="50" r="40" stroke="hsl(var(--border))" strokeWidth="8" fill="none" />
-                      <motion.circle cx="50" cy="50" r="40" stroke="hsl(var(--neon-orange))" strokeWidth="8" fill="none" strokeLinecap="round" strokeDasharray="251.2" initial={{
+                      <motion.circle cx="50" cy="50" r="40" stroke="hsl(var(--neon-orange))" strokeWidth="6" fill="none" strokeLinecap="round" strokeDasharray="251.2" initial={{
                       strokeDashoffset: 251.2
                     }} animate={{
                       strokeDashoffset: 82.9
                     }} transition={{
                       duration: 2,
                       delay: 1
-                    }} className="neon-glow" />
+                    }} />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                      {/* Cinematic backdrop with film grain */}
+                      {/* Subtle background gradient */}
                       <motion.div style={{
                       background: `radial-gradient(circle at 50% 50%, 
-                            rgba(255, 69, 0, 0.15) 0%, 
-                            rgba(255, 140, 0, 0.08) 30%, 
-                            rgba(139, 69, 19, 0.05) 60%, 
+                            rgba(255, 140, 0, 0.08) 0%, 
+                            rgba(255, 140, 0, 0.04) 50%, 
                             transparent 100%)`
                     }} animate={{
-                      scale: [1, 1.1, 1],
-                      opacity: [0.3, 0.5, 0.3]
+                      scale: [1, 1.05, 1],
+                      opacity: [0.6, 0.8, 0.6]
                     }} transition={{
-                      duration: 6,
+                      duration: 4,
                       repeat: Infinity,
-                      ease: [0.25, 0.46, 0.45, 0.94]
+                      ease: "easeInOut"
                     }} className="absolute inset-4 rounded-full" />
 
-                      {/* Dynamic particle field */}
-                      {[...Array(12)].map((_, i) => <motion.div key={i} className="absolute w-1 h-1 bg-orange-400 rounded-full opacity-60" style={{
-                      filter: 'blur(0.5px)',
-                      left: `${30 + i * 5}%`,
-                      top: `${40 + Math.sin(i) * 20}%`
-                    }} animate={{
-                      x: [0, Math.cos(i) * 30, 0],
-                      y: [0, Math.sin(i) * 30, 0],
-                      opacity: [0.3, 0.8, 0.3],
-                      scale: [0.5, 1, 0.5]
+                      {/* Minimalist rotating ring */}
+                      <motion.div className="absolute inset-6 border border-orange-400/30 rounded-full" animate={{
+                      rotate: 360
                     }} transition={{
-                      duration: 4 + i * 0.2,
+                      duration: 20,
                       repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: i * 0.3
-                    }} />)}
-
-                      {/* Rotating energy rings with depth */}
-                      <motion.div className="absolute inset-1 border border-orange-500/20 rounded-full" style={{
-                      filter: 'blur(1px)'
-                    }} animate={{
-                      rotate: 360,
-                      scale: [1, 1.1, 1],
-                      opacity: [0.2, 0.4, 0.2]
-                    }} transition={{
-                      rotate: {
-                        duration: 25,
-                        repeat: Infinity,
-                        ease: "linear"
-                      },
-                      scale: {
-                        duration: 5,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      },
-                      opacity: {
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }
-                    }} />
-                      
-                      <motion.div className="absolute inset-6 border-2 border-orange-400/40 rounded-full" animate={{
-                      rotate: -360,
-                      scale: [1, 1.1, 1],
-                      opacity: [0.4, 0.1, 0.4]
-                    }} transition={{
-                      rotate: {
-                        duration: 20,
-                        repeat: Infinity,
-                        ease: "linear"
-                      },
-                      scale: {
-                        duration: 4,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      },
-                      opacity: {
-                        duration: 2.5,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: 0.5
-                      }
+                      ease: "linear"
                     }} />
 
-                      {/* Pulsing core with cinematic glow */}
-                      <motion.div className="absolute inset-8 rounded-full" style={{
-                      background: `conic-gradient(from 0deg, 
-                            rgba(255, 69, 0, 0.3), 
+                      {/* Subtle core gradient */}
+                      <motion.div className="absolute inset-12 rounded-full opacity-40" style={{
+                      background: `linear-gradient(45deg, 
                             rgba(255, 140, 0, 0.2), 
-                            rgba(255, 69, 0, 0.3))`,
-                      filter: 'blur(8px)'
+                            rgba(255, 69, 0, 0.1))`
                     }} animate={{
-                      rotate: 360,
-                      scale: [0.8, 1.2, 0.8],
-                      opacity: [0.3, 0.6, 0.3]
+                      scale: [0.9, 1.1, 0.9],
+                      opacity: [0.3, 0.5, 0.3]
                     }} transition={{
-                      rotate: {
-                        duration: 15,
-                        repeat: Infinity,
-                        ease: "linear"
-                      },
-                      scale: {
-                        duration: 3,
-                        repeat: Infinity,
-                        ease: [0.4, 0, 0.6, 1]
-                      },
-                      opacity: {
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }
-                    }} />
-
-                      {/* Atmospheric layers */}
-                      <motion.div animate={{
-                      scale: [1, 1.3, 1],
-                      opacity: [0.1, 0.3, 0.1]
-                    }} transition={{
-                      duration: 8,
+                      duration: 3,
                       repeat: Infinity,
-                      ease: [0.25, 0.46, 0.45, 0.94],
-                      delay: 1
-                    }} className="absolute inset-2 bg-gradient-radial from-orange-500/10 via-red-500/5 to-transparent rounded-full" />
-
-                      {/* Film-style vignette effect */}
-                      <div style={{
-                      background: `radial-gradient(circle at 50% 50%, 
-                            transparent 0%, 
-                            transparent 40%, 
-                            rgba(0, 0, 0, 0.1) 70%, 
-                            rgba(0, 0, 0, 0.3) 100%)`
-                    }} className="absolute inset-0 rounded-full" />
+                      ease: "easeInOut"
+                    }} />
                       
                       {/* Score display */}
                       <div className="relative z-10 text-center">
