@@ -73,6 +73,7 @@ export const LandingPage = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [showDashboard, setShowDashboard] = useState(false);
   const [isHoveringLaunchButton, setIsHoveringLaunchButton] = useState(false);
+  const [isHoveringBottomCTA, setIsHoveringBottomCTA] = useState(false);
   const rafRef = useRef<number | null>(null);
   const lastTsRef = useRef(0);
   const heroRef = useRef(null);
@@ -161,7 +162,7 @@ export const LandingPage = () => {
             
             // Color priority: Green when hovering launch button, super bright red when near cursor, bright white by default
             const isNearCursor = distance < 100;
-            const particleColor = isHoveringLaunchButton ? 'bg-emerald-400' : 
+            const particleColor = (isHoveringLaunchButton || isHoveringBottomCTA) ? 'bg-emerald-400' : 
                                  isNearCursor ? 'bg-red-600' : 'bg-red-500';
 
             return (
@@ -175,11 +176,11 @@ export const LandingPage = () => {
                   width: `${particle.size}px`,
                   height: `${particle.size}px`,
                   opacity: particle.opacity,
-                  boxShadow: isHoveringLaunchButton ? '0 0 80px hsla(var(--emerald-500), 1), 0 0 150px hsla(var(--emerald-400), 0.9), 0 0 250px hsla(var(--emerald-300), 0.7)' : 
+                  boxShadow: (isHoveringLaunchButton || isHoveringBottomCTA) ? '0 0 80px hsla(var(--emerald-500), 1), 0 0 150px hsla(var(--emerald-400), 0.9), 0 0 250px hsla(var(--emerald-300), 0.7)' : 
                             isNearCursor ? '0 0 16px hsla(var(--red-600), 1), 0 0 32px hsla(var(--red-500), 0.7)' : 
                             '0 0 8px hsla(var(--red-500), 0.8), 0 0 16px hsla(var(--red-400), 0.6)',
                 }}
-                animate={isHoveringLaunchButton ? {
+                animate={(isHoveringLaunchButton || isHoveringBottomCTA) ? {
                   y: [0, -80, 0],
                   x: [0, Math.sin(particle.key) * 60, 0],
                   opacity: [particle.opacity, particle.opacity * 3, particle.opacity],
@@ -655,6 +656,8 @@ export const LandingPage = () => {
                 asChild
                 size="lg" 
                 className="button-premium h-16 px-12 text-lg" 
+                onMouseEnter={() => setIsHoveringBottomCTA(true)}
+                onMouseLeave={() => setIsHoveringBottomCTA(false)}
               >
                 <Link to="/dashboard">
                   <Play className="w-5 h-5 mr-2" />
