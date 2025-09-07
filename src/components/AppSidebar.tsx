@@ -1,4 +1,4 @@
-import { Phone, History, BarChart3, Settings } from "lucide-react";
+import { Phone, History, BarChart3, Settings, Home } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 
 import {
@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/sidebar";
 
 const menuItems = [
-  { title: "Record", url: "/", icon: Phone },
+  { title: "Home", url: "/", icon: Home },
+  { title: "Dashboard", url: "/dashboard", icon: Phone },
   { title: "Call History", url: "/history", icon: History },
   { title: "Analytics", url: "/analytics", icon: BarChart3 },
   { title: "Settings", url: "/settings", icon: Settings },
