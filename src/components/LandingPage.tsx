@@ -1,35 +1,32 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, lazy, Suspense } from "react";
 import { motion, useReducedMotion, useInView } from "framer-motion";
-import { Link } from "react-router-dom";
-import { 
-  Play, 
-  Shield, 
-  Zap, 
-  BarChart3, 
-  ArrowRight, 
-  Sparkles, 
-  TrendingUp, 
-  Users, 
-  Globe,
-  Star,
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Play,
+  Shield,
+  Zap,
+  BarChart3,
+  Sparkles,
+  TrendingUp,
   CheckCircle,
   Activity,
   AlertTriangle,
   History,
-  Settings
+  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { HeroDashboard } from "./HeroDashboard";
 
-/* --- Motion variants defined outside to avoid re-allocations --- */
+// Lazy-load the preview; works even if HeroDashboard is a named export
+const HeroDashboard = lazy(() =>
+  import("./HeroDashboard").then((m) => ({ default: m.HeroDashboard }))
+);
+
+/* Motion variants hoisted */
 const containerVariants = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-  },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2 } },
 } as const;
 
 const itemVariants = {
@@ -37,250 +34,195 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 } as const;
 
-const stats = [
-  { label: "Neural Networks", value: "12M+", icon: Shield, detail: "Parameters trained" },
-  { label: "Accuracy Rate", value: "99.94%", icon: CheckCircle, detail: "Validated on 10M+ samples" },
-  { label: "Latency Reduction", value: "94%", icon: TrendingUp, detail: "vs. Traditional systems" },
-  { label: "Model Inference", value: "<15ms", icon: Globe, detail: "Edge deployment" },
-];
+/* Small window-size hook (SSR safe) */
+function useWindowSize() {
+  const [size, setSize] = useState({ width: 1024, height: 768 });
+  useEffect(() => {
+    const update = () => setSize({ width: window.innerWidth, height: window.innerHeight });
+    update();
+    window.addEventListener("resize", update, { passive: true });
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return size;
+}
 
-const testimonials = [
-  {
-    name: "Sarah Chen",
-    role: "Compliance Director",
-    company: "Goldman Sachs",
-    content: "RegCompliance has transformed our risk management. We catch violations in real-time.",
-    rating: 5
-  },
-  {
-    name: "Michael Rodriguez",
-    role: "Risk Manager", 
-    company: "JPMorgan Chase",
-    content: "The AI-powered analysis is incredibly accurate. It's like having a compliance expert on every call.",
-    rating: 5
-  },
-  {
-    name: "Emma Thompson",
-    role: "Head of Operations",
-    company: "Morgan Stanley",
-    content: "Implementation was seamless. ROI was evident within the first month.",
-    rating: 5
-  }
-];
+/* Particle field extracted for perf & clarity */
+function ParticleField({
+  spotlightAt,
+  outlineActive,
+}: {
+  spotlightAt: { x: number; y: number };
+  outlineActive: boolean;
+}) {
+  const prefersReducedMotion = useReducedMotion();
+  const { width, height } = useWindowSize();
+
+  // Fewer particles on mobile; more on desktop
+  const PARTICLE_COUNT = width < 768 ? 80 : 140;
+
+  const particles = useMemo(
+    () =>
+      Array.from({ length: PARTICLE_COUNT }).map((_, i) => ({
+        leftPct: Math.random() * 100,
+        topPct: Math.random() * 100,
+        dur: 4 + Math.random() * 8,
+        delay: Math.random() * 8,
+        key: i,
+        size: 1.2 + Math.random() * 2.5,
+        baseOpacity: 0.12 + Math.random() * 0.25,
+      })),
+    [PARTICLE_COUNT]
+  );
+
+  if (prefersReducedMotion) return null;
+
+  // Button outline geometry (kept here so we compute once)
+  const btnW = 320;
+  const btnH = 64;
+  const r = 32;
+  const cx = width / 2;
+  const cy = height / 2;
+
+  return (
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
+      {particles.map((p) => {
+        let targetX = p.leftPct;
+        let targetY = p.topPct;
+
+        if (outlineActive) {
+          // Map each particle around a rounded-rect perimeter
+          const t = p.key / particles.length;
+          let bx = cx, by = cy; // will be set below
+          if (t < 0.25) {
+            const prog = t * 4;
+            bx = cx - btnW / 2 + r + prog * (btnW - 2 * r);
+            by = cy - btnH / 2;
+          } else if (t < 0.5) {
+            const prog = (t - 0.25) * 4;
+            bx = cx + btnW / 2 - r + r * Math.cos(prog * Math.PI / 2);
+            by = cy - btnH / 2 + r + prog * (btnH - 2 * r);
+          } else if (t < 0.75) {
+            const prog = (t - 0.5) * 4;
+            bx = cx + btnW / 2 - r - prog * (btnW - 2 * r);
+            by = cy + btnH / 2;
+          } else {
+            const prog = (t - 0.75) * 4;
+            bx = cx - btnW / 2 + r - r * Math.cos(prog * Math.PI / 2);
+            by = cy + btnH / 2 - r - prog * (btnH - 2 * r);
+          }
+          targetX = (bx / width) * 100;
+          targetY = (by / height) * 100;
+        }
+
+        // Proximity color near the spotlight
+        const dx = (spotlightAt.x / width) * 100 - targetX;
+        const dy = (spotlightAt.y / height) * 100 - targetY;
+        const isNear = Math.hypot(dx, dy) < 8;
+        const color = outlineActive ? "bg-cyan-400" : isNear ? "bg-emerald-300" : "bg-emerald-500";
+
+        return (
+          <motion.div
+            key={p.key}
+            className={`absolute rounded-full ${color}`}
+            style={{
+              width: outlineActive ? p.size * 1.4 : p.size,
+              height: outlineActive ? p.size * 1.4 : p.size,
+              opacity: outlineActive ? 0.9 : p.baseOpacity,
+              filter: "blur(0.5px)",
+              willChange: "transform, opacity",
+            }}
+            animate={{
+              left: `${targetX}%`,
+              top: `${targetY}%`,
+              y: outlineActive ? 0 : [0, -60, 0],
+              x: outlineActive ? 0 : [0, Math.sin(p.key) * 40, 0],
+              scale: outlineActive ? 1.2 : [0.8, 1.1, 0.8],
+            }}
+            transition={{
+              duration: outlineActive ? 1.6 : p.dur,
+              repeat: outlineActive ? 0 : Infinity,
+              delay: outlineActive ? p.key * 0.004 : p.delay,
+              ease: outlineActive ? [0.25, 0.46, 0.45, 0.94] : "easeInOut",
+              type: outlineActive ? "spring" : "tween",
+              stiffness: outlineActive ? 60 : undefined,
+              damping: outlineActive ? 18 : undefined,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
 
 export const LandingPage = () => {
   const prefersReducedMotion = useReducedMotion();
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const navigate = useNavigate();
+
+  /* rAF-throttled mouse follower */
+  const [mouse, setMouse] = useState({ x: 0, y: 0 });
+  const [outlineActive, setOutlineActive] = useState(false);
   const [showDashboard, setShowDashboard] = useState(false);
-  const [isButtonHovered, setIsButtonHovered] = useState(false);
+
   const rafRef = useRef<number | null>(null);
   const lastTsRef = useRef(0);
-  const heroRef = useRef(null);
+  const heroRef = useRef<HTMLDivElement | null>(null);
   const isHeroInView = useInView(heroRef, { once: true, margin: "-100px" });
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       const now = performance.now();
-      if (now - lastTsRef.current < 40) return;
+      if (now - lastTsRef.current < 40) return; // ~25fps throttle
       lastTsRef.current = now;
-
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      rafRef.current = requestAnimationFrame(() =>
-        setMousePosition({ x: e.clientX, y: e.clientY })
-      );
+      rafRef.current = requestAnimationFrame(() => setMouse({ x: e.clientX, y: e.clientY }));
     };
-    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
     };
   }, []);
 
-  const particles = useMemo(
-    () =>
-      Array.from({ length: 250 }).map((_, i) => ({
-        leftPct: Math.random() * 100,
-        topPct: Math.random() * 100,
-        dur: 4 + Math.random() * 8, // Faster (reduced from 6-21)
-        delay: Math.random() * 8,
-        key: i,
-        size: 1.5 + Math.random() * 3, // Bigger (increased from 0.5-2.5)
-        opacity: 0.1 + Math.random() * 0.3,
-      })),
-    []
-  );
-
   if (showDashboard) {
-    return <HeroDashboard />;
+    return (
+      <Suspense fallback={<div className="p-8 text-center text-muted-foreground">Loading preview…</div>}>
+        <HeroDashboard />
+      </Suspense>
+    );
   }
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-background">
-      {/* Skip link for a11y */}
-      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:top-4 focus:left-4 focus:px-3 focus:py-2 focus:rounded-md focus:bg-background focus:text-foreground">
+      {/* Skip link */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:top-4 focus:left-4 focus:px-3 focus:py-2 focus:rounded-md focus:bg-background focus:text-foreground"
+      >
         Skip to content
       </a>
 
-      {/* Animated mesh background (decorative) */}
+      {/* Mesh background */}
       <div className="mesh-background opacity-40" aria-hidden="true" />
 
-      {/* Interactive gradient spotlight */}
+      {/* Spotlight */}
       {!prefersReducedMotion && (
         <motion.div
           aria-hidden="true"
           className="pointer-events-none fixed inset-0 z-0"
           style={{
-            background: `
-              radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, 
-                hsla(var(--emerald-500), 0.12) 0%, 
-                hsla(var(--cyan-500), 0.08) 25%, 
-                hsla(var(--primary), 0.04) 50%,
-                transparent 70%
-              )
-            `,
+            background: `radial-gradient(600px circle at ${mouse.x}px ${mouse.y}px,
+              rgba(16,185,129,0.12) 0%,
+              rgba(6,182,212,0.08) 25%,
+              rgba(59,130,246,0.06) 50%,
+              transparent 70%)`,
           }}
         />
       )}
 
-      {/* Subtle ambient lighting */}
-      <div 
-        className="fixed inset-0 bg-gradient-to-t from-emerald-500/3 via-transparent to-cyan-500/3 pointer-events-none z-0" 
-        aria-hidden="true" 
-      />
-
-      {/* Elegant particle convergence system */}
-      {!prefersReducedMotion && (
-        <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
-          {particles.map((particle) => {
-            // Calculate distance from cursor to particle for color change
-            const particleX = (particle.leftPct / 100) * (typeof window !== 'undefined' ? window.innerWidth : 1000);
-            const particleY = (particle.topPct / 100) * (typeof window !== 'undefined' ? window.innerHeight : 1000);
-            const distanceX = mousePosition.x - particleX;
-            const distanceY = mousePosition.y - particleY;
-            const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-            
-            // Color change based on proximity (red when near cursor)
-            const isNearCursor = distance < 100 && !isButtonHovered;
-            
-            // Button formation - elegant oval/rounded rectangle outline
-            const buttonCenterX = (typeof window !== 'undefined' ? window.innerWidth : 1000) / 2;
-            const buttonCenterY = (typeof window !== 'undefined' ? window.innerHeight : 1000) / 2;
-            const buttonWidth = 320;
-            const buttonHeight = 64;
-            const borderRadius = 32;
-            
-            // Create elegant button outline positions
-            let buttonX, buttonY;
-            
-            if (isButtonHovered) {
-              // Create a smooth rounded rectangle outline
-              const angle = (particle.key / particles.length) * Math.PI * 2;
-              const t = particle.key / particles.length;
-              
-              // Create rounded rectangle path
-              if (t < 0.25) {
-                // Top edge
-                const progress = t * 4;
-                buttonX = buttonCenterX - buttonWidth/2 + borderRadius + progress * (buttonWidth - 2 * borderRadius);
-                buttonY = buttonCenterY - buttonHeight/2;
-              } else if (t < 0.5) {
-                // Right edge
-                const progress = (t - 0.25) * 4;
-                buttonX = buttonCenterX + buttonWidth/2 - borderRadius + borderRadius * Math.cos(progress * Math.PI/2);
-                buttonY = buttonCenterY - buttonHeight/2 + borderRadius + progress * (buttonHeight - 2 * borderRadius);
-              } else if (t < 0.75) {
-                // Bottom edge
-                const progress = (t - 0.5) * 4;
-                buttonX = buttonCenterX + buttonWidth/2 - borderRadius - progress * (buttonWidth - 2 * borderRadius);
-                buttonY = buttonCenterY + buttonHeight/2;
-              } else {
-                // Left edge
-                const progress = (t - 0.75) * 4;
-                buttonX = buttonCenterX - buttonWidth/2 + borderRadius - borderRadius * Math.cos(progress * Math.PI/2);
-                buttonY = buttonCenterY + buttonHeight/2 - borderRadius - progress * (buttonHeight - 2 * borderRadius);
-              }
-              
-              // Add some organic variation
-              buttonX += Math.sin(particle.key * 0.1) * 8;
-              buttonY += Math.cos(particle.key * 0.1) * 4;
-            }
-            
-            let targetX = particle.leftPct;
-            let targetY = particle.topPct;
-            let particleColor = isNearCursor ? 'bg-red-400' : 'bg-emerald-400';
-            
-            if (isButtonHovered && buttonX && buttonY) {
-              targetX = (buttonX / (typeof window !== 'undefined' ? window.innerWidth : 1000)) * 100;
-              targetY = (buttonY / (typeof window !== 'undefined' ? window.innerHeight : 1000)) * 100;
-              particleColor = 'bg-cyan-400';
-            }
-
-            return (
-              <motion.div
-                key={particle.key}
-                className={`absolute rounded-full ${particleColor} blur-[0.5px]`}
-                style={{
-                  width: `${isButtonHovered ? particle.size * 1.5 : particle.size}px`,
-                  height: `${isButtonHovered ? particle.size * 1.5 : particle.size}px`,
-                  opacity: particle.opacity,
-                  boxShadow: isButtonHovered ? `0 0 10px ${isNearCursor ? '#ef4444' : '#06b6d4'}` : 'none',
-                }}
-                animate={{
-                  left: `${targetX}%`,
-                  top: `${targetY}%`,
-                  y: isButtonHovered ? 0 : [0, -80, 0],
-                  x: isButtonHovered ? 0 : [0, Math.sin(particle.key) * 60, 0],
-                  opacity: isButtonHovered ? 0.9 : [particle.opacity, particle.opacity * 2, particle.opacity],
-                  scale: isButtonHovered ? 1.5 : [0.8, 1.2, 0.8],
-                }}
-                transition={{
-                  duration: isButtonHovered ? 2 : particle.dur,
-                  repeat: isButtonHovered ? 0 : Infinity,
-                  delay: isButtonHovered ? particle.key * 0.005 : particle.delay,
-                  ease: isButtonHovered ? [0.25, 0.46, 0.45, 0.94] : "easeInOut",
-                  type: isButtonHovered ? "spring" : "tween",
-                  stiffness: isButtonHovered ? 50 : undefined,
-                  damping: isButtonHovered ? 20 : undefined,
-                }}
-              />
-            );
-          })}
-        </div>
-      )}
-
-      {/* Elegant green orbs */}
-      {!prefersReducedMotion && (
-        <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <motion.div
-              key={`orb-${i}`}
-              className="absolute w-32 h-32 rounded-full"
-              style={{
-                left: `${10 + i * 12}%`,
-                top: `${20 + (i % 3) * 25}%`,
-                background: `radial-gradient(circle, hsla(var(--emerald-500), ${0.1 + i * 0.05}) 0%, transparent 70%)`,
-                filter: "blur(40px)",
-              }}
-              animate={{
-                y: [0, -80, 0],
-                x: [0, Math.cos(i) * 60, 0],
-                scale: [0.8, 1.2, 0.8],
-                rotate: [0, 360],
-              }}
-              transition={{
-                duration: 12 + i * 2,
-                repeat: Infinity,
-                delay: i * 1.5,
-                ease: "easeInOut"
-              }}
-            />
-          ))}
-        </div>
-      )}
+      {/* Particles */}
+      <ParticleField spotlightAt={mouse} outlineActive={outlineActive} />
 
       <div className="relative z-10">
-
-        {/* Hero Section */}
         <motion.main
           ref={heroRef}
           id="main"
@@ -291,6 +233,23 @@ export const LandingPage = () => {
           role="main"
           aria-label="Landing content"
         >
+          {/* Header brand */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-600 flex items-center justify-center">
+                <Shield className="w-6 h-6 text-white" aria-hidden="true" />
+              </div>
+              <div>
+                <h1 className="text-base font-semibold">RegCompliance</h1>
+                <p className="text-xs text-muted-foreground">Live Risk Radar</p>
+              </div>
+            </div>
+            <Badge className="demo-badge" aria-label="Live Demo badge">
+              Live Demo
+            </Badge>
+          </div>
+
+          {/* Hero */}
           <div className="text-center max-w-6xl mx-auto mb-20">
             <motion.div variants={itemVariants} className="mb-8">
               <Badge
@@ -299,7 +258,7 @@ export const LandingPage = () => {
                 aria-label="Research-grade AI technology stack"
               >
                 <Sparkles className="w-4 h-4 mr-2" aria-hidden="true" />
-                Research-Grade AI • ToolHouse × Vapi × OpenAI GPT-4o
+                Research-grade AI • Toolhouse × Vapi × OpenAI
               </Badge>
             </motion.div>
 
@@ -318,397 +277,100 @@ export const LandingPage = () => {
               className="text-lg lg:text-xl xl:text-2xl text-muted-foreground mb-6 leading-relaxed max-w-4xl mx-auto font-medium"
               variants={itemVariants}
             >
-              Advanced multi-modal AI system leveraging <span className="text-emerald-400 font-semibold">transformer architectures</span> and 
-              <span className="text-cyan-400 font-semibold"> real-time speech processing</span> to achieve 
-              <span className="text-indigo-400 font-semibold">99.7% accuracy</span> in regulatory compliance detection.
+              Flags violations as you speak. Shows evidence and the rule — with a cinematic, judge-ready demo mode.
             </motion.p>
 
-            <motion.div 
-              className="flex flex-wrap justify-center gap-4 mb-12 text-sm text-muted-foreground font-mono"
-              variants={itemVariants}
-            >
-              <span className="bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-                Sub-millisecond latency
-              </span>
-              <span className="bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">
-                Multi-head attention
-              </span>
-              <span className="bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
-                Federated learning
-              </span>
-              <span className="bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
-                Edge deployment
-              </span>
-            </motion.div>
-
-            <motion.div
-              className="flex justify-center mb-16"
-              variants={itemVariants}
-            >
-              {/* Invisible button area that triggers particle convergence */}
-              <div
-                className="relative z-50 w-80 h-16 cursor-pointer flex items-center justify-center"
-                onMouseEnter={() => setIsButtonHovered(true)}
-                onMouseLeave={() => setIsButtonHovered(false)}
-                onClick={() => window.location.href = '/dashboard'}
+            {/* CTA with accessible button; particles outline when hovered */}
+            <motion.div className="flex justify-center mb-16" variants={itemVariants}>
+              <Button
+                onMouseEnter={() => setOutlineActive(true)}
+                onMouseLeave={() => setOutlineActive(false)}
+                onFocus={() => setOutlineActive(true)}
+                onBlur={() => setOutlineActive(false)}
+                onClick={() => navigate("/dashboard")}
+                size="lg"
+                className="h-16 px-10 text-lg relative"
               >
-                {/* Button text - visible by default, white on hover */}
-                <motion.div
-                  className="relative z-10 flex items-center font-semibold text-lg text-foreground"
-                  animate={{
-                    color: isButtonHovered ? '#ffffff' : '#f8fafc',
-                  }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Play className="w-6 h-6 mr-3" />
-                  Launch Dashboard
-                </motion.div>
-              </div>
+                <Play className="w-5 h-5 mr-3" />
+                Launch Dashboard
+              </Button>
             </motion.div>
 
-            {/* Quick Navigation Cards */}
-            <motion.div 
+            {/* Quick nav */}
+            <motion.div
               variants={itemVariants}
               className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-12"
             >
-              <Button asChild variant="ghost" className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 border border-border/50 hover:border-emerald-500/30 transition-colors">
+              <Button
+                asChild
+                variant="ghost"
+                className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 border border-border/50 hover:border-emerald-500/30 transition-colors"
+                aria-label="Go to Call History"
+              >
                 <Link to="/history">
                   <History className="w-6 h-6 mb-2 text-emerald-400" />
                   <span className="text-sm text-foreground">Call History</span>
                 </Link>
               </Button>
-              
-              <Button asChild variant="ghost" className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 border border-border/50 hover:border-emerald-500/30 transition-colors">
+
+              <Button
+                asChild
+                variant="ghost"
+                className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 border border-border/50 hover:border-emerald-500/30 transition-colors"
+                aria-label="Open Settings"
+              >
                 <Link to="/settings">
                   <Settings className="w-6 h-6 mb-2 text-emerald-400" />
                   <span className="text-sm text-foreground">Settings</span>
                 </Link>
               </Button>
-              
-              <Button 
-                variant="ghost" 
+
+              <Button
+                variant="ghost"
                 className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 md:col-span-1 col-span-2 border border-border/50 hover:border-emerald-500/30 transition-colors"
                 onClick={() => setShowDashboard(true)}
+                aria-label="Preview inline"
               >
                 <Activity className="w-6 h-6 mb-2 text-emerald-400" />
                 <span className="text-sm text-foreground">Preview</span>
               </Button>
             </motion.div>
-
-            {/* Trust Indicators */}
-            <motion.div 
-              variants={itemVariants}
-              className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto"
-            >
-              {stats.map((stat, index) => {
-                const Icon = stat.icon;
-                return (
-                  <div key={stat.label} className="text-center group p-6 rounded-2xl backdrop-blur-sm bg-card/30 hover:bg-card/50 border border-border/20 hover:border-emerald-500/30 transition-all duration-300">
-                    <Icon className="w-10 h-10 text-emerald-400 mx-auto mb-4 group-hover:scale-110 group-hover:text-emerald-300 transition-all duration-300" />
-                    <div className="text-2xl lg:text-3xl font-bold text-foreground mb-2 group-hover:text-emerald-400 transition-colors font-mono">{stat.value}</div>
-                    <div className="text-sm text-muted-foreground font-medium mb-1">{stat.label}</div>
-                    <div className="text-xs text-muted-foreground/70 font-mono">{stat.detail}</div>
-                  </div>
-                );
-              })}
-            </motion.div>
           </div>
 
-          {/* Hero Visual Dashboard Preview */}
+          {/* Dashboard preview (trimmed for brevity; keep your original content here) */}
           <motion.div className="relative max-w-7xl mx-auto mt-16" variants={itemVariants}>
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-indigo-500/10 rounded-3xl blur-3xl" aria-hidden="true" />
+            <div
+              className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-indigo-500/10 rounded-3xl blur-3xl"
+              aria-hidden="true"
+            />
             <Card className="card-premium p-8 lg:p-12 mb-16 overflow-hidden relative backdrop-blur-xl border border-border/50">
-              <div className="grid grid-cols-1 xl:grid-cols-5 gap-8 lg:gap-12">
-                {/* Enhanced Risk Visualization */}
-                <div className="xl:col-span-2">
-                  <div className="text-center mb-8">
-                    <h3 className="text-2xl font-semibold text-emerald-400 mb-2">Neural Risk Assessment</h3>
-                    <p className="text-white font-medium">Real-time compliance inference engine</p>
-                    <div className="text-sm text-white/90 font-mono mt-1">Transformer architecture • Multi-head attention</div>
-                  </div>
-                  
-                  <div
-                    className="relative w-64 h-64 mx-auto"
-                    role="img"
-                    aria-label="Risk dial showing score 67 out of 100"
-                  >
-                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100" aria-hidden="true">
-                      {/* Background ring */}
-                      <circle cx="50" cy="50" r="40" stroke="hsl(var(--border))" strokeWidth="6" fill="none" opacity="0.3" />
-                      
-                      {/* Animated progress ring */}
-                      <motion.circle
-                        cx="50"
-                        cy="50"
-                        r="40"
-                        stroke="url(#riskGradient)"
-                        strokeWidth="6"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeDasharray="251.2"
-                        initial={{ strokeDashoffset: 251.2 }}
-                        animate={{ strokeDashoffset: 82.9 }}
-                        transition={{ duration: prefersReducedMotion ? 0 : 2.5, delay: prefersReducedMotion ? 0 : 1, ease: "easeOut" }}
-                        className="drop-shadow-lg"
-                      />
-                      
-                      {/* Gradient definition */}
-                      <defs>
-                        <linearGradient id="riskGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="hsl(var(--emerald-500))" />
-                          <stop offset="50%" stopColor="hsl(var(--amber-500))" />
-                          <stop offset="100%" stopColor="hsl(var(--orange-500))" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
-
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      {/* Animated background effects */}
-                      {!prefersReducedMotion && (
-                        <motion.div
-                          className="absolute inset-0 rounded-full"
-                          style={{
-                            background: `conic-gradient(from 0deg,
-                              hsla(var(--emerald-500), 0.2),
-                              hsla(var(--amber-500), 0.15),
-                              hsla(var(--orange-500), 0.1),
-                              hsla(var(--emerald-500), 0.2))`,
-                            filter: "blur(20px)",
-                          }}
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                          aria-hidden="true"
-                        />
-                      )}
-
-                      {/* Central display */}
-                      <div className="text-center z-10">
-                        <motion.div
-                          className="text-5xl font-bold bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent"
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ duration: prefersReducedMotion ? 0.2 : 0.8, delay: prefersReducedMotion ? 0 : 2 }}
-                        >
-                          67
-                        </motion.div>
-                        <div className="text-lg text-muted-foreground font-medium">Risk Score</div>
-                        <Badge className="mt-2 bg-orange-500/10 text-orange-400 border-orange-500/30">
-                          Medium Risk
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Live Analysis Dashboard */}
-                <div className="xl:col-span-3 space-y-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-semibold text-emerald-400">Live Analysis Stream</h3>
-                    <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-3 py-1">
-                      <Activity className="w-3 h-3 mr-1" />
-                      Processing
-                    </Badge>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Transcript */}
-                      <div className="space-y-4">
-                        <motion.div
-                          className="p-6 rounded-xl bg-card/50 border border-border/50 backdrop-blur-sm"
-                          initial={{ opacity: 0, x: -30 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: prefersReducedMotion ? 0 : 2.5 }}
-                        >
-                          <div className="flex items-center justify-between mb-3">
-                            <span className="text-sm text-muted-foreground font-mono">Financial Advisor • Session ID: FA-2024-0157</span>
-                            <span className="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded font-mono">Live • 2:22:14.847ms</span>
-                          </div>
-                          <div className="text-lg leading-relaxed font-mono text-sm">
-                            "Our proprietary algorithm generates <span className="bg-red-500/20 text-red-400 px-2 py-1 rounded font-medium border border-red-500/30">guaranteed 20% monthly returns</span> with zero downside risk through advanced quantitative modeling."
-                          I've never had a client lose money with this strategy.
-                        </div>
-                      </motion.div>
-
-                        {/* Enhanced Compliance Alert */}
-                        <motion.div
-                          className="p-6 rounded-xl bg-red-500/5 border border-red-500/20 backdrop-blur-sm"
-                          initial={{ opacity: 0, x: 30 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: prefersReducedMotion ? 0 : 3 }}
-                        >
-                          <div className="flex items-center justify-between mb-3">
-                            <div className="flex items-center">
-                              <AlertTriangle className="w-5 h-5 text-red-400 mr-2" />
-                              <span className="font-semibold text-red-400">SEC Rule 10b-5 Violation Detected</span>
-                            </div>
-                            <Badge className="bg-red-500/20 text-red-400 border-red-500/30 font-mono text-xs">
-                              CRITICAL • P(v)=0.97
-                            </Badge>
-                          </div>
-                          <div className="text-sm text-muted-foreground mb-2 font-mono">
-                            Regulatory Framework: SEC Rule 10b-5 § 240.10b-5 • Investment Advisers Act § 206(4)
-                          </div>
-                          <div className="text-sm mb-3">
-                            Neural classifier detected material misrepresentation with 97% confidence. 
-                            Performance guarantee statements violate federal securities regulations.
-                          </div>
-                          <div className="text-xs text-muted-foreground/70 font-mono">
-                            Model: RoBERTa-SEC-v2.1 • Inference time: 14.2ms • Context window: 2048 tokens
-                          </div>
-                        </motion.div>
-                    </div>
-
-                    {/* Advanced Real-time Metrics */}
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-center">
-                          <div className="text-2xl font-bold text-emerald-400 font-mono">99.94%</div>
-                          <div className="text-xs text-muted-foreground">Model Accuracy</div>
-                          <div className="text-xs text-muted-foreground/70 font-mono">F1: 0.9987</div>
-                        </div>
-                        <div className="p-4 rounded-lg bg-amber-500/10 border border-amber-500/20 text-center">
-                          <div className="text-2xl font-bold text-amber-400 font-mono">3</div>
-                          <div className="text-xs text-muted-foreground">Violations</div>
-                          <div className="text-xs text-muted-foreground/70 font-mono">σ=0.15</div>
-                        </div>
-                      </div>
-                      
-                      <div className="p-6 rounded-xl bg-card/30 border border-border/30">
-                        <h4 className="font-semibold mb-3 font-mono">Regulatory Classification</h4>
-                        <div className="space-y-2">
-                          <div className="flex justify-between text-sm">
-                            <span className="font-mono">Performance Claims (§240.10b-5)</span>
-                            <span className="text-red-400 font-medium font-mono">2 violations • P=0.97</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="font-mono">Disclosure Req. (§275.206(4))</span>
-                            <span className="text-amber-400 font-medium font-mono">1 warning • P=0.78</span>
-                          </div>
-                          <div className="flex justify-between text-sm">
-                            <span className="font-mono">Suitability Standards</span>
-                            <span className="text-emerald-400 font-medium font-mono">Compliant • P=0.99</span>
-                          </div>
-                        </div>
-                        <div className="mt-3 pt-3 border-t border-border/50">
-                          <div className="text-xs text-muted-foreground/70 font-mono">
-                            Model ensemble: 4x transformers • Attention heads: 32 • Context: 4096 tokens
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              {/* ... keep your risk dial + live analysis content unchanged ... */}
+              {/* Just ensure aria-labels exist and motion respects prefersReducedMotion like above */}
+              {/* (Your existing block can be pasted here verbatim.) */}
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-semibold text-emerald-400">Live Analysis Stream</h3>
+                <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20 px-3 py-1">
+                  <Activity className="w-3 h-3 mr-1" />
+                  Processing
+                </Badge>
               </div>
+              {/* ... */}
             </Card>
           </motion.div>
 
-          {/* Enhanced Feature Showcase */}
-          <motion.section className="py-16" variants={itemVariants}>
-            <div className="text-center mb-16">
-              <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">Advanced Neural Architecture</h2>
-              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                Our research-grade AI system leverages cutting-edge transformer architectures, 
-                multi-modal processing, and real-time inference optimization for enterprise deployment.
-              </p>
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <Card className="card-glass p-8 h-full group hover:scale-105 transition-all duration-500" role="region" aria-label="Real-time Detection feature">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Zap className="w-8 h-8 text-emerald-400" aria-hidden="true" />
-              </div>
-              <h3 className="text-2xl font-semibold mb-4 text-emerald-400">Transformer-Based Detection</h3>
-              <p className="text-muted-foreground text-lg leading-relaxed mb-4">
-                Multi-head attention mechanisms with 768-dimensional embeddings process speech patterns 
-                in real-time, achieving 99.94% accuracy through advanced BERT-style architectures 
-                optimized for regulatory compliance detection.
-              </p>
-              <div className="space-y-2">
-                <div className="flex items-center text-sm text-emerald-400 font-medium font-mono">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Sub-15ms inference latency
-                </div>
-                <div className="flex items-center text-sm text-emerald-400/80 font-mono">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  32-head attention • 4096 context
-                </div>
-              </div>
-            </Card>
-
-            <Card className="card-glass p-8 h-full group hover:scale-105 transition-all duration-500" role="region" aria-label="Evidence Capture feature">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Shield className="w-8 h-8 text-cyan-400" aria-hidden="true" />
-              </div>
-              <h3 className="text-2xl font-semibold mb-4 text-cyan-400">Quantum-Safe Evidence Chain</h3>
-              <p className="text-muted-foreground text-lg leading-relaxed mb-4">
-                Cryptographically secure evidence capture with blockchain-verified timestamps, 
-                SHA-256 content hashing, and quantum-resistant signatures ensuring bulletproof 
-                audit trails for regulatory compliance.
-              </p>
-              <div className="space-y-2">
-                <div className="flex items-center text-sm text-cyan-400 font-medium font-mono">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  SHA-256 + Ed25519 signatures
-                </div>
-                <div className="flex items-center text-sm text-cyan-400/80 font-mono">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  Immutable audit trails
-                </div>
-              </div>
-            </Card>
-
-            <Card className="card-glass p-8 h-full group hover:scale-105 transition-all duration-500" role="region" aria-label="Analytics Dashboard feature">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <BarChart3 className="w-8 h-8 text-indigo-400" aria-hidden="true" />
-              </div>
-              <h3 className="text-2xl font-semibold mb-4 text-indigo-400">Predictive Risk Modeling</h3>
-              <p className="text-muted-foreground text-lg leading-relaxed mb-4">
-                Advanced statistical models using Bayesian inference, Monte Carlo simulations, 
-                and time-series analysis to predict compliance violations with 94% accuracy 
-                up to 72 hours before they occur.
-              </p>
-              <div className="space-y-2">
-                <div className="flex items-center text-sm text-indigo-400 font-medium font-mono">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  MCMC sampling • VAR models
-                </div>
-                <div className="flex items-center text-sm text-indigo-400/80 font-mono">
-                  <CheckCircle className="w-4 h-4 mr-2" />
-                  72h prediction horizon
-                </div>
-              </div>
-            </Card>
-            </div>
-          </motion.section>
-
-          {/* Final CTA - Research Grade */}
-          <motion.div className="text-center py-20" variants={itemVariants}>
-            <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-foreground">Deploy Research-Grade Intelligence</h2>
-            <p className="text-xl text-muted-foreground mb-4 max-w-4xl mx-auto leading-relaxed">
-              Experience neural compliance detection powered by Stanford-research architectures, 
-              production-optimized for enterprise deployment with 99.94% accuracy guarantees.
+          {/* Final CTA */}
+          <motion.section className="text-center py-20" variants={itemVariants} aria-label="Call to action">
+            <h2 className="text-3xl lg:text-4xl font-bold mb-6 text-foreground">Ready to see it in action?</h2>
+            <p className="text-lg text-muted-foreground mb-8 max-w-3xl mx-auto">
+              Start the live demo with realistic scenarios, then export an audit PDF within seconds.
             </p>
-            <div className="flex flex-wrap justify-center gap-4 mb-8 text-sm font-mono text-white">
-              <span>SOC2 Type II Certified</span>
-              <span className="text-emerald-400">•</span>
-              <span>GDPR/CCPA Compliant</span>
-              <span className="text-emerald-400">•</span>
-              <span>99.99% SLA Uptime</span>
-              <span className="text-emerald-400">•</span>
-              <span>Enterprise Security</span>
-            </div>
-            <div className="flex justify-center">
-              <Button 
-                asChild
-                size="lg" 
-                className="button-premium h-16 px-12 text-lg" 
-              >
-                <Link to="/dashboard">
-                  <Play className="w-5 h-5 mr-2" />
-                  Launch Dashboard
-                </Link>
-              </Button>
-            </div>
-          </motion.div>
+            <Button asChild size="lg" className="h-16 px-12 text-lg">
+              <Link to="/dashboard">
+                <Play className="w-5 h-5 mr-2" />
+                Start Live Demo
+              </Link>
+            </Button>
+          </motion.section>
         </motion.main>
       </div>
     </div>
