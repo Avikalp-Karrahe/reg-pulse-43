@@ -79,6 +79,7 @@ export const useRealtimeCompliance = () => {
             break;
 
           case 'response.audio.delta':
+          case 'response.output_audio.delta':
             // Handle streaming audio response
             if (audioContextRef.current && data.delta) {
               const binaryString = atob(data.delta);
@@ -91,16 +92,19 @@ export const useRealtimeCompliance = () => {
             break;
 
           case 'response.audio_transcript.delta':
+          case 'response.output_audio_transcript.delta':
             // Handle streaming text transcript
             setCurrentTranscript(prev => prev + (data.delta || ''));
             break;
 
           case 'response.audio_transcript.done':
+          case 'response.output_audio_transcript.done':
             // Add complete transcript to messages
-            if (currentTranscript.trim()) {
+            const transcript = data.transcript || currentTranscript.trim();
+            if (transcript) {
               setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: currentTranscript.trim(),
+                content: transcript,
                 timestamp: new Date().toISOString(),
                 type: 'text'
               }]);
@@ -148,6 +152,16 @@ export const useRealtimeCompliance = () => {
               description: data.message,
               variant: "destructive",
             });
+            break;
+
+          case 'response.output_audio.done':
+          case 'response.content_part.done':
+          case 'conversation.item.done':
+          case 'response.output_item.done':
+          case 'response.done':
+          case 'rate_limits.updated':
+            // Handle completion events - these are just status updates
+            console.log(`Status update: ${data.type}`);
             break;
 
           default:
