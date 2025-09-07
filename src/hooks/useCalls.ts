@@ -1,10 +1,31 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { isDemoMode, DEMO_CALLS } from '@/lib/demoConfig';
 
 export const useCalls = () => {
   return useQuery({
-    queryKey: ['calls'],
+    queryKey: ['calls', isDemoMode()],
     queryFn: async () => {
+      // Return demo data if demo mode is enabled
+      if (isDemoMode()) {
+        const demoData = Object.values(DEMO_CALLS).map(call => ({
+          id: call.id,
+          callId: call.id,
+          date: new Date('2025-01-07T14:30:00Z').toLocaleDateString(),
+          duration: call.duration,
+          riskScore: call.riskScore,
+          status: 'completed',
+          startedAt: new Date('2025-01-07T14:30:00Z').toISOString(),
+          endedAt: new Date('2025-01-07T14:45:30Z').toISOString(),
+          issueCount: call.issueCount,
+        }));
+        
+        // Simulate API delay for realistic demo experience
+        await new Promise(resolve => setTimeout(resolve, 500));
+        return demoData;
+      }
+      
+      // Regular Supabase query for production data
       const { data, error } = await supabase
         .from('calls')
         .select(`

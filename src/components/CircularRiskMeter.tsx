@@ -2,35 +2,90 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Shield, ShieldAlert } from "lucide-react";
 
-interface CircularRiskMeterProps {
-  riskScore: number;
-  isActive: boolean;
+interface ComplianceIssue {
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  category: string;
 }
 
-export const CircularRiskMeter = ({ riskScore, isActive }: CircularRiskMeterProps) => {
+interface CircularRiskMeterProps {
+  riskScore?: number;
+  isActive: boolean;
+  issues?: ComplianceIssue[];
+  streamingMode?: boolean;
+}
+
+export const CircularRiskMeter = ({ 
+  riskScore = 0, 
+  isActive, 
+  issues = [], 
+  streamingMode = false 
+}: CircularRiskMeterProps) => {
   const [animatedScore, setAnimatedScore] = useState(0);
   const [displayScore, setDisplayScore] = useState(0);
+  const [calculatedScore, setCalculatedScore] = useState(0);
+  
+  // Calculate risk score from issues in streaming mode
+  const calculateRiskFromIssues = (issueList: ComplianceIssue[]): number => {
+    if (issueList.length === 0) return 0;
+    
+    const severityWeights = {
+      critical: 3,
+      high: 2, 
+      medium: 1,
+      low: 0.5
+    };
+    
+    const totalWeight = issueList.reduce((sum, issue) => {
+      return sum + (severityWeights[issue.severity] || 1);
+    }, 0);
+    
+    // Normalize to 0-100 scale with progressive scaling
+    const maxWeight = issueList.length * severityWeights.critical;
+    const baseScore = (totalWeight / maxWeight) * 100;
+    
+    // Apply progressive scaling for multiple issues
+    const issueMultiplier = Math.min(1.5, 1 + (issueList.length - 1) * 0.1);
+    const finalScore = Math.min(100, baseScore * issueMultiplier);
+    
+    return Math.round(finalScore);
+  };
+  
+  // Update calculated score when issues change in streaming mode
+  useEffect(() => {
+    if (streamingMode) {
+      const newScore = calculateRiskFromIssues(issues);
+      setCalculatedScore(newScore);
+    }
+  }, [issues, streamingMode]);
+  
+  // Use either provided riskScore or calculated score
+  const targetScore = streamingMode ? calculatedScore : riskScore;
 
   useEffect(() => {
-    const duration = 1000; // 1 second animation
-    const steps = 50;
-    const increment = riskScore / steps;
+    const duration = streamingMode ? 500 : 1000; // Faster animation in streaming mode
+    const steps = 30;
+    const startScore = animatedScore;
+    const scoreDiff = targetScore - startScore;
+    const increment = scoreDiff / steps;
     const stepTime = duration / steps;
 
     let currentStep = 0;
     const interval = setInterval(() => {
       currentStep++;
-      const newScore = Math.min(increment * currentStep, riskScore);
-      setAnimatedScore(newScore);
-      setDisplayScore(Math.round(newScore));
+      const newScore = startScore + (increment * currentStep);
+      const clampedScore = Math.max(0, Math.min(100, newScore));
+      setAnimatedScore(clampedScore);
+      setDisplayScore(Math.round(clampedScore));
 
       if (currentStep >= steps) {
         clearInterval(interval);
+        setAnimatedScore(targetScore);
+        setDisplayScore(targetScore);
       }
     }, stepTime);
 
     return () => clearInterval(interval);
-  }, [riskScore]);
+  }, [targetScore, streamingMode]);
 
   const circumference = 2 * Math.PI * 40; // radius of 40
   const strokeDasharray = circumference;

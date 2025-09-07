@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Mic, MicOff, Settings, AlertTriangle, CheckCircle, ExternalLink, Info } from "lucide-react";
 import { audioManager, AudioDevice, getPermissionErrorMessage, openChromeMicSettings } from "@/lib/audio";
 import { useToast } from "@/hooks/use-toast";
+import { DemoModeToggle } from "@/components/DemoBanner";
 
 export const AudioInputSetup = () => {
   const [devices, setDevices] = useState<AudioDevice[]>([]);
@@ -319,6 +320,16 @@ export const AudioInputSetup = () => {
         </Alert>
       )}
 
+      {/* Demo Mode Toggle */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Demo Mode</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <DemoModeToggle />
+        </CardContent>
+      </Card>
+      
       {/* Virtual Cable Instructions */}
       <Card>
         <CardHeader>

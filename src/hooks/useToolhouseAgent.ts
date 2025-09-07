@@ -6,6 +6,11 @@ export interface ComplianceIssue {
   rationale: string;
   reg_reference: string;
   timestamp: string;
+  evidenceSnippet?: string | null;
+  evidenceStartMs?: number | null;
+  evidenceEndMs?: number | null;
+  modelRationale?: string | null;
+  modelVersion?: string | null;
 }
 
 export interface ToolhouseResponse {

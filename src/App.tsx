@@ -9,6 +9,8 @@ import { ComplianceDashboard } from "@/components/ComplianceDashboard";
 import { CallHistoryPage } from "@/components/CallHistoryPage";
 import { Analytics } from "@/components/Analytics";
 import { AudioInputSetup } from "@/components/AudioInputSetup";
+import { DemoBanner } from "@/components/DemoBanner";
+import { isDemoMode } from "@/lib/demoConfig";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
@@ -25,6 +27,11 @@ const App = () => (
             <AppSidebar />
             
             <div className="flex-1 flex flex-col">
+              {/* Demo Banner */}
+              {isDemoMode() && (
+                <DemoBanner className="mx-6 mt-4" />
+              )}
+              
               {/* Header */}
               <header className="h-14 flex items-center justify-between border-b border-border bg-card px-6">
                 <div className="flex items-center space-x-4">

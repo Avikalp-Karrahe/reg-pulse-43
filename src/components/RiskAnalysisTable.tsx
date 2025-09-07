@@ -1,7 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Clock, User, UserCheck, AlertTriangle, Shield, TrendingUp } from "lucide-react";
+import { Clock, User, UserCheck, AlertTriangle, Shield, TrendingUp, Download } from "lucide-react";
+import { EvidenceLens } from "./EvidenceLens";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface ComplianceIssue {
   category: string;
@@ -9,6 +14,15 @@ interface ComplianceIssue {
   rationale: string;
   reg_reference: string;
   timestamp: string;
+  evidenceSnippet?: string | null;
+  evidenceStartMs?: number | null;
+  evidenceEndMs?: number | null;
+  modelRationale?: string | null;
+  modelVersion?: string | null;
+  evidence_snippet?: string;
+  evidence_start_ms?: number;
+  evidence_end_ms?: number;
+  model_rationale?: string;
 }
 
 interface RiskAnalysisTableProps {
@@ -17,6 +31,55 @@ interface RiskAnalysisTableProps {
 }
 
 export const RiskAnalysisTable = ({ callId, issues }: RiskAnalysisTableProps) => {
+  const [selectedIssue, setSelectedIssue] = useState<ComplianceIssue | null>(null);
+  const [isEvidenceLensOpen, setIsEvidenceLensOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const { toast } = useToast();
+
+  const handleRowClick = (issue: ComplianceIssue) => {
+    setSelectedIssue(issue);
+    setIsEvidenceLensOpen(true);
+  };
+
+  const handleExportPDF = async () => {
+    try {
+      setIsExporting(true);
+      
+      const { data, error } = await supabase.functions.invoke('export-audit-pdf', {
+        body: { call_id: callId }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      // Create blob and download
+      const blob = new Blob([data], { type: 'application/pdf' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `audit-report-${callId}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: "PDF Export Successful",
+        description: "The audit report has been downloaded to your device.",
+      });
+
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+      toast({
+        title: "Export Failed",
+        description: "There was an error generating the PDF report. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
   // Transform real issues data for the table, or use mock data if no issues
   const riskAnalysis = issues.length > 0 ? issues.map((issue, index) => ({
     id: `${callId}-${index}`,
@@ -146,12 +209,24 @@ export const RiskAnalysisTable = ({ callId, issues }: RiskAnalysisTableProps) =>
       {/* Detailed Analysis Table */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <span>Detailed Risk Analysis</span>
-            <Badge variant="outline" className="text-xs">
-              {totalIssues} {totalIssues === 1 ? 'Issue' : 'Issues'} Found
-            </Badge>
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <CardTitle>Detailed Risk Analysis</CardTitle>
+              <Badge variant="outline" className="text-xs">
+                {totalIssues} {totalIssues === 1 ? 'Issue' : 'Issues'} Found
+              </Badge>
+            </div>
+            <Button
+              onClick={handleExportPDF}
+              disabled={isExporting}
+              variant="outline"
+              size="sm"
+              className="bg-gradient-to-r from-primary/10 to-primary/20 border-primary/30 hover:from-primary/20 hover:to-primary/30"
+            >
+              <Download className="w-4 h-4 mr-2" />
+              {isExporting ? 'Exporting...' : 'Export PDF'}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {totalIssues > 0 ? (
@@ -165,13 +240,21 @@ export const RiskAnalysisTable = ({ callId, issues }: RiskAnalysisTableProps) =>
                   <TableHead className="w-[120px]">Regulation</TableHead>
                   <TableHead className="w-[100px]">Severity</TableHead>
                   <TableHead>Statement</TableHead>
+                  <TableHead className="w-[200px]">Evidence</TableHead>
+                  <TableHead className="w-[150px]">Model Info</TableHead>
                   <TableHead>Action Required</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {riskAnalysis.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-mono text-xs">{item.timestamp}</TableCell>
+                {riskAnalysis.map((item, index) => {
+                  const originalIssue = issues[index];
+                  return (
+                    <TableRow 
+                      key={item.id} 
+                      className="cursor-pointer hover:bg-muted/50 transition-colors"
+                      onClick={() => originalIssue && handleRowClick(originalIssue)}
+                    >
+                      <TableCell className="font-mono text-xs">{item.timestamp}</TableCell>
                     <TableCell>
                       <div className="flex items-center space-x-1">
                         {item.speaker === 'advisor' ? (
@@ -199,13 +282,46 @@ export const RiskAnalysisTable = ({ callId, issues }: RiskAnalysisTableProps) =>
                         {item.text}
                       </div>
                     </TableCell>
+                    <TableCell className="text-xs max-w-[200px]">
+                      {issues.find(issue => issue.category === item.issue)?.evidenceSnippet ? (
+                        <div className="space-y-1">
+                          <div className="truncate" title={issues.find(issue => issue.category === item.issue)?.evidenceSnippet || ''}>
+                            {issues.find(issue => issue.category === item.issue)?.evidenceSnippet}
+                          </div>
+                          {issues.find(issue => issue.category === item.issue)?.evidenceStartMs && (
+                            <div className="text-xs text-muted-foreground">
+                              {Math.floor((issues.find(issue => issue.category === item.issue)?.evidenceStartMs || 0) / 1000)}s - {Math.floor((issues.find(issue => issue.category === item.issue)?.evidenceEndMs || 0) / 1000)}s
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">No evidence</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-xs max-w-[150px]">
+                      {issues.find(issue => issue.category === item.issue)?.modelVersion ? (
+                        <div className="space-y-1">
+                          <div className="font-mono">
+                            {issues.find(issue => issue.category === item.issue)?.modelVersion}
+                          </div>
+                          {issues.find(issue => issue.category === item.issue)?.modelRationale && (
+                            <div className="truncate" title={issues.find(issue => issue.category === item.issue)?.modelRationale || ''}>
+                              {issues.find(issue => issue.category === item.issue)?.modelRationale}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">N/A</span>
+                      )}
+                    </TableCell>
                     <TableCell className="text-xs max-w-[250px]">
                       <div className="truncate" title={item.recommendation}>
                         {item.recommendation}
                       </div>
                     </TableCell>
-                  </TableRow>
-                ))}
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           ) : (
@@ -246,6 +362,13 @@ export const RiskAnalysisTable = ({ callId, issues }: RiskAnalysisTableProps) =>
           </CardContent>
         </Card>
       )}
+
+      {/* Evidence Lens Dialog */}
+      <EvidenceLens
+        isOpen={isEvidenceLensOpen}
+        onClose={() => setIsEvidenceLensOpen(false)}
+        issue={selectedIssue}
+      />
     </div>
   );
 };

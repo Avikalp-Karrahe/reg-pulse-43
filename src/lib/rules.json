@@ -1,0 +1,134 @@
+{
+  "compliance_rules": {
+    "explicit_guarantee": {
+      "name": "Explicit Guarantee",
+      "severity": "critical",
+      "regulation": "SEC Rule 10b-5",
+      "patterns": [
+        "guarantee",
+        "guaranteed",
+        "promise you",
+        "I promise",
+        "will definitely",
+        "absolutely certain",
+        "100% sure",
+        "no risk",
+        "risk-free",
+        "can't lose",
+        "sure thing",
+        "certain return"
+      ],
+      "description": "Advisor making explicit guarantees about investment performance or outcomes",
+      "rationale": "Financial advisors cannot guarantee investment returns or outcomes as markets are inherently uncertain"
+    },
+    "unsuitable_advice": {
+      "name": "Unsuitable Investment Advice",
+      "severity": "high",
+      "regulation": "FINRA Rule 2111",
+      "patterns": [
+        "put everything in",
+        "all your money",
+        "mortgage your house",
+        "borrow to invest",
+        "leverage everything",
+        "bet it all",
+        "go all in",
+        "maximum risk",
+        "high-risk only",
+        "ignore diversification"
+      ],
+      "description": "Recommending investments that may not be suitable for the client's risk profile or financial situation",
+      "rationale": "Investment recommendations must be suitable for the client's financial situation, risk tolerance, and investment objectives"
+    },
+    "risk_disclosure_missing": {
+      "name": "Inadequate Risk Disclosure",
+      "severity": "medium",
+      "regulation": "SEC Rule 10b-5",
+      "patterns": [
+        "no downside",
+        "only goes up",
+        "can't go wrong",
+        "safe as houses",
+        "no volatility",
+        "stable returns",
+        "predictable income",
+        "without mentioning risk",
+        "forget about risk",
+        "don't worry about"
+      ],
+      "description": "Failing to adequately disclose investment risks or downplaying potential losses",
+      "rationale": "All investment recommendations must include clear disclosure of associated risks and potential for loss"
+    },
+    "pressure_tactics": {
+      "name": "High-Pressure Sales Tactics",
+      "severity": "high",
+      "regulation": "FINRA Rule 2010",
+      "patterns": [
+        "limited time offer",
+        "act now",
+        "opportunity won't last",
+        "decide today",
+        "if you don't buy now",
+        "last chance",
+        "exclusive deal",
+        "only for you",
+        "must decide immediately",
+        "can't wait",
+        "urgent opportunity",
+        "time is running out"
+      ],
+      "description": "Using high-pressure tactics to rush client investment decisions",
+      "rationale": "Clients must be given adequate time to consider investment decisions without undue pressure"
+    },
+    "misleading_performance": {
+      "name": "Misleading Performance Claims",
+      "severity": "high",
+      "regulation": "SEC Rule 206(4)-1",
+      "patterns": [
+        "always profitable",
+        "never lost money",
+        "consistent gains",
+        "beats the market",
+        "outperforms everything",
+        "track record shows",
+        "historical performance",
+        "past results indicate",
+        "proven strategy",
+        "winning formula"
+      ],
+      "description": "Making misleading claims about past performance or future results",
+      "rationale": "Past performance does not guarantee future results and must be presented with appropriate disclaimers"
+    },
+    "unauthorized_trading": {
+      "name": "Unauthorized Trading Discussion",
+      "severity": "critical",
+      "regulation": "FINRA Rule 3260",
+      "patterns": [
+        "I'll handle everything",
+        "leave it to me",
+        "don't worry about details",
+        "I'll make the trades",
+        "trust my judgment",
+        "I know what's best",
+        "let me decide",
+        "full discretion",
+        "I'll take care of it",
+        "no need to approve"
+      ],
+      "description": "Suggesting unauthorized trading or discretionary authority without proper documentation",
+      "rationale": "All trades must be authorized by the client or conducted under properly documented discretionary authority"
+    }
+  },
+  "severity_weights": {
+    "critical": 3,
+    "high": 2,
+    "medium": 1,
+    "low": 0.5
+  },
+  "risk_thresholds": {
+    "low": 25,
+    "medium": 50,
+    "high": 75,
+    "critical": 90
+  }
+}

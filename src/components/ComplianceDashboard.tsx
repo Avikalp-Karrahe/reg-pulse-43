@@ -15,6 +15,8 @@ import { Link } from "react-router-dom";
 import { FuturisticTranscription } from "./FuturisticTranscription";
 import { CircularRiskMeter } from "./CircularRiskMeter";
 import { FuturisticStats } from "./FuturisticStats";
+import { TestScenarios } from "./TestScenarios";
+import { QuickChecks } from "./QuickChecks";
 import { FileUpload } from "./FileUpload";
 
 interface CallData {
@@ -360,6 +362,12 @@ export const ComplianceDashboard = () => {
             </CardContent>
           </Card>
         </div>
+        
+        {/* Quick Validation Checks */}
+        <QuickChecks />
+        
+        {/* Test Scenarios Section */}
+        <TestScenarios />
       </div>
     );
   }
@@ -447,9 +455,22 @@ export const ComplianceDashboard = () => {
                           {issue.severity.toUpperCase()}
                         </span>
                       </div>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-muted-foreground mb-1">
                         {issue.rationale.substring(0, 80)}...
                       </p>
+                      {issue.evidenceSnippet && (
+                        <div className="text-xs text-muted-foreground/80 border-t border-muted/20 pt-1 mt-1">
+                          <span className="font-mono">Evidence:</span> {issue.evidenceSnippet.substring(0, 60)}...
+                          {issue.evidenceStartMs && (
+                            <span className="ml-2 text-xs">({Math.floor(issue.evidenceStartMs / 1000)}s)</span>
+                          )}
+                        </div>
+                      )}
+                      {issue.modelVersion && (
+                        <div className="text-xs text-muted-foreground/60 mt-1">
+                          <span className="font-mono">{issue.modelVersion}</span>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </CardContent>
