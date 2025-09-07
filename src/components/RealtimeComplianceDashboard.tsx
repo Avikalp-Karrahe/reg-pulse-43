@@ -354,72 +354,117 @@ export const RealtimeComplianceDashboard = () => {
                       { id: 'conflicts_of_interest', name: 'Conflicts of Interest', regulation: 'IA Act Rule 206(4)-7' },
                       { id: 'unauthorized_trading', name: 'Unauthorized Trading', regulation: 'FINRA 3260' }
                     ].map((category) => {
-                      const hasIssue = complianceIssues.some(issue => 
-                        issue.category.toLowerCase().replace(/[^a-z0-9]/g, '_').includes(category.id.split('_')[0])
-                      );
+                      const matchingIssues = complianceIssues.filter(issue => {
+                        const issueCategory = issue.category.toLowerCase().replace(/[^a-z0-9]/g, '_');
+                        const categoryKey = category.id.split('_')[0];
+                        return issueCategory.includes(categoryKey) || 
+                               issueCategory.includes(category.id) ||
+                               issue.category.toLowerCase().includes(category.name.toLowerCase().split(' ')[0]);
+                      });
+                      
+                      const hasViolation = matchingIssues.length > 0;
+                      const highestSeverity = hasViolation ? 
+                        matchingIssues.reduce((max, issue) => {
+                          const severityOrder = { low: 1, medium: 2, high: 3, critical: 4 };
+                          return severityOrder[issue.severity] > severityOrder[max.severity] ? issue : max;
+                        }).severity : null;
                       
                       return (
                         <div
                           key={category.id}
-                          className={`flex items-center space-x-3 p-3 rounded-lg border transition-all ${
-                            hasIssue 
-                              ? 'bg-red-500/20 border-red-500/50 shadow-lg shadow-red-500/20' 
-                              : 'bg-green-500/10 border-green-500/30'
+                          className={`flex items-center space-x-3 p-3 rounded-lg border transition-all duration-500 ${
+                            hasViolation 
+                              ? 'bg-red-500/20 border-red-500/50 shadow-lg shadow-red-500/20 animate-pulse' 
+                              : 'bg-muted/20 border-muted-foreground/20 hover:border-muted-foreground/40'
                           }`}
                         >
-                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
-                            hasIssue 
-                              ? 'bg-red-500 border-red-500' 
-                              : 'bg-green-500 border-green-500'
+                          {/* Checkbox indicator */}
+                          <div className={`w-6 h-6 rounded border-2 flex items-center justify-center transition-all duration-300 ${
+                            hasViolation 
+                              ? 'bg-red-500 border-red-500 shadow-lg shadow-red-500/30' 
+                              : 'border-muted-foreground/40 bg-transparent hover:border-muted-foreground/60'
                           }`}>
-                            {hasIssue ? (
-                              <div className="w-3 h-3 bg-white rounded-full animate-pulse" />
+                            {hasViolation ? (
+                              // Red X for violations
+                              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
                             ) : (
-                              <div className="w-2 h-2 bg-white rounded-full" />
+                              // Empty checkbox
+                              <div className="w-3 h-3 border border-muted-foreground/30 rounded-sm" />
                             )}
                           </div>
                           
                           <div className="flex-1">
                             <div className="flex items-center justify-between">
-                              <span className={`font-medium text-sm ${
-                                hasIssue ? 'text-red-400' : 'text-green-400'
+                              <span className={`font-medium text-sm transition-colors ${
+                                hasViolation ? 'text-red-400' : 'text-muted-foreground'
                               }`}>
                                 {category.name}
                               </span>
-                              <Badge 
-                                variant="outline" 
-                                className={`text-xs ${
-                                  hasIssue 
-                                    ? 'border-red-500/50 text-red-400 bg-red-500/10' 
-                                    : 'border-green-500/50 text-green-400 bg-green-500/10'
-                                }`}
-                              >
-                                {hasIssue ? 'FLAGGED' : 'CLEAR'}
-                              </Badge>
+                              
+                              {hasViolation ? (
+                                <div className="flex items-center gap-2">
+                                  <Badge 
+                                    variant="outline" 
+                                    className={`text-xs border-red-500/50 text-red-400 bg-red-500/10 ${
+                                      highestSeverity === 'critical' ? 'animate-pulse' : ''
+                                    }`}
+                                  >
+                                    {highestSeverity?.toUpperCase()}
+                                  </Badge>
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline"
+                                    className="h-6 px-2 text-xs border-red-500/30 text-red-400 hover:bg-red-500/10"
+                                  >
+                                    CLEAR
+                                  </Button>
+                                </div>
+                              ) : (
+                                <Badge 
+                                  variant="outline" 
+                                  className="text-xs border-muted-foreground/30 text-muted-foreground bg-transparent"
+                                >
+                                  MONITORING
+                                </Badge>
+                              )}
                             </div>
-                            <p className="text-xs text-muted-foreground mt-1">
+                            
+                            <p className="text-xs text-muted-foreground/70 mt-1">
                               {category.regulation}
                             </p>
                             
-                            {/* Show specific issue details if detected */}
-                            {hasIssue && complianceIssues
-                              .filter(issue => issue.category.toLowerCase().replace(/[^a-z0-9]/g, '_').includes(category.id.split('_')[0]))
-                              .map((issue, idx) => (
-                                <div key={idx} className="mt-2 p-2 bg-red-500/10 rounded border border-red-500/20">
-                                  <p className="text-xs text-red-300 font-medium">
-                                    Severity: {issue.severity.toUpperCase()}
-                                  </p>
-                                  <p className="text-xs text-muted-foreground mt-1">
-                                    {issue.rationale}
-                                  </p>
-                                  {issue.evidenceSnippet && (
-                                    <p className="text-xs text-red-200 mt-1 italic">
-                                      "{issue.evidenceSnippet}"
+                            {/* Show violation details when detected */}
+                            {hasViolation && (
+                              <div className="mt-2 space-y-1 animate-fade-in">
+                                {matchingIssues.slice(0, 2).map((issue, idx) => (
+                                  <div key={idx} className="p-2 bg-red-500/10 rounded border border-red-500/20">
+                                    <div className="flex items-center justify-between mb-1">
+                                      <span className="text-xs text-red-300 font-medium">
+                                        {issue.severity.toUpperCase()} VIOLATION
+                                      </span>
+                                      <span className="text-xs text-muted-foreground">
+                                        Just now
+                                      </span>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground">
+                                      {issue.rationale}
                                     </p>
-                                  )}
-                                </div>
-                              ))
-                            }
+                                    {issue.evidenceSnippet && (
+                                      <p className="text-xs text-red-200 mt-1 italic">
+                                        "{issue.evidenceSnippet}"
+                                      </p>
+                                    )}
+                                  </div>
+                                ))}
+                                {matchingIssues.length > 2 && (
+                                  <p className="text-xs text-red-400 font-medium">
+                                    +{matchingIssues.length - 2} more violation{matchingIssues.length - 2 > 1 ? 's' : ''}
+                                  </p>
+                                )}
+                              </div>
+                            )}
                           </div>
                         </div>
                       );
