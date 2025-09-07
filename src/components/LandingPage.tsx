@@ -36,7 +36,7 @@ const itemVariants = {
 } as const;
 
 const stats = [
-  { label: "Enterprise Clients", value: "500+", icon: Users },
+  { label: "Compliance Rules", value: "2,500+", icon: Shield },
   { label: "Compliance Rate", value: "99.7%", icon: CheckCircle },
   { label: "Risk Reduction", value: "85%", icon: TrendingUp },
   { label: "Global Coverage", value: "24/7", icon: Globe },
