@@ -8,66 +8,87 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Futuristic dark theme with neon accents */
-    --background: 222 47% 4%;
-    --foreground: 210 40% 98%;
+    /* Premium dark theme with sophisticated gradients */
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
 
-    --card: 222 47% 6%;
-    --card-foreground: 210 40% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 222 47% 6%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 180 100% 50%;
-    --primary-foreground: 222 47% 4%;
+    --primary: 142 76% 36%;
+    --primary-foreground: 356 29% 15%;
 
-    --secondary: 217 32% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
 
-    --muted: 217 32% 17%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
 
-    --accent: 180 100% 50%;
-    --accent-foreground: 222 47% 4%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
 
-    --destructive: 0 100% 50%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 217 32% 17%;
-    --input: 217 32% 17%;
-    --ring: 180 100% 50%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 142 76% 36%;
 
-    /* Futuristic neon risk colors */
-    --risk-safe: 120 100% 25%;
-    --risk-low: 60 100% 35%;
-    --risk-medium: 35 100% 45%;
-    --risk-high: 15 100% 50%;
-    --risk-critical: 0 100% 50%;
+    /* Sophisticated color palette */
+    --slate-50: 210 40% 98%;
+    --slate-900: 222 84% 4.9%;
+    --emerald-500: 142 76% 36%;
+    --emerald-400: 134 76% 60%;
+    --cyan-500: 188 94% 42.7%;
+    --cyan-400: 187 94% 60%;
+    --indigo-500: 231 48% 48%;
+    --indigo-400: 234 89% 74%;
+    --purple-500: 262 83% 58%;
+    --purple-400: 263 70% 73%;
+    --pink-500: 330 81% 60%;
+    --pink-400: 330 81% 73%;
+    --amber-500: 45 93% 47%;
+    --amber-400: 43 96% 56%;
+    --orange-500: 25 95% 53%;
+    --orange-400: 31 100% 71%;
 
-    --risk-safe-text: 120 100% 70%;
-    --risk-low-text: 60 100% 70%;
-    --risk-medium-text: 35 100% 70%;
-    --risk-high-text: 15 100% 70%;
-    --risk-critical-text: 0 100% 70%;
+    /* Premium risk color system */
+    --risk-safe: 142 76% 36%;
+    --risk-low: 134 61% 41%;
+    --risk-medium: 45 93% 47%;
+    --risk-high: 25 95% 53%;
+    --risk-critical: 0 84% 60%;
 
-    /* Neon glow colors */
-    --neon-cyan: 180 100% 50%;
-    --neon-green: 120 100% 50%;
-    --neon-yellow: 60 100% 50%;
-    --neon-orange: 35 100% 50%;
-    --neon-red: 0 100% 50%;
-    --neon-purple: 270 100% 50%;
+    --risk-safe-text: 142 76% 60%;
+    --risk-low-text: 134 61% 65%;
+    --risk-medium-text: 45 93% 65%;
+    --risk-high-text: 25 95% 70%;
+    --risk-critical-text: 0 84% 75%;
 
-    /* Futuristic gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(180 100% 50%), hsl(220 100% 50%));
-    --gradient-risk: linear-gradient(90deg, hsl(120 100% 50%), hsl(60 100% 50%), hsl(35 100% 50%), hsl(0 100% 50%));
-    --gradient-background: linear-gradient(135deg, hsl(222 47% 4%), hsl(217 32% 6%));
+    /* Premium color palette */
+    --neon-cyan: 188 94% 43%;
+    --neon-emerald: 142 76% 36%;
+    --neon-amber: 45 93% 47%;
+    --neon-orange: 25 95% 53%;
+    --neon-red: 0 84% 60%;
+    --neon-purple: 262 83% 58%;
+    --neon-indigo: 231 48% 48%;
+    --neon-pink: 330 81% 60%;
+
+    /* Advanced gradient system */
+    --gradient-premium: linear-gradient(135deg, hsl(var(--emerald-500)) 0%, hsl(var(--cyan-500)) 50%, hsl(var(--indigo-500)) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(var(--emerald-400)) 0%, hsl(var(--cyan-400)) 30%, hsl(var(--indigo-400)) 60%, hsl(var(--purple-400)) 100%);
+    --gradient-risk: linear-gradient(90deg, hsl(var(--emerald-500)), hsl(var(--amber-500)), hsl(var(--orange-500)), hsl(var(--neon-red)));
+    --gradient-background: radial-gradient(ellipse 80% 80% at 50% -20%, hsla(var(--emerald-500), 0.3), transparent 50%);
+    --gradient-mesh: linear-gradient(135deg, hsla(var(--cyan-500), 0.1) 0%, hsla(var(--indigo-500), 0.08) 25%, hsla(var(--purple-500), 0.06) 50%, hsla(var(--emerald-500), 0.04) 75%, transparent 100%);
     
-    /* Neon shadows and glows */
-    --shadow-neon-cyan: 0 0 20px hsl(180 100% 50% / 0.5);
-    --shadow-neon-green: 0 0 20px hsl(120 100% 50% / 0.5);
-    --shadow-neon-red: 0 0 20px hsl(0 100% 50% / 0.5);
-    --shadow-elegant: 0 8px 32px hsl(0 0% 0% / 0.4);
+    /* Premium shadows */
+    --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px hsla(var(--emerald-500), 0.2);
+    --shadow-glow: 0 0 50px hsla(var(--emerald-500), 0.3);
+    --shadow-elegant: 0 8px 32px rgba(0, 0, 0, 0.3);
 
     --radius: 0.75rem;
 
@@ -121,8 +142,13 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    background: linear-gradient(135deg, hsl(var(--background)), hsl(222 47% 6%));
+    background: 
+      radial-gradient(ellipse 80% 80% at 50% -20%, hsla(var(--emerald-500), 0.15), transparent),
+      linear-gradient(135deg, hsl(var(--background)), hsl(240 10% 6%));
     min-height: 100vh;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   /* Futuristic glow effects */
@@ -202,13 +228,11 @@ All colors MUST be HSL.
   .mesh-background {
     position: fixed;
     inset: 0;
-    background: linear-gradient(135deg, 
-      hsla(var(--cyan), 0.1) 0%,
-      hsla(var(--indigo), 0.08) 25%,
-      hsla(var(--fuchsia), 0.06) 50%,
-      hsla(var(--cyan), 0.04) 75%,
-      hsla(var(--indigo), 0.02) 100%);
-    animation: mesh-flow 20s ease-in-out infinite;
+    background: 
+      radial-gradient(ellipse 800px 600px at 50% 0%, hsla(var(--emerald-500), 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse 600px 800px at 100% 100%, hsla(var(--cyan-500), 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse 400px 400px at 0% 50%, hsla(var(--indigo-500), 0.06) 0%, transparent 50%);
+    animation: mesh-flow 30s ease-in-out infinite;
     z-index: -1;
   }
 
@@ -260,45 +284,92 @@ All colors MUST be HSL.
 
   /* Premium cards */
   .card-premium {
-    background: hsla(var(--card), 0.8);
-    backdrop-filter: blur(20px);
-    border: 1px solid hsla(var(--border), 0.5);
+    background: hsla(var(--card), 0.95);
+    backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid hsla(var(--emerald-500), 0.2);
     border-radius: 2rem;
-    box-shadow: 0 25px 50px -12px hsla(0, 0%, 0%, 0.25);
-    transition: all 0.12s cubic-bezier(0.16, 0.84, 0.44, 1);
+    box-shadow: 
+      0 32px 64px -12px rgba(0, 0, 0, 0.4),
+      inset 0 1px 0 hsla(var(--emerald-500), 0.1);
+    transition: all 0.3s cubic-bezier(0.16, 0.84, 0.44, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-premium::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-mesh);
+    opacity: 0.5;
+    z-index: -1;
   }
 
   .card-premium:hover {
-    transform: translateY(-2px) scale(1.02);
+    transform: translateY(-8px) scale(1.02);
     box-shadow: 
-      0 10px 25px -3px hsl(var(--foreground) / 0.15),
-      0 4px 6px -2px hsl(var(--foreground) / 0.1),
-      inset 0 1px 0 hsl(var(--primary) / 0.2),
-      0 0 0 1px hsl(var(--primary) / 0.3),
-      0 0 20px hsl(var(--primary) / 0.2);
+      0 40px 80px -12px rgba(0, 0, 0, 0.5),
+      0 0 0 1px hsla(var(--emerald-500), 0.4),
+      0 0 60px hsla(var(--emerald-500), 0.2),
+      inset 0 1px 0 hsla(var(--emerald-500), 0.3);
+    border-color: hsla(var(--emerald-500), 0.4);
   }
 
   .card-glass {
-    background: hsla(var(--card), 0.6);
-    backdrop-filter: blur(12px);
+    background: hsla(var(--card), 0.7);
+    backdrop-filter: blur(16px) saturate(180%);
     border: 1px solid hsla(var(--border), 0.3);
     border-radius: 1.5rem;
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.12),
+      inset 0 1px 0 hsla(255, 255, 255, 0.1);
+    transition: all 0.2s cubic-bezier(0.16, 0.84, 0.44, 1);
+  }
+
+  .card-glass:hover {
+    transform: translateY(-4px);
+    border-color: hsla(var(--emerald-500), 0.3);
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.15),
+      0 0 20px hsla(var(--emerald-500), 0.1),
+      inset 0 1px 0 hsla(255, 255, 255, 0.1);
   }
 
   /* Premium buttons */
   .button-premium {
-    background: linear-gradient(135deg, hsl(var(--neon-cyan)), hsl(var(--neon-purple)));
-    border: none;
-    border-radius: 9999px;
+    background: var(--gradient-hero);
+    border: 1px solid hsla(var(--emerald-500), 0.3);
+    border-radius: 2rem;
     color: white;
     font-weight: 600;
-    transition: all 0.28s cubic-bezier(0.16, 0.84, 0.44, 1);
-    box-shadow: 0 4px 20px hsla(var(--neon-cyan), 0.2);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.16, 0.84, 0.44, 1);
+    box-shadow: 
+      0 8px 32px hsla(var(--emerald-500), 0.25),
+      inset 0 1px 0 hsla(255, 255, 255, 0.2);
+  }
+
+  .button-premium::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, hsla(255, 255, 255, 0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
   }
 
   .button-premium:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px hsla(var(--neon-cyan), 0.3);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      0 20px 40px hsla(var(--emerald-500), 0.3),
+      0 0 60px hsla(var(--emerald-500), 0.2),
+      inset 0 1px 0 hsla(255, 255, 255, 0.3);
+    border-color: hsla(var(--emerald-500), 0.5);
+  }
+
+  .button-premium:hover::before {
+    opacity: 1;
   }
 
   /* Demo badge */
