@@ -97,12 +97,14 @@ export const LandingPage = () => {
 
   const particles = useMemo(
     () =>
-      Array.from({ length: 20 }).map((_, i) => ({
+      Array.from({ length: 35 }).map((_, i) => ({
         leftPct: Math.random() * 100,
         topPct: Math.random() * 100,
-        dur: 8 + Math.random() * 12,
-        delay: Math.random() * 5,
+        dur: 6 + Math.random() * 15,
+        delay: Math.random() * 8,
         key: i,
+        size: 0.5 + Math.random() * 2,
+        opacity: 0.1 + Math.random() * 0.3,
       })),
     []
   );
@@ -145,26 +147,60 @@ export const LandingPage = () => {
         aria-hidden="true" 
       />
 
-      {/* Floating particles */}
+      {/* Enhanced floating particles with elegant movement */}
       {!prefersReducedMotion && (
         <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
           {particles.map((particle) => (
             <motion.div
               key={particle.key}
-              className="absolute w-1 h-1 bg-emerald-400/30 rounded-full"
+              className="absolute rounded-full bg-emerald-400"
               style={{
                 left: `${particle.leftPct}%`,
                 top: `${particle.topPct}%`,
+                width: `${particle.size}px`,
+                height: `${particle.size}px`,
+                opacity: particle.opacity,
               }}
               animate={{
-                y: [0, -100, 0],
-                opacity: [0, 1, 0],
-                scale: [0, 1, 0],
+                y: [0, -150, 0],
+                x: [0, Math.sin(particle.key) * 100, 0],
+                opacity: [particle.opacity, particle.opacity * 2, particle.opacity],
+                scale: [0.5, 1.5, 0.5],
               }}
               transition={{
                 duration: particle.dur,
                 repeat: Infinity,
                 delay: particle.delay,
+                ease: "easeInOut"
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Elegant green orbs */}
+      {!prefersReducedMotion && (
+        <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <motion.div
+              key={`orb-${i}`}
+              className="absolute w-32 h-32 rounded-full"
+              style={{
+                left: `${10 + i * 12}%`,
+                top: `${20 + (i % 3) * 25}%`,
+                background: `radial-gradient(circle, hsla(var(--emerald-500), ${0.1 + i * 0.05}) 0%, transparent 70%)`,
+                filter: "blur(40px)",
+              }}
+              animate={{
+                y: [0, -80, 0],
+                x: [0, Math.cos(i) * 60, 0],
+                scale: [0.8, 1.2, 0.8],
+                rotate: [0, 360],
+              }}
+              transition={{
+                duration: 12 + i * 2,
+                repeat: Infinity,
+                delay: i * 1.5,
                 ease: "easeInOut"
               }}
             />
@@ -364,8 +400,8 @@ export const LandingPage = () => {
                 <div className="xl:col-span-2">
                   <div className="text-center mb-8">
                     <h3 className="text-2xl font-semibold text-emerald-400 mb-2">Neural Risk Assessment</h3>
-                    <p className="text-muted-foreground">Real-time compliance inference engine</p>
-                    <div className="text-xs text-muted-foreground/70 font-mono mt-1">Transformer architecture • Multi-head attention</div>
+                    <p className="text-white font-medium">Real-time compliance inference engine</p>
+                    <div className="text-sm text-white/90 font-mono mt-1">Transformer architecture • Multi-head attention</div>
                   </div>
                   
                   <div
@@ -628,13 +664,13 @@ export const LandingPage = () => {
               Experience neural compliance detection powered by Stanford-research architectures, 
               production-optimized for enterprise deployment with 99.94% accuracy guarantees.
             </p>
-            <div className="flex flex-wrap justify-center gap-4 mb-8 text-sm font-mono text-muted-foreground">
+            <div className="flex flex-wrap justify-center gap-4 mb-8 text-sm font-mono text-white">
               <span>SOC2 Type II Certified</span>
-              <span>•</span>
+              <span className="text-emerald-400">•</span>
               <span>GDPR/CCPA Compliant</span>
-              <span>•</span>
+              <span className="text-emerald-400">•</span>
               <span>99.99% SLA Uptime</span>
-              <span>•</span>
+              <span className="text-emerald-400">•</span>
               <span>Enterprise Security</span>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
