@@ -200,7 +200,7 @@ export const LandingPage = () => {
               onClick={() => setShowDashboard(true)}
             >
               <Activity className="w-4 h-4 mr-2" />
-              Live Demo
+              Preview
             </Button>
             <Badge className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white border-0 px-4 py-1">
               <Sparkles className="w-3 h-3 mr-1" />
@@ -306,7 +306,7 @@ export const LandingPage = () => {
                 onClick={() => setShowDashboard(true)}
               >
                 <Activity className="w-6 h-6 mb-2 text-emerald-400" />
-                <span className="text-sm text-black">Live Demo</span>
+                <span className="text-sm text-black">Preview</span>
               </Button>
             </motion.div>
 
