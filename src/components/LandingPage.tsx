@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { HeroDashboard } from "./HeroDashboard";
+import { ThemeToggle } from "./ThemeToggle";
 
 /* --- Motion variants defined outside to avoid re-allocations --- */
 const containerVariants = {
@@ -248,6 +249,10 @@ export const LandingPage = () => {
       )}
 
       <div className="relative z-10">
+        {/* Theme Toggle - Fixed Position */}
+        <div className="fixed top-6 right-6 z-50">
+          <ThemeToggle />
+        </div>
 
         {/* Hero Section */}
         <motion.main
