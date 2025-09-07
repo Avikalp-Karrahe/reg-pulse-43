@@ -238,15 +238,6 @@ export const RealtimeComplianceDashboard = () => {
                 )}
                </Button>
                
-               {/* Test Button */}
-               <Button 
-                 onClick={addTestViolation}
-                 variant="outline"
-                 className="w-full"
-               >
-                 🧪 Test Wolf of Wall Street Violations
-               </Button>
-               
                <p className="text-xs text-muted-foreground text-center">
                  This will connect to OpenAI's real-time voice API for interactive compliance assistance
                </p>
