@@ -13,6 +13,7 @@ import { DemoBanner } from "@/components/DemoBanner";
 import { AgentOpsConsole } from "@/components/AgentOpsConsole";
 import { LazyPresenterPanel } from "@/components/LazyPresenterPanel";
 import { AppSidebar } from "@/components/AppSidebar";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import NotFound from "@/pages/NotFound";
 import { NavLink } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -144,7 +145,9 @@ export const App = () => {
             
             <Route path="/settings" element={
               <MainAppLayout>
-                <AudioInputSetup />
+                <ErrorBoundary>
+                  <AudioInputSetup />
+                </ErrorBoundary>
               </MainAppLayout>
             } />
             
