@@ -1,1 +1,4 @@
 project_id = "lrofbumospouflcegtbc"
+
+[functions.export-audit-pdf]
+verify_jwt = false

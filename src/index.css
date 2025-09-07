@@ -105,6 +105,15 @@ All colors MUST be HSL.
   }
 }
 
+/* Custom glow effects for badges */
+.glow-amber {
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5), 0 0 20px rgba(245, 158, 11, 0.3), 0 0 30px rgba(245, 158, 11, 0.1);
+}
+
+.glow-blue {
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.5), 0 0 20px rgba(59, 130, 246, 0.3), 0 0 30px rgba(59, 130, 246, 0.1);
+}
+
 @layer base {
   * {
     @apply border-border;
