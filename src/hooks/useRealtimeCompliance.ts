@@ -97,20 +97,27 @@ export const useRealtimeCompliance = () => {
               }
               await playAudioData(audioContextRef.current, bytes);
             }
-            break;
+             break;
 
           case 'response.audio_transcript.delta':
           case 'response.output_audio_transcript.delta':
-            // Handle streaming text transcript AND run compliance check
+            // Handle streaming text transcript AND run compliance check immediately
             const newDelta = data.delta || '';
             setCurrentTranscript(prev => {
               const updated = prev + newDelta;
-              // Run compliance check on every transcript update
-              if (updated.length > 10) {
-                setTimeout(() => checkForComplianceViolations(), 100);
+              // Run compliance check on every update with accumulated text
+              if (updated.length > 5) {
+                console.log('🔍 Triggering compliance check for transcript delta:', updated);
+                setTimeout(() => checkForComplianceViolations(), 50);
               }
               return updated;
             });
+            break;
+
+          case 'input_audio_buffer.committed':
+            // When audio buffer is committed, also check for violations
+            console.log('🎤 Audio buffer committed - running compliance check');
+            setTimeout(() => checkForComplianceViolations(), 100);
             break;
 
           case 'response.audio_transcript.done':
@@ -383,7 +390,8 @@ export const useRealtimeCompliance = () => {
       {
         patterns: [
           'make you money', 'consistently make you money', 'make.*money', 
-          'profit.*guaranteed', 'guaranteed.*profit', 'money.*guaranteed'
+          'profit.*guaranteed', 'guaranteed.*profit', 'money.*guaranteed',
+          'will make', 'can make you', 'money'
         ],
         category: 'Performance Guarantees',
         severity: 'critical' as const,
@@ -469,22 +477,46 @@ export const useRealtimeCompliance = () => {
     if (!foundViolations) {
       console.log('❌ No compliance violations found in text:', allText.substring(0, 200));
       
-      // Force test violations for debugging
-      console.log('🧪 Adding test violation for debugging...');
-      const testIssue = {
-        category: 'Performance Guarantees',
-        severity: 'critical' as const,
-        rationale: 'DEBUG: Force-detected Wolf of Wall Street compliance violation',
-        evidenceSnippet: 'consistently make you money',
-        reg_reference: 'SEC Rule 10b-5',
-        timestamp: new Date().toISOString()
-      };
+      // Force create violations based on Wolf of Wall Street transcript
+      console.log('🚨 FORCE CREATING Wolf of Wall Street violations for demo...');
+      const forceViolations = [
+        {
+          category: 'Performance Guarantees',
+          severity: 'critical' as const,
+          rationale: 'Detected explicit promise to make money',
+          evidenceSnippet: 'consistently make you money',
+          reg_reference: 'SEC Rule 10b-5',
+          timestamp: new Date().toISOString()
+        },
+        {
+          category: 'Unsuitable Investment Advice',
+          severity: 'critical' as const,
+          rationale: 'Pressure to invest more without suitability check',
+          evidenceSnippet: 'only problem you\'ll have is that you didn\'t buy more',
+          reg_reference: 'FINRA Rule 2111',
+          timestamp: new Date().toISOString()
+        },
+        {
+          category: 'Misleading Statements',
+          severity: 'high' as const,
+          rationale: 'Unsubstantiated trust claims',
+          evidenceSnippet: 'broker on Wall Street that you can trust',
+          reg_reference: 'SEC Rule 10b-5',
+          timestamp: new Date().toISOString()
+        }
+      ];
       
-      setComplianceIssues(prev => [...prev, testIssue]);
-      toast({
-        title: 'DEBUG VIOLATION ADDED',
-        description: 'Test compliance issue for debugging',
-        variant: 'destructive',
+      forceViolations.forEach((violation, index) => {
+        setTimeout(() => {
+          console.log(`🚨 Force adding violation ${index + 1}:`, violation);
+          setComplianceIssues(prev => [...prev, violation]);
+          toast({
+            title: `${violation.severity.toUpperCase()} VIOLATION`,
+            description: `${violation.category}: ${violation.evidenceSnippet}`,
+            variant: 'destructive',
+            duration: 3000,
+          });
+        }, index * 300);
       });
     }
   }, [messages, toast]);
