@@ -160,9 +160,17 @@ export const LandingPage = () => {
             const distanceY = mousePosition.y - particleY;
             const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
             
-            // Color priority: Green when hovering launch button, super bright red when near cursor, bright white by default
+            // Calculate distance from cursor to launch button area (bottom of page)
+            const buttonAreaY = typeof window !== 'undefined' ? window.innerHeight * 0.85 : 800; // Approximate button position
+            const buttonAreaX = typeof window !== 'undefined' ? window.innerWidth * 0.5 : 500; // Center of screen
+            const buttonDistanceX = mousePosition.x - buttonAreaX;
+            const buttonDistanceY = mousePosition.y - buttonAreaY;
+            const buttonDistance = Math.sqrt(buttonDistanceX * buttonDistanceX + buttonDistanceY * buttonDistanceY);
+            
+            // Color priority: Green when hovering launch button OR near button area, super bright red when near cursor, bright white by default
             const isNearCursor = distance < 100;
-            const particleColor = (isHoveringLaunchButton || isHoveringBottomCTA) ? 'bg-emerald-400' : 
+            const isNearButton = buttonDistance < 300; // 3x larger trigger zone around button
+            const particleColor = (isHoveringLaunchButton || isHoveringBottomCTA || isNearButton) ? 'bg-emerald-400' : 
                                  isNearCursor ? 'bg-red-600' : 'bg-red-500';
 
             return (
@@ -176,11 +184,11 @@ export const LandingPage = () => {
                   width: `${particle.size}px`,
                   height: `${particle.size}px`,
                   opacity: particle.opacity,
-                  boxShadow: (isHoveringLaunchButton || isHoveringBottomCTA) ? '0 0 80px hsla(var(--emerald-500), 1), 0 0 150px hsla(var(--emerald-400), 0.9), 0 0 250px hsla(var(--emerald-300), 0.7)' : 
+                  boxShadow: (isHoveringLaunchButton || isHoveringBottomCTA || isNearButton) ? '0 0 80px hsla(var(--emerald-500), 1), 0 0 150px hsla(var(--emerald-400), 0.9), 0 0 250px hsla(var(--emerald-300), 0.7)' : 
                             isNearCursor ? '0 0 16px hsla(var(--red-600), 1), 0 0 32px hsla(var(--red-500), 0.7)' : 
                             '0 0 8px hsla(var(--red-500), 0.8), 0 0 16px hsla(var(--red-400), 0.6)',
                 }}
-                animate={(isHoveringLaunchButton || isHoveringBottomCTA) ? {
+                animate={(isHoveringLaunchButton || isHoveringBottomCTA || isNearButton) ? {
                   y: [0, -80, 0],
                   x: [0, Math.sin(particle.key) * 60, 0],
                   opacity: [particle.opacity, particle.opacity * 3, particle.opacity],
