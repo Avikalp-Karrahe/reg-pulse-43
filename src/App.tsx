@@ -9,6 +9,7 @@ import { CallHistoryPage } from "@/components/CallHistoryPage";
 import { LazyAnalytics } from "@/components/LazyAnalytics";
 import { AudioInputSetup } from "@/components/AudioInputSetup";
 import { LandingPage } from "@/components/LandingPage";
+import { ScrollToTop } from "@/components/ScrollToTop";
 
 import { AgentOpsConsole } from "@/components/AgentOpsConsole";
 import { PresenterPanel } from "@/components/PresenterPanel";
@@ -116,6 +117,7 @@ export const App = () => {
       <TooltipProvider>
         <Toaster />
         <BrowserRouter>
+          <ScrollToTop />
           <Routes>
             {/* Landing page without sidebar */}
             <Route path="/" element={<LandingPage />} />
