@@ -175,7 +175,7 @@ export const LandingPage = () => {
                   width: `${particle.size}px`,
                   height: `${particle.size}px`,
                   opacity: particle.opacity,
-                  boxShadow: isHoveringLaunchButton ? '0 0 20px hsla(var(--emerald-500), 1), 0 0 40px hsla(var(--emerald-400), 0.6)' : 
+                  boxShadow: isHoveringLaunchButton ? '0 0 30px hsla(var(--emerald-500), 1), 0 0 60px hsla(var(--emerald-400), 0.8), 0 0 100px hsla(var(--emerald-300), 0.5)' : 
                             isNearCursor ? '0 0 16px hsla(var(--red-600), 1), 0 0 32px hsla(var(--red-500), 0.7)' : 
                             '0 0 8px rgba(255, 255, 255, 0.8)',
                 }}
