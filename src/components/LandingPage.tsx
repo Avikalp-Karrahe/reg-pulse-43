@@ -147,32 +147,25 @@ export const LandingPage = () => {
         aria-hidden="true" 
       />
 
-      {/* Smooth floating particles with optimized cursor interaction */}
+      {/* Smooth floating particles with color-changing cursor interaction */}
       {!prefersReducedMotion && (
         <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
           {particles.map((particle) => {
-            // Simplified cursor influence calculation
+            // Calculate distance from cursor to particle for color change
             const particleX = (particle.leftPct / 100) * (typeof window !== 'undefined' ? window.innerWidth : 1000);
             const particleY = (particle.topPct / 100) * (typeof window !== 'undefined' ? window.innerHeight : 1000);
             const distanceX = mousePosition.x - particleX;
             const distanceY = mousePosition.y - particleY;
             const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
             
-            // Gentle cursor influence (reduced complexity)
-            const maxDistance = 150;
-            let cursorInfluenceX = 0;
-            let cursorInfluenceY = 0;
-            
-            if (distance < maxDistance && distance > 0) {
-              const strength = (maxDistance - distance) / maxDistance * 0.3; // Reduced strength
-              cursorInfluenceX = (distanceX / distance) * strength * 30;
-              cursorInfluenceY = (distanceY / distance) * strength * 30;
-            }
+            // Color change based on proximity (red when near cursor)
+            const isNearCursor = distance < 100;
+            const particleColor = isNearCursor ? 'bg-red-400' : 'bg-emerald-400';
 
             return (
               <motion.div
                 key={particle.key}
-                className="absolute rounded-full bg-emerald-400"
+                className={`absolute rounded-full ${particleColor}`}
                 style={{
                   left: `${particle.leftPct}%`,
                   top: `${particle.topPct}%`,
@@ -181,8 +174,8 @@ export const LandingPage = () => {
                   opacity: particle.opacity,
                 }}
                 animate={{
-                  y: [0, -80 + cursorInfluenceY, 0],
-                  x: [0, Math.sin(particle.key) * 60 + cursorInfluenceX, 0],
+                  y: [0, -80, 0],
+                  x: [0, Math.sin(particle.key) * 60, 0],
                   opacity: [particle.opacity, particle.opacity * 2, particle.opacity],
                   scale: [0.8, 1.2, 0.8],
                 }}
