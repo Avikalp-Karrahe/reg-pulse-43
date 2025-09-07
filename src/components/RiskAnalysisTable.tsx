@@ -9,6 +9,11 @@ interface ComplianceIssue {
   rationale: string;
   reg_reference: string;
   timestamp: string;
+  evidenceSnippet?: string | null;
+  evidenceStartMs?: number | null;
+  evidenceEndMs?: number | null;
+  modelRationale?: string | null;
+  modelVersion?: string | null;
 }
 
 interface RiskAnalysisTableProps {
@@ -165,6 +170,8 @@ export const RiskAnalysisTable = ({ callId, issues }: RiskAnalysisTableProps) =>
                   <TableHead className="w-[120px]">Regulation</TableHead>
                   <TableHead className="w-[100px]">Severity</TableHead>
                   <TableHead>Statement</TableHead>
+                  <TableHead className="w-[200px]">Evidence</TableHead>
+                  <TableHead className="w-[150px]">Model Info</TableHead>
                   <TableHead>Action Required</TableHead>
                 </TableRow>
               </TableHeader>
@@ -198,6 +205,38 @@ export const RiskAnalysisTable = ({ callId, issues }: RiskAnalysisTableProps) =>
                       <div className="truncate" title={item.text}>
                         {item.text}
                       </div>
+                    </TableCell>
+                    <TableCell className="text-xs max-w-[200px]">
+                      {issues.find(issue => issue.category === item.issue)?.evidenceSnippet ? (
+                        <div className="space-y-1">
+                          <div className="truncate" title={issues.find(issue => issue.category === item.issue)?.evidenceSnippet || ''}>
+                            {issues.find(issue => issue.category === item.issue)?.evidenceSnippet}
+                          </div>
+                          {issues.find(issue => issue.category === item.issue)?.evidenceStartMs && (
+                            <div className="text-xs text-muted-foreground">
+                              {Math.floor((issues.find(issue => issue.category === item.issue)?.evidenceStartMs || 0) / 1000)}s - {Math.floor((issues.find(issue => issue.category === item.issue)?.evidenceEndMs || 0) / 1000)}s
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">No evidence</span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-xs max-w-[150px]">
+                      {issues.find(issue => issue.category === item.issue)?.modelVersion ? (
+                        <div className="space-y-1">
+                          <div className="font-mono">
+                            {issues.find(issue => issue.category === item.issue)?.modelVersion}
+                          </div>
+                          {issues.find(issue => issue.category === item.issue)?.modelRationale && (
+                            <div className="truncate" title={issues.find(issue => issue.category === item.issue)?.modelRationale || ''}>
+                              {issues.find(issue => issue.category === item.issue)?.modelRationale}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-muted-foreground">N/A</span>
+                      )}
                     </TableCell>
                     <TableCell className="text-xs max-w-[250px]">
                       <div className="truncate" title={item.recommendation}>

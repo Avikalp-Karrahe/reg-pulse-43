@@ -2,49 +2,101 @@ import { useState, useRef } from 'react';
 import { Upload, FileAudio, X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import { processUpload, validateUploadFile, type UploadHandlerResponse } from '@/lib/uploadHandler';
+import { CircularRiskMeter } from './CircularRiskMeter';
 
 interface FileUploadProps {
-  onTranscriptionComplete: (transcript: string, duration: number) => void;
+  onAnalysisComplete: (result: UploadHandlerResponse) => void;
+  onIssueDetected: (issue: any) => void;
+  onRiskScoreUpdate: (score: number) => void;
   isProcessing: boolean;
 }
 
-export const FileUpload = ({ onTranscriptionComplete, isProcessing }: FileUploadProps) => {
+export const FileUpload = ({ 
+  onAnalysisComplete, 
+  onIssueDetected, 
+  onRiskScoreUpdate, 
+  isProcessing 
+}: FileUploadProps) => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [currentStage, setCurrentStage] = useState('');
+  const [detectedIssues, setDetectedIssues] = useState<any[]>([]);
+  const [currentRiskScore, setCurrentRiskScore] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const validateFile = (file: File): boolean => {
-    const validTypes = ['audio/mpeg', 'audio/wav', 'audio/mp3'];
-    const maxSize = 25 * 1024 * 1024; // 25MB limit for OpenAI Whisper
-
-    if (!validTypes.includes(file.type) && !file.name.toLowerCase().match(/\.(mp3|wav)$/)) {
+  const handleFileValidation = (file: File): boolean => {
+    const validation = validateUploadFile(file);
+    
+    if (!validation.valid) {
       toast({
-        title: "Invalid File Type",
-        description: "Please upload an MP3 or WAV file.",
+        title: "Invalid File",
+        description: validation.error,
         variant: "destructive",
       });
       return false;
     }
-
-    if (file.size > maxSize) {
-      toast({
-        title: "File Too Large",
-        description: "File size must be less than 25MB.",
-        variant: "destructive",
-      });
-      return false;
-    }
-
+    
     return true;
   };
 
   const handleFileSelect = (file: File) => {
-    if (validateFile(file)) {
+    if (handleFileValidation(file)) {
       setSelectedFile(file);
+    }
+  };
+  
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+    
+    setIsUploading(true);
+    setUploadProgress(0);
+    setCurrentStage('');
+    setDetectedIssues([]);
+    setCurrentRiskScore(0);
+    
+    try {
+      const result = await processUpload({
+        file: selectedFile,
+        onProgress: (stage, progress) => {
+          setCurrentStage(stage);
+          setUploadProgress(progress);
+        },
+        onIssueDetected: (issue) => {
+          setDetectedIssues(prev => [...prev, issue]);
+          onIssueDetected(issue);
+        },
+        onRiskScoreUpdate: (score) => {
+          setCurrentRiskScore(score);
+          onRiskScoreUpdate(score);
+        }
+      });
+      
+      if (result.success) {
+        toast({
+          title: "Analysis Complete",
+          description: `Found ${result.issues?.length || 0} compliance issues with ${result.riskLevel} risk level.`,
+        });
+        onAnalysisComplete(result);
+      } else {
+        throw new Error(result.error || 'Upload failed');
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast({
+        title: "Upload Failed",
+        description: error instanceof Error ? error.message : 'Unknown error occurred',
+        variant: "destructive",
+      });
+    } finally {
+      setIsUploading(false);
+      setUploadProgress(0);
+      setCurrentStage('');
     }
   };
 
@@ -77,52 +129,7 @@ export const FileUpload = ({ onTranscriptionComplete, isProcessing }: FileUpload
     });
   };
 
-  const processFile = async () => {
-    if (!selectedFile) return;
-
-    setIsUploading(true);
-    try {
-      toast({
-        title: "Processing Audio",
-        description: "Converting speech to text...",
-      });
-
-      const base64Audio = await convertFileToBase64(selectedFile);
-      
-      const { data, error } = await supabase.functions.invoke('voice-to-text', {
-        body: {
-          audio: base64Audio,
-          filename: selectedFile.name
-        }
-      });
-
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      toast({
-        title: "Transcription Complete",
-        description: "Starting compliance analysis...",
-      });
-
-      onTranscriptionComplete(data.text, Math.round(data.duration));
-      setSelectedFile(null);
-      
-    } catch (error) {
-      console.error('Error processing file:', error);
-      toast({
-        title: "Processing Failed",
-        description: error instanceof Error ? error.message : "Failed to process audio file",
-        variant: "destructive",
-      });
-    } finally {
-      setIsUploading(false);
-    }
-  };
+  // Remove old processFile function - replaced by handleUpload
 
   const removeFile = () => {
     setSelectedFile(null);
@@ -199,16 +206,37 @@ export const FileUpload = ({ onTranscriptionComplete, isProcessing }: FileUpload
               </div>
             </div>
             
+            {isUploading && (
+              <div className="mt-4 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">{currentStage}</span>
+                  <span className="text-sm font-medium">{uploadProgress}%</span>
+                </div>
+                <Progress value={uploadProgress} className="w-full" />
+                
+                {detectedIssues.length > 0 && (
+                  <div className="flex justify-center">
+                    <CircularRiskMeter 
+                      riskScore={currentRiskScore}
+                      isActive={true}
+                      issues={detectedIssues}
+                      streamingMode={true}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+            
             <div className="mt-4 flex gap-2">
               <Button
-                onClick={processFile}
+                onClick={handleUpload}
                 disabled={isUploading || isProcessing}
                 className="flex-1 bg-cyan-600 hover:bg-cyan-700 text-white"
               >
                 {isUploading ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Processing...
+                    {currentStage || 'Processing...'}
                   </>
                 ) : (
                   'Analyze Recording'
