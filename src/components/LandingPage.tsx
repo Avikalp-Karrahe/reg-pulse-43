@@ -165,7 +165,7 @@ export const LandingPage = () => {
 
             return (
               <motion.div
-                key={particle.key}
+                key={`${particle.key}-${isHoveringLaunchButton}`} // Force restart animation on hover
                 data-particle
                 className={`absolute rounded-full ${particleColor}`}
                 style={{
@@ -182,9 +182,9 @@ export const LandingPage = () => {
                   scale: [0.8, 1.2, 0.8],
                 }}
                 transition={{
-                  duration: isHoveringLaunchButton ? particle.dur * 0.25 : particle.dur, // 100% faster when hovering
+                  duration: isHoveringLaunchButton ? particle.dur * 0.25 : particle.dur, // 4x faster when hovering
                   repeat: Infinity,
-                  delay: particle.delay,
+                  delay: particle.delay * (isHoveringLaunchButton ? 0.25 : 1), // Also speed up delay
                   ease: "easeInOut"
                 }}
               />
