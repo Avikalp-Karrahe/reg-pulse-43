@@ -40,12 +40,7 @@ serve(async (req) => {
     console.log('Connecting to OpenAI Realtime API...');
     const openaiWs = new WebSocket(
       'wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01',
-      {
-        headers: {
-          'Authorization': `Bearer ${openaiApiKey}`,
-          'OpenAI-Beta': 'realtime=v1'
-        }
-      }
+      ['realtime', `openai-insecure-api-key.${openaiApiKey}`]
     );
 
     let sessionConfigured = false;
