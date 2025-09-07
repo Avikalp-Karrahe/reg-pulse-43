@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { Mic, Upload, Phone, PhoneOff, Download, MicOff, Settings, X, Zap } from "lucide-react";
+import { 
+  Mic, Upload, Phone, PhoneOff, Download, MicOff, Settings, X, Zap, 
+  Shield, Activity, AlertTriangle, Clock, Users, BarChart3, Eye,
+  PlayCircle, PauseCircle, Volume2, VolumeX, Wifi, WifiOff
+} from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LiveTranscription } from "./LiveTranscription";
 import { RiskAnalysisTable } from "./RiskAnalysisTable";
@@ -263,105 +268,240 @@ export const ComplianceDashboard = () => {
   }
 
   if (!currentCall) {
-    // Initial clean state
+    // Premium initial state with sophisticated design
     return (
-      <div className="space-y-6">
-        {/* Mode Toggle */}
-        <Card className="bg-card/50 backdrop-blur-sm border-cyan-500/20">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-cyan-400" />
-                  <Label htmlFor="realtime-mode" className="text-lg font-semibold text-cyan-400">
-                    Real-time Voice AI Mode
-                  </Label>
-                  <Badge variant="outline" className="bg-cyan-500/20 text-cyan-400 border-cyan-500/30">
-                    NEW
-                  </Badge>
+      <motion.div 
+        className="space-y-8 p-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        {/* Header Section with Statistics */}
+        <motion.div 
+          className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <Card className="card-glass overflow-hidden group hover:scale-105 transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Active Sessions</p>
+                  <p className="text-3xl font-bold text-emerald-400">0</p>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  Switch to interactive AI voice assistant for live, two-way compliance conversations
-                </p>
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-colors">
+                  <Activity className="w-6 h-6 text-emerald-400" />
+                </div>
               </div>
-              <Switch
-                id="realtime-mode"
-                checked={useRealtimeMode}
-                onCheckedChange={setUseRealtimeMode}
-              />
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+
+          <Card className="card-glass overflow-hidden group hover:scale-105 transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Avg Risk Score</p>
+                  <p className="text-3xl font-bold text-amber-400">23.5%</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 flex items-center justify-center group-hover:bg-amber-500/30 transition-colors">
+                  <Shield className="w-6 h-6 text-amber-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="card-glass overflow-hidden group hover:scale-105 transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Total Calls</p>
+                  <p className="text-3xl font-bold text-cyan-400">1,247</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 flex items-center justify-center group-hover:bg-cyan-500/30 transition-colors">
+                  <Phone className="w-6 h-6 text-cyan-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="card-glass overflow-hidden group hover:scale-105 transition-all duration-300">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground mb-1">Compliance Rate</p>
+                  <p className="text-3xl font-bold text-green-400">97.8%</p>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-green-500/20 flex items-center justify-center group-hover:bg-green-500/30 transition-colors">
+                  <BarChart3 className="w-6 h-6 text-green-400" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Mode Toggle */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+        >
+          <Card className="card-premium border-cyan-500/30 overflow-hidden">
+            <CardContent className="p-8">
+              <div className="flex items-center justify-between">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 flex items-center justify-center">
+                      <Zap className="w-6 h-6 text-cyan-400" />
+                    </div>
+                    <div>
+                      <Label htmlFor="realtime-mode" className="text-xl font-semibold text-cyan-400 cursor-pointer">
+                        Real-time Voice AI Mode
+                      </Label>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge variant="outline" className="bg-cyan-500/20 text-cyan-400 border-cyan-500/30 text-xs">
+                          NEW
+                        </Badge>
+                        <Badge variant="outline" className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-xs">
+                          AI-POWERED
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-muted-foreground leading-relaxed max-w-2xl">
+                    Switch to interactive AI voice assistant for live, two-way compliance conversations with advanced 
+                    natural language processing and real-time risk assessment.
+                  </p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <p className="text-sm text-muted-foreground">Current Mode</p>
+                    <p className="font-semibold">{useRealtimeMode ? 'AI Voice' : 'Standard'}</p>
+                  </div>
+                  <Switch
+                    id="realtime-mode"
+                    checked={useRealtimeMode}
+                    onCheckedChange={setUseRealtimeMode}
+                    className="data-[state=checked]:bg-cyan-500"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
 
         {/* Audio Setup Prompt */}
-        {showAudioSetupPrompt && (
-          <Alert>
-            <Settings className="w-4 h-4" />
-            <AlertTitle>Audio Input Setup Required</AlertTitle>
-            <AlertDescription className="flex items-center justify-between">
-              <span>Configure your microphone and virtual audio cable for optimal compliance monitoring.</span>
-              <div className="flex items-center space-x-2">
-                <Button asChild variant="outline" size="sm">
-                  <Link to="/settings">Open Audio Setup</Link>
-                </Button>
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => setShowAudioSetupPrompt(false)}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-            </AlertDescription>
-          </Alert>
-        )}
+        <AnimatePresence>
+          {showAudioSetupPrompt && (
+            <motion.div
+              initial={{ opacity: 0, y: -20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -20, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Alert className="border-amber-500/30 bg-amber-500/5">
+                <Settings className="w-5 h-5 text-amber-400" />
+                <AlertTitle className="text-amber-400">Audio Input Setup Required</AlertTitle>
+                <AlertDescription className="flex items-center justify-between mt-2">
+                  <span className="text-muted-foreground">
+                    Configure your microphone and virtual audio cable for optimal compliance monitoring and analysis.
+                  </span>
+                  <div className="flex items-center space-x-3">
+                    <Button asChild variant="outline" size="sm" className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10">
+                      <Link to="/settings">
+                        <Settings className="w-4 h-4 mr-2" />
+                        Open Audio Setup
+                      </Link>
+                    </Button>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => setShowAudioSetupPrompt(false)}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </AlertDescription>
+              </Alert>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <Card className="w-full max-w-md">
-            <CardHeader className="text-center">
-              <CardTitle className="text-xl">Start Compliance Monitoring</CardTitle>
-              <p className="text-muted-foreground text-sm">
-                Record and analyze calls for regulatory compliance using real-time AI
+        {/* Main Action Center */}
+        <motion.div 
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+        >
+          {/* Start Monitoring Panel */}
+          <Card className="card-premium overflow-hidden">
+            <CardHeader className="text-center pb-4">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-emerald-500/20 via-cyan-500/20 to-indigo-500/20 flex items-center justify-center mx-auto mb-4">
+                <Mic className="w-10 h-10 text-emerald-400" />
+              </div>
+              <CardTitle className="text-2xl bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+                Start Compliance Monitoring
+              </CardTitle>
+              <p className="text-muted-foreground leading-relaxed">
+                Record and analyze calls for regulatory compliance using advanced AI-powered real-time analysis
               </p>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-6 p-8">
               <Button 
                 onClick={startRecording}
-                className="w-full h-12 text-base"
+                className="button-premium w-full h-16 text-lg font-semibold"
                 size="lg"
                 disabled={!isSupported}
               >
-                <Mic className="w-5 h-5 mr-2" />
-                Call Agent
+                <PlayCircle className="w-6 h-6 mr-3" />
+                Begin Live Monitoring
               </Button>
               
               {selectedDeviceName && (
-                <p className="text-xs text-center text-muted-foreground">
-                  Using: <strong>{selectedDeviceName}</strong>
-                </p>
+                <div className="flex items-center justify-center gap-2 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                  <Volume2 className="w-4 h-4 text-emerald-400" />
+                  <p className="text-sm text-emerald-400 font-medium">
+                    <strong>{selectedDeviceName}</strong>
+                  </p>
+                </div>
               )}
               
               {!isSupported && (
-                <p className="text-sm text-muted-foreground text-center">
-                  Speech recognition not supported. Please use Chrome or Edge.
-                </p>
+                <div className="flex items-center justify-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20">
+                  <AlertTriangle className="w-4 h-4 text-red-400" />
+                  <p className="text-sm text-red-400 text-center">
+                    Speech recognition not supported. Please use Chrome or Edge.
+                  </p>
+                </div>
               )}
               
               {error && (
-                <p className="text-sm text-destructive text-center">
-                  {error}
-                </p>
+                <div className="flex items-center justify-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/20">
+                  <AlertTriangle className="w-4 h-4 text-red-400" />
+                  <p className="text-sm text-red-400 text-center">
+                    {error}
+                  </p>
+                </div>
               )}
-              
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-border" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">Or</span>
-                </div>
+            </CardContent>
+          </Card>
+
+          {/* File Upload Panel */}
+          <Card className="card-premium overflow-hidden">
+            <CardHeader className="text-center pb-4">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-orange-500/20 flex items-center justify-center mx-auto mb-4">
+                <Upload className="w-10 h-10 text-purple-400" />
               </div>
-              
+              <CardTitle className="text-2xl bg-gradient-to-r from-purple-400 via-pink-400 to-orange-400 bg-clip-text text-transparent">
+                Upload & Analyze
+              </CardTitle>
+              <p className="text-muted-foreground leading-relaxed">
+                Upload recorded calls for post-analysis with detailed compliance reports and risk assessment
+              </p>
+            </CardHeader>
+            <CardContent className="p-8">
               <FileUpload 
                 onAnalysisComplete={handleAnalysisComplete}
                 onIssueDetected={handleIssueDetected}
@@ -370,140 +510,304 @@ export const ComplianceDashboard = () => {
               />
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
         
         {/* Quick Validation Checks */}
-        <QuickChecks />
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.6 }}
+        >
+          <QuickChecks />
+        </motion.div>
         
         {/* Test Scenarios Section */}
-        <TestScenarios />
-      </div>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.6 }}
+        >
+          <TestScenarios />
+        </motion.div>
+      </motion.div>
     );
   }
 
   if (currentCall.status === 'active') {
-    // Live call interface with futuristic design
+    // Premium live call interface with sophisticated design
     return (
-      <div className="space-y-6 particles-bg">
-        {/* Call status header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold flex items-center space-x-2">
-              {isListening ? (
-                <div className="w-3 h-3 bg-neon-green rounded-full animate-pulse neon-glow" />
-              ) : (
-                <div className="w-3 h-3 bg-muted rounded-full" />
+      <motion.div 
+        className="space-y-8 p-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+      >
+        {/* Premium Call Status Header */}
+        <motion.div 
+          className="flex items-center justify-between p-6 rounded-3xl bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-indigo-500/10 border border-emerald-500/20 backdrop-blur-sm"
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
+          <div className="flex items-center gap-6">
+            <div className="relative">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 flex items-center justify-center">
+                <Phone className="w-8 h-8 text-emerald-400" />
+              </div>
+              {isListening && (
+                <motion.div 
+                  className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-400 rounded-full"
+                  animate={{ scale: [1, 1.2, 1], opacity: [1, 0.7, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
               )}
-              <span className="text-neon-cyan neon-glow">LIVE MONITORING</span>
-            </h2>
-            <p className="text-muted-foreground font-mono">
-              {currentCall.id} • {formatDuration(currentCall.duration)}
-            </p>
+            </div>
+            
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <h2 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+                  LIVE MONITORING
+                </h2>
+                <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 px-3 py-1">
+                  {isListening ? (
+                    <><Wifi className="w-3 h-3 mr-1" /> ACTIVE</>
+                  ) : (
+                    <><WifiOff className="w-3 h-3 mr-1" /> PAUSED</>
+                  )}
+                </Badge>
+              </div>
+              <div className="flex items-center gap-4 text-muted-foreground">
+                <span className="font-mono text-sm">{currentCall.id}</span>
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  <span className="font-mono text-sm">{formatDuration(currentCall.duration)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Shield className="w-4 h-4" />
+                  <span className="font-medium">Risk: {riskScore.toFixed(1)}%</span>
+                </div>
+              </div>
+            </div>
           </div>
           
-          <Button 
-            onClick={endCall} 
-            variant="destructive"
-            className="bg-neon-red/20 border-neon-red text-neon-red hover:bg-neon-red/30 neon-glow"
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="outline"
+              size="lg"
+              className="border-amber-500/30 text-amber-400 hover:bg-amber-500/10"
+            >
+              {isListening ? <PauseCircle className="w-5 h-5 mr-2" /> : <PlayCircle className="w-5 h-5 mr-2" />}
+              {isListening ? 'Pause' : 'Resume'}
+            </Button>
+            
+            <Button 
+              onClick={endCall} 
+              variant="destructive"
+              size="lg"
+              className="bg-red-500/20 border-red-500/30 text-red-400 hover:bg-red-500/30 px-6"
+            >
+              <PhoneOff className="w-5 h-5 mr-2" />
+              End Call
+            </Button>
+          </div>
+        </motion.div>
+
+        {/* Premium Grid Layout for Live Data */}
+        <motion.div 
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          {/* Live Voice-to-Text - Enhanced */}
+          <motion.div 
+            className="lg:col-span-1"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
           >
-            <PhoneOff className="w-4 h-4 mr-2" />
-            TERMINATE
-          </Button>
-        </div>
+            <Card className="card-premium h-full">
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                    Live Transcript
+                  </CardTitle>
+                  <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/20">
+                    <Activity className="w-3 h-3 mr-1" />
+                    STREAMING
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <LiveVoiceToText 
+                  transcript={transcript}
+                  isListening={isListening}
+                  finalTranscripts={finalTranscripts}
+                />
+              </CardContent>
+            </Card>
+          </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Live Voice-to-Text - Top left */}
-          <div className="lg:col-span-1">
-            <LiveVoiceToText 
-              transcript={transcript}
-              isListening={isListening}
-              finalTranscripts={finalTranscripts}
-            />
-          </div>
+          {/* Live Analysis - Enhanced, spans 2 columns */}
+          <motion.div 
+            className="lg:col-span-2"
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Card className="card-premium h-full">
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+                    AI Compliance Analysis
+                  </CardTitle>
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-cyan-500/20 text-cyan-400 border-cyan-500/20">
+                      {allIssues.length} Issues
+                    </Badge>
+                    <Badge className={`${getRiskColor(riskScore)} border-0`}>
+                      {riskScore.toFixed(1)}% Risk
+                    </Badge>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <FuturisticTranscription 
+                  callId={currentCall.id} 
+                  content={transcriptLines.length > 0 ? transcriptLines.join(' ') : streamingContent}
+                  isListening={isListening}
+                  issues={allIssues}
+                />
+              </CardContent>
+            </Card>
+          </motion.div>
+        </motion.div>
 
-          {/* Live Analysis - Top right, spans 2 columns */}
-          <div className="lg:col-span-2">
-            <FuturisticTranscription 
-              callId={currentCall.id} 
-              content={transcriptLines.length > 0 ? transcriptLines.join(' ') : streamingContent}
-              isListening={isListening}
-              issues={allIssues}
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
-          {/* Risk Analysis Table - Takes 2 columns */}
-          <div className="lg:col-span-2">
-            <RiskAnalysisTable issues={allIssues} callId={currentCall.id} />
-          </div>
+        {/* Bottom Analysis Grid */}
+        <motion.div 
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.6 }}
+        >
+          {/* Risk Analysis Table - Enhanced, takes 2 columns */}
+          <motion.div 
+            className="lg:col-span-2"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.6 }}
+          >
+            <Card className="card-premium h-full">
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
+                    Risk Analysis & Violations
+                  </CardTitle>
+                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/20">
+                    {allIssues.filter(i => i.severity === 'critical').length} Critical
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <RiskAnalysisTable issues={allIssues} callId={currentCall.id} />
+              </CardContent>
+            </Card>
+          </motion.div>
 
           {/* Right sidebar with monitoring panels */}
-          <div className="space-y-6">
-            {/* Circular Risk Meter */}
-            <CircularRiskMeter 
-              riskScore={riskScore} 
-              isActive={isListening}
-            />
+          <motion.div 
+            className="space-y-6"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.7 }}
+          >
+            {/* Enhanced Circular Risk Meter */}
+            <Card className="card-premium">
+              <CardHeader className="text-center pb-4">
+                <CardTitle className="text-lg bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
+                  Risk Monitor
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CircularRiskMeter 
+                  riskScore={riskScore} 
+                  isActive={isListening}
+                />
+              </CardContent>
+            </Card>
 
-            {/* Analysis Summary */}
-            <FuturisticStats
-              totalIssues={allIssues.length}
-              criticalIssues={allIssues.filter(i => i.severity === 'critical').length}
-              duration={currentCall.duration}
-              isProcessing={isLoading}
-            />
+            {/* Enhanced Analysis Summary */}
+            <Card className="card-premium">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+                  Live Statistics
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <FuturisticStats
+                  totalIssues={allIssues.length}
+                  criticalIssues={allIssues.filter(i => i.severity === 'critical').length}
+                  duration={currentCall.duration}
+                  isProcessing={isLoading}
+                />
+              </CardContent>
+            </Card>
 
-            {/* Recent Issues Preview */}
+            {/* Enhanced Recent Issues Preview */}
             {allIssues.length > 0 && (
-              <Card className="bg-card/50 backdrop-blur-sm border-primary/20 shadow-lg shadow-primary/10">
+              <Card className="card-premium">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-sm text-neon-orange neon-glow">
-                    RECENT ALERTS
-                  </CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+                      Recent Alerts
+                    </CardTitle>
+                    <Badge className="bg-red-500/20 text-red-400 border-red-500/20">
+                      {allIssues.slice(-3).length} New
+                    </Badge>
+                  </div>
                 </CardHeader>
-                <CardContent className="space-y-2">
+                <CardContent className="space-y-3">
                   {allIssues.slice(-3).map((issue, index) => (
-                    <div 
+                    <motion.div 
                       key={index} 
-                      className="p-2 rounded border border-destructive/30 bg-destructive/10 backdrop-blur-sm animate-type-in"
+                      className="p-4 rounded-xl border border-red-500/20 bg-red-500/5 backdrop-blur-sm"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
                     >
-                      <div className="flex justify-between items-center mb-1">
-                        <span className="text-xs font-medium text-neon-red neon-glow">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-red-400">
                           {issue.category}
                         </span>
-                        <span className={`text-xs px-1 py-0.5 rounded ${
+                        <Badge className={`text-xs ${
                           issue.severity === 'critical' 
-                            ? 'bg-neon-red/20 text-neon-red' 
-                            : 'bg-neon-orange/20 text-neon-orange'
+                            ? 'bg-red-500/20 text-red-400 border-red-500/30' 
+                            : 'bg-orange-500/20 text-orange-400 border-orange-500/30'
                         }`}>
                           {issue.severity.toUpperCase()}
-                        </span>
+                        </Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground mb-1">
-                        {issue.rationale.substring(0, 80)}...
+                      <p className="text-xs text-muted-foreground mb-2 leading-relaxed">
+                        {issue.rationale.substring(0, 100)}...
                       </p>
                       {issue.evidenceSnippet && (
-                        <div className="text-xs text-muted-foreground/80 border-t border-muted/20 pt-1 mt-1">
-                          <span className="font-mono">Evidence:</span> {issue.evidenceSnippet.substring(0, 60)}...
+                        <div className="text-xs text-muted-foreground/80 border-t border-muted/20 pt-2 mt-2">
+                          <span className="font-mono text-cyan-400">Evidence:</span> {issue.evidenceSnippet.substring(0, 80)}...
                           {issue.evidenceStartMs && (
-                            <span className="ml-2 text-xs">({Math.floor(issue.evidenceStartMs / 1000)}s)</span>
+                            <span className="ml-2 text-xs bg-muted/20 px-2 py-1 rounded">
+                              {Math.floor(issue.evidenceStartMs / 1000)}s
+                            </span>
                           )}
                         </div>
                       )}
-                      {issue.modelVersion && (
-                        <div className="text-xs text-muted-foreground/60 mt-1">
-                          <span className="font-mono">{issue.modelVersion}</span>
-                        </div>
-                      )}
-                    </div>
+                    </motion.div>
                   ))}
                 </CardContent>
               </Card>
             )}
-          </div>
-        </div>
-      </div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
     );
   }
 
