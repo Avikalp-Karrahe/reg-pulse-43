@@ -1,59 +1,56 @@
-[
-  {
-    "id": "performance_guarantees",
-    "name": "Performance Guarantees",
-    "category": "Performance Guarantees", 
-    "severity": "high",
-    "regulation": "SEC Rule 10b-5, Investment Advisers Act Section 206",
-    "keywords": ["guaranteed", "guarantee", "never lose", "always profit", "can't lose", "risk-free return", "guaranteed profit"],
+{
+  "explicit_guarantee": {
+    "category": "Performance Guarantees",
+    "severity": "HIGH",
+    "regulatory_reference": "SEC 10b-5",
     "patterns": [
-      "\\b(?:guaranteed?|guarantee)\\b.*\\b(?:\\d+%|percent|returns?)\\b",
-      "\\b(?:never|won't|can't)\\s+lose\\b",
-      "\\b(?:always|guaranteed?)\\s+(?:profit|returns?|gains?)\\b"
-    ],
-    "description": "Detects explicit or implicit performance guarantees prohibited under securities regulations."
+      "\\bguarantee(d)?\\b",
+      "risk[- ]?free",
+      "will make \\d+%",
+      "double your money",
+      "can'?t lose",
+      "100% safe",
+      "zero risk"
+    ]
   },
-  {
-    "id": "unsuitable_advice", 
-    "name": "Unsuitable Advice",
-    "category": "Unsuitable Advice",
-    "severity": "medium", 
-    "regulation": "FINRA Rule 2111 (Suitability)",
-    "keywords": ["perfect for everyone", "everyone should", "always recommend", "one size fits all", "works for anyone"],
+  "unsuitable_advice": {
+    "category": "Unsuitable Advice", 
+    "severity": "MED",
+    "regulatory_reference": "FINRA 2111",
     "patterns": [
-      "\\b(?:perfect|ideal|great)\\s+for\\s+(?:everyone|anyone|all)\\b",
-      "\\b(?:everyone|anyone)\\s+(?:should|needs|must)\\b",
-      "\\bone[- ]size[- ]fits[- ]all\\b"
-    ],
-    "description": "Identifies recommendations made without proper suitability assessment."
+      "perfect for everyone",
+      "anyone can invest",
+      "works for all",
+      "suits everybody",
+      "universal strategy",
+      "one size fits all"
+    ]
   },
-  {
-    "id": "pressure_urgency",
-    "name": "Pressure/Urgency",
-    "category": "Pressure/Urgency", 
-    "severity": "medium",
-    "regulation": "UDAAP Guidelines, FINRA Rule 2010",
-    "keywords": ["act now", "today only", "limited time", "don't wait", "urgent", "must decide now", "transfer today"],
+  "pressure_tactics": {
+    "category": "Pressure / Urgency",
+    "severity": "MED", 
+    "regulatory_reference": "UDAAP",
     "patterns": [
-      "\\b(?:act|buy|invest|transfer)\\s+(?:now|today|immediately)\\b",
-      "\\b(?:limited|running out of)\\s+time\\b",
-      "\\bdon't\\s+(?:wait|think|hesitate)\\b",
-      "\\b(?:urgent|must|need to)\\s+(?:decide|act|transfer)\\b"
-    ],
-    "description": "Detects high-pressure sales tactics that may constitute unfair practices."
+      "transfer money now",
+      "act now",
+      "limited time only",
+      "don'?t miss out",
+      "hurry up",
+      "deadline approaching",
+      "offer expires"
+    ]
   },
-  {
-    "id": "risk_disclosure",
-    "name": "Risk Disclosure",
+  "risk_disclosure_missing": {
     "category": "Risk Disclosure",
-    "severity": "low",
-    "regulation": "FTC Guides, SEC Marketing Rule", 
-    "keywords": ["best in market", "top performing", "number one", "absolutely best", "highest returns"],
+    "severity": "LOW",
+    "regulatory_reference": "FTC Guides", 
     "patterns": [
-      "\\b(?:best|top|highest|greatest)\\s+(?:in|performing|returns?)\\b",
-      "\\b(?:absolutely|definitely|certainly)\\s+(?:best|safest)\\b", 
-      "\\bnumber\\s+(?:one|1|#1)\\b"
-    ],
-    "description": "Identifies unsubstantiated superlative claims requiring proper disclosure."
+      "industry-leading",
+      "market leader",
+      "best in market",
+      "top performing",
+      "number one",
+      "unbeatable returns"
+    ]
   }
-]
+}

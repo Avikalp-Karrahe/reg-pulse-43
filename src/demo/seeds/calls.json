@@ -1,35 +1,19 @@
 [
   {
-    "id": "550e8400-e29b-41d4-a716-446655440001",
-    "call_id": "DEMO-CALL-001",
-    "started_at": "2024-01-15T14:30:00Z",
-    "ended_at": "2024-01-15T14:45:30Z",
-    "duration_sec": 930,
-    "risk_score": 78,
+    "id": "demo-call-001",
+    "user_id": "demo-user",
+    "audio_url": "/demo/compliance-violation-call.svg",
+    "transcript": "Welcome to our investment consultation. I want to share some exciting opportunities with you today. This investment strategy is perfect for everyone - it doesn't matter your experience level or financial situation. You'll make 20% monthly, guaranteed. Our track record speaks for itself - we're the best in market with industry-leading returns. The key is you need to transfer money now while this opportunity is still available. Don't miss out on this limited-time offer that will double your money risk-free.",
+    "risk_score": 85,
+    "duration_ms": 245000,
+    "created_at": "2024-12-07T10:30:00Z",
+    "call_type": "consultation",
     "status": "completed",
-    "user_id": "demo-user-123",
-    "organization_id": "demo-org-456"
-  },
-  {
-    "id": "550e8400-e29b-41d4-a716-446655440002", 
-    "call_id": "DEMO-CALL-002",
-    "started_at": "2024-01-16T10:15:00Z",
-    "ended_at": "2024-01-16T10:28:45Z",
-    "duration_sec": 825,
-    "risk_score": 25,
-    "status": "completed",
-    "user_id": "demo-user-123",
-    "organization_id": "demo-org-456"
-  },
-  {
-    "id": "550e8400-e29b-41d4-a716-446655440003",
-    "call_id": "DEMO-CALL-003", 
-    "started_at": "2024-01-17T16:20:00Z",
-    "ended_at": "2024-01-17T16:35:15Z",
-    "duration_sec": 915,
-    "risk_score": 52,
-    "status": "completed",
-    "user_id": "demo-user-123",
-    "organization_id": "demo-org-456"
+    "metadata": {
+      "caller_id": "+1-555-0123",
+      "advisor_name": "Demo Advisor",
+      "client_name": "Demo Client",
+      "call_purpose": "Investment Consultation"
+    }
   }
 ]
