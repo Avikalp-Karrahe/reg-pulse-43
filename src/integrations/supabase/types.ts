@@ -14,7 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      calls: {
+        Row: {
+          call_id: string
+          duration_sec: number | null
+          ended_at: string | null
+          id: string
+          risk_score: number | null
+          started_at: string
+          status: string | null
+        }
+        Insert: {
+          call_id: string
+          duration_sec?: number | null
+          ended_at?: string | null
+          id?: string
+          risk_score?: number | null
+          started_at?: string
+          status?: string | null
+        }
+        Update: {
+          call_id?: string
+          duration_sec?: number | null
+          ended_at?: string | null
+          id?: string
+          risk_score?: number | null
+          started_at?: string
+          status?: string | null
+        }
+        Relationships: []
+      }
+      issues: {
+        Row: {
+          call_id: string
+          category: string
+          id: string
+          rationale: string | null
+          reg_reference: string | null
+          severity: string | null
+          timestamp: string | null
+        }
+        Insert: {
+          call_id: string
+          category: string
+          id?: string
+          rationale?: string | null
+          reg_reference?: string | null
+          severity?: string | null
+          timestamp?: string | null
+        }
+        Update: {
+          call_id?: string
+          category?: string
+          id?: string
+          rationale?: string | null
+          reg_reference?: string | null
+          severity?: string | null
+          timestamp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "issues_call_id_fkey"
+            columns: ["call_id"]
+            isOneToOne: false
+            referencedRelation: "calls"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
