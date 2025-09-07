@@ -97,7 +97,7 @@ export const LandingPage = () => {
 
   const particles = useMemo(
     () =>
-      Array.from({ length: 1000 }).map((_, i) => ({
+      Array.from({ length: 500 }).map((_, i) => ({
         leftPct: Math.random() * 100,
         topPct: Math.random() * 100,
         dur: 6 + Math.random() * 15,
@@ -162,10 +162,11 @@ export const LandingPage = () => {
                 opacity: particle.opacity,
               }}
               animate={{
-                y: [0, -150, 0],
-                x: [0, Math.sin(particle.key) * 100, 0],
-                opacity: [particle.opacity, particle.opacity * 2, particle.opacity],
-                scale: [0.5, 1.5, 0.5],
+                y: [0, -200, -50, -180, 0],
+                x: [0, Math.sin(particle.key) * 150, Math.cos(particle.key) * 120, Math.sin(particle.key + 2) * 100, 0],
+                opacity: [particle.opacity, particle.opacity * 3, particle.opacity * 1.5, particle.opacity * 2.5, particle.opacity],
+                scale: [0.3, 2, 1, 1.8, 0.3],
+                rotate: [0, 180, 90, 270, 360],
               }}
               transition={{
                 duration: particle.dur,
