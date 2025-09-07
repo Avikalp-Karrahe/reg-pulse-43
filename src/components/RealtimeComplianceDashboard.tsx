@@ -119,7 +119,7 @@ export const RealtimeComplianceDashboard = () => {
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-cyan-400 neon-glow mb-2">
-              Real-Time Compliance Monitor
+              LIVE COMPLIANCE ASSISTANT
             </h1>
             <p className="text-muted-foreground text-lg">
               AI-powered live voice monitoring for regulatory compliance
@@ -128,7 +128,7 @@ export const RealtimeComplianceDashboard = () => {
 
           <Card className="w-full max-w-md mx-auto bg-card/50 backdrop-blur-sm border-cyan-500/20">
             <CardHeader className="text-center">
-              <CardTitle className="text-xl text-cyan-400">Start Live Monitoring</CardTitle>
+              <CardTitle className="text-xl text-cyan-400">Start Live Assistant</CardTitle>
               <p className="text-muted-foreground text-sm">
                 Connect to real-time AI compliance assistant for live call monitoring
               </p>
@@ -154,11 +154,11 @@ export const RealtimeComplianceDashboard = () => {
                 size="lg"
               >
                 <Phone className="w-5 h-5 mr-2" />
-                Start Live Monitoring
+                Start Live Assistant
               </Button>
               
               <p className="text-xs text-muted-foreground text-center">
-                This will connect to OpenAI's real-time voice API for interactive compliance monitoring
+                This will connect to OpenAI's real-time voice API for interactive compliance assistance
               </p>
             </CardContent>
           </Card>
@@ -178,7 +178,7 @@ export const RealtimeComplianceDashboard = () => {
               {isRecording && (
                 <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
               )}
-              <span>LIVE COMPLIANCE MONITORING</span>
+              <span>LIVE COMPLIANCE ASSISTANT</span>
             </h2>
             <p className="text-muted-foreground font-mono">
               Real-time Analysis • {formatDuration(callDuration)}
@@ -200,14 +200,14 @@ export const RealtimeComplianceDashboard = () => {
               )}
             </div>
             
-            <Button 
-              onClick={handleEndCall} 
-              variant="destructive"
-              className="bg-red-600 hover:bg-red-700 border-red-500"
-            >
-              <PhoneOff className="w-4 h-4 mr-2" />
-              End Monitoring
-            </Button>
+              <Button 
+                onClick={handleEndCall} 
+                variant="destructive"
+                className="bg-red-600 hover:bg-red-700 border-red-500"
+              >
+                <PhoneOff className="w-4 h-4 mr-2" />
+                End Assistant
+              </Button>
           </div>
         </div>
 
