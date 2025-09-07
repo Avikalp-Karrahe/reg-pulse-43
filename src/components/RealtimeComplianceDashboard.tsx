@@ -8,9 +8,6 @@ import { useRealtimeCompliance } from "@/hooks/useRealtimeCompliance";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { CircularRiskMeter } from "./CircularRiskMeter";
-import { FuturisticStats } from "./FuturisticStats";
-import { ComplianceChecklist } from "./ComplianceChecklist";
 import { useToast } from "@/hooks/use-toast";
 
 export const RealtimeComplianceDashboard = () => {
@@ -336,76 +333,121 @@ export const RealtimeComplianceDashboard = () => {
             )}
           </div>
 
-          {/* Right column - Monitoring panels */}
+          {/* Right column - Risk Analysis Table */}
           <div className="space-y-6">
-            {/* Compliance Checklist */}
-            <ComplianceChecklist 
-              complianceIssues={complianceIssues}
-              isActive={isRecording}
-            />
-
-            {/* Risk meter */}
-            <CircularRiskMeter 
-              riskScore={calculateRiskScore()} 
-              isActive={isRecording}
-              issues={complianceIssues}
-            />
-
-            {/* Stats */}
-            <FuturisticStats
-              totalIssues={complianceIssues.length}
-              criticalIssues={complianceIssues.filter(i => i.severity === 'critical').length}
-              duration={callDuration}
-              isProcessing={isRecording}
-            />
-
-            {/* Recent compliance issues */}
+            {/* Risk Analysis Table with Checkboxes */}
             <Card className="bg-card/50 backdrop-blur-sm border-red-500/20">
               <CardHeader>
-                <CardTitle className="text-lg text-red-400">Compliance Issues</CardTitle>
+                <CardTitle className="text-lg text-red-400">Risk Analysis Table</CardTitle>
               </CardHeader>
               <CardContent>
-                <ScrollArea className="h-[300px]">
-                  {complianceIssues.length === 0 ? (
-                    <p className="text-sm text-muted-foreground text-center py-8">
-                      No compliance issues detected
-                    </p>
-                  ) : (
-                    <div className="space-y-3">
-                      {complianceIssues.map((issue, index) => (
+                <div className="space-y-4">
+                  {/* Compliance Categories Checklist */}
+                  <div className="grid gap-3">
+                    {[
+                      { id: 'performance_guarantees', name: 'Performance Guarantees', regulation: 'SEC 10b-5' },
+                      { id: 'unsuitable_advice', name: 'Unsuitable Investment Advice', regulation: 'FINRA 2111' },
+                      { id: 'pressure_tactics', name: 'Pressure / Urgency Tactics', regulation: 'UDAAP' },
+                      { id: 'risk_disclosure', name: 'Inadequate Risk Disclosure', regulation: 'FTC Guides' },
+                      { id: 'misleading_statements', name: 'Misleading Statements', regulation: 'SEC 10b-5' },
+                      { id: 'churning', name: 'Excessive Trading (Churning)', regulation: 'FINRA 2111' },
+                      { id: 'conflicts_of_interest', name: 'Conflicts of Interest', regulation: 'IA Act Rule 206(4)-7' },
+                      { id: 'unauthorized_trading', name: 'Unauthorized Trading', regulation: 'FINRA 3260' }
+                    ].map((category) => {
+                      const hasIssue = complianceIssues.some(issue => 
+                        issue.category.toLowerCase().replace(/[^a-z0-9]/g, '_').includes(category.id.split('_')[0])
+                      );
+                      
+                      return (
                         <div
-                          key={index}
-                          className="p-3 rounded-lg border bg-card/30 space-y-2"
+                          key={category.id}
+                          className={`flex items-center space-x-3 p-3 rounded-lg border transition-all ${
+                            hasIssue 
+                              ? 'bg-red-500/20 border-red-500/50 shadow-lg shadow-red-500/20' 
+                              : 'bg-green-500/10 border-green-500/30'
+                          }`}
                         >
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-foreground">
-                              {issue.category}
-                            </span>
-                            <Badge variant="outline" className={getSeverityColor(issue.severity)}>
-                              {issue.severity.toUpperCase()}
-                            </Badge>
+                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                            hasIssue 
+                              ? 'bg-red-500 border-red-500' 
+                              : 'bg-green-500 border-green-500'
+                          }`}>
+                            {hasIssue ? (
+                              <div className="w-3 h-3 bg-white rounded-full animate-pulse" />
+                            ) : (
+                              <div className="w-2 h-2 bg-white rounded-full" />
+                            )}
                           </div>
                           
-                          <p className="text-xs text-muted-foreground">
-                            {issue.rationale}
-                          </p>
-                          
-                          {issue.evidenceSnippet && (
-                            <div className="p-2 bg-muted/30 rounded text-xs">
-                              <span className="text-muted-foreground">Evidence: </span>
-                              <span className="text-foreground italic">"{issue.evidenceSnippet}"</span>
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className={`font-medium text-sm ${
+                                hasIssue ? 'text-red-400' : 'text-green-400'
+                              }`}>
+                                {category.name}
+                              </span>
+                              <Badge 
+                                variant="outline" 
+                                className={`text-xs ${
+                                  hasIssue 
+                                    ? 'border-red-500/50 text-red-400 bg-red-500/10' 
+                                    : 'border-green-500/50 text-green-400 bg-green-500/10'
+                                }`}
+                              >
+                                {hasIssue ? 'FLAGGED' : 'CLEAR'}
+                              </Badge>
                             </div>
-                          )}
-                          
-                          <div className="flex justify-between text-xs text-muted-foreground">
-                            <span>{issue.reg_reference}</span>
-                            <span>{new Date(issue.timestamp).toLocaleTimeString()}</span>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {category.regulation}
+                            </p>
+                            
+                            {/* Show specific issue details if detected */}
+                            {hasIssue && complianceIssues
+                              .filter(issue => issue.category.toLowerCase().replace(/[^a-z0-9]/g, '_').includes(category.id.split('_')[0]))
+                              .map((issue, idx) => (
+                                <div key={idx} className="mt-2 p-2 bg-red-500/10 rounded border border-red-500/20">
+                                  <p className="text-xs text-red-300 font-medium">
+                                    Severity: {issue.severity.toUpperCase()}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    {issue.rationale}
+                                  </p>
+                                  {issue.evidenceSnippet && (
+                                    <p className="text-xs text-red-200 mt-1 italic">
+                                      "{issue.evidenceSnippet}"
+                                    </p>
+                                  )}
+                                </div>
+                              ))
+                            }
                           </div>
                         </div>
-                      ))}
+                      );
+                    })}
+                  </div>
+                  
+                  {/* Summary Stats */}
+                  <div className="border-t pt-4 mt-4">
+                    <div className="grid grid-cols-2 gap-4 text-center">
+                      <div className="p-3 bg-red-500/10 rounded border border-red-500/20">
+                        <div className="text-2xl font-bold text-red-400">
+                          {complianceIssues.length}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Total Issues
+                        </div>
+                      </div>
+                      <div className="p-3 bg-red-500/10 rounded border border-red-500/20">
+                        <div className="text-2xl font-bold text-red-400">
+                          {complianceIssues.filter(i => i.severity === 'critical' || i.severity === 'high').length}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          High Risk
+                        </div>
+                      </div>
                     </div>
-                  )}
-                </ScrollArea>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
