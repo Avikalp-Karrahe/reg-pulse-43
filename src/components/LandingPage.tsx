@@ -129,7 +129,7 @@ export const LandingPage = () => {
                       <motion.circle cx="50" cy="50" r="40" stroke="hsl(var(--neon-orange))" strokeWidth="8" fill="none" strokeLinecap="round" strokeDasharray="251.2" initial={{
                       strokeDashoffset: 251.2
                     }} animate={{
-                      strokeDashoffset: 125.6
+                      strokeDashoffset: 82.9
                     }} transition={{
                       duration: 2,
                       delay: 1
