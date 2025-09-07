@@ -35,9 +35,7 @@ export const AgentOpsConsole = ({ isOpen, onClose }: AgentOpsConsoleProps) => {
     // Initial load
     setToolCalls(demoStore.getToolCalls());
     
-    return () => {
-      unsubscribe();
-    };
+    return unsubscribe;
   }, []);
 
   const copyToClipboard = useCallback(async (content: string) => {
