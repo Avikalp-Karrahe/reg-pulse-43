@@ -268,11 +268,10 @@ export const LandingPage = () => {
               className="text-5xl lg:text-7xl xl:text-8xl font-bold mb-8 leading-[0.9] tracking-tight"
               variants={itemVariants}
             >
-              <span className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-sm">
-                Neural Compliance
+              <span className="text-foreground drop-shadow-sm">
+                Deploy Research-Grade{" "}
               </span>
-              <br />
-              <span className="text-foreground drop-shadow-sm">Intelligence</span>
+              <span className="text-emerald-400 drop-shadow-sm">Intelligence</span>
             </motion.h2>
 
             <motion.p
