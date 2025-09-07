@@ -23,7 +23,7 @@ import { FuturisticTranscription } from "./FuturisticTranscription";
 import { CircularRiskMeter } from "./CircularRiskMeter";
 import { FuturisticStats } from "./FuturisticStats";
 import { TestScenarios } from "./TestScenarios";
-import { QuickChecks } from "./QuickChecks";
+
 import { FileUpload } from "./FileUpload";
 import { LiveVoiceToText } from "./LiveVoiceToText";
 import { RealtimeComplianceDashboard } from "./RealtimeComplianceDashboard";
@@ -477,15 +477,6 @@ export const ComplianceDashboard = () => {
               />
             </CardContent>
           </Card>
-        </motion.div>
-        
-        {/* Quick Validation Checks */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-        >
-          <QuickChecks />
         </motion.div>
         
         {/* Test Scenarios Section */}
