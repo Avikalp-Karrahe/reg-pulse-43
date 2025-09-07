@@ -285,7 +285,7 @@ export const LandingPage = () => {
             </motion.p>
 
             <motion.div 
-              className="flex flex-wrap justify-center gap-4 mb-6 text-sm text-muted-foreground font-mono"
+              className="flex flex-wrap justify-center gap-4 mb-8 text-sm text-muted-foreground font-mono"
               variants={itemVariants}
             >
               <span className="bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
@@ -300,6 +300,65 @@ export const LandingPage = () => {
               <span className="bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
                 Edge deployment
               </span>
+            </motion.div>
+
+            {/* Elegant Scroll Indicator */}
+            <motion.div 
+              className="flex flex-col items-center mb-6"
+              variants={itemVariants}
+            >
+              <div className="text-xs text-muted-foreground/60 font-mono mb-2 tracking-wider">
+                EXPLORE ADVANCED FEATURES
+              </div>
+              <motion.div
+                className="flex flex-col items-center cursor-pointer group"
+                animate={{
+                  y: [0, 6, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                onClick={() => {
+                  window.scrollTo({
+                    top: window.innerHeight,
+                    behavior: 'smooth'
+                  });
+                }}
+              >
+                <div className="w-5 h-8 border-2 border-emerald-500/30 rounded-full flex justify-center p-1 group-hover:border-emerald-400/50 transition-colors">
+                  <motion.div
+                    className="w-1 h-2 bg-emerald-400 rounded-full"
+                    animate={{
+                      y: [0, 8, 0],
+                      opacity: [1, 0.3, 1]
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                  />
+                </div>
+                <motion.div
+                  className="mt-1 text-emerald-400/70 group-hover:text-emerald-400 transition-colors"
+                  animate={{
+                    y: [0, 2, 0],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.3
+                  }}
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="7 13 12 18 17 13"></polyline>
+                    <polyline points="7 6 12 11 17 6"></polyline>
+                  </svg>
+                </motion.div>
+              </motion.div>
             </motion.div>
 
             <motion.div
