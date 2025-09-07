@@ -52,24 +52,26 @@ export const useRealtimeCompliance = () => {
   }, []);
 
   const connect = useCallback(async () => {
-    try {
-      console.log('🔄 Attempting to connect to realtime compliance service...');
-      
-      const wsUrl = 'wss://lrofbumospouflcegtbc.functions.supabase.co/functions/v1/realtime-compliance';
-      console.log('🌐 WebSocket URL:', wsUrl);
-      wsRef.current = new WebSocket(wsUrl);
+    return new Promise<void>((resolve, reject) => {
+      try {
+        console.log('🔄 Attempting to connect to realtime compliance service...');
+        
+        const wsUrl = 'wss://lrofbumospouflcegtbc.functions.supabase.co/functions/v1/realtime-compliance';
+        console.log('🌐 WebSocket URL:', wsUrl);
+        wsRef.current = new WebSocket(wsUrl);
 
-      wsRef.current.onopen = async () => {
-        console.log('✅ Connected to realtime compliance WebSocket');
-        setIsConnected(true);
-        toast({
-          title: "Connected",
-          description: "Real-time compliance monitoring is active",
-        });
+        wsRef.current.onopen = async () => {
+          console.log('✅ Connected to realtime compliance WebSocket');
+          setIsConnected(true);
+          toast({
+            title: "Connected",
+            description: "Real-time compliance monitoring is active",
+          });
 
-        // Welcome message disabled to prevent conflict with OpenAI Realtime API
-        // The OpenAI Realtime API will handle the initial greeting
-      };
+          // Welcome message disabled to prevent conflict with OpenAI Realtime API
+          // The OpenAI Realtime API will handle the initial greeting
+          resolve(); // Resolve the promise when connection is established
+        };
 
       wsRef.current.onmessage = async (event) => {
         console.log('Received message:', event.data);
@@ -193,12 +195,16 @@ export const useRealtimeCompliance = () => {
           description: "Failed to connect to compliance monitoring service. Please check your internet connection and try again.",
           variant: "destructive",
         });
+        reject(new Error('WebSocket connection failed'));
       };
 
       wsRef.current.onclose = (event) => {
         console.log('WebSocket connection closed. Code:', event.code, 'Reason:', event.reason);
         setIsConnected(false);
         setIsRecording(false);
+        if (event.code !== 1000) {
+          reject(new Error(`WebSocket closed unexpectedly: ${event.reason}`));
+        }
       };
 
     } catch (error) {
@@ -208,7 +214,9 @@ export const useRealtimeCompliance = () => {
         description: "Could not establish real-time connection",
         variant: "destructive",
       });
+      reject(error);
     }
+    });
   }, [toast]);
 
   const startRecording = useCallback(async () => {
