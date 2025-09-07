@@ -304,7 +304,7 @@ export const LandingPage = () => {
               <Button
                 asChild
                 size="lg"
-                className="h-16 px-12 text-lg font-semibold text-white hover:text-white bg-transparent border-0 hover:bg-transparent"
+                className="h-16 px-12 text-lg font-semibold text-white hover:text-emerald-400 bg-transparent border-0 hover:bg-transparent transition-colors duration-300"
                 aria-label="Go to dashboard"
                 onMouseEnter={() => setIsHoveringLaunchButton(true)}
                 onMouseLeave={() => setIsHoveringLaunchButton(false)}
