@@ -256,16 +256,30 @@ export const AudioInputSetup = () => {
             </p>
           ) : (
             <>
-              <Select value={selectedDeviceId || ""} onValueChange={handleDeviceSelect}>
-                <SelectTrigger>
+              <Select 
+                value={selectedDeviceId && selectedDeviceId.trim() !== '' ? selectedDeviceId : undefined} 
+                onValueChange={handleDeviceSelect}
+              >
+                <SelectTrigger className="bg-background border border-input">
                   <SelectValue placeholder="Select an audio input device" />
                 </SelectTrigger>
-                <SelectContent>
-                  {devices.map((device) => (
-                    <SelectItem key={device.deviceId} value={device.deviceId}>
-                      {device.label}
+                <SelectContent className="bg-background border border-border shadow-lg z-50">
+                  {devices
+                    .filter(device => device.deviceId && device.deviceId.trim() !== '')
+                    .map((device) => (
+                      <SelectItem 
+                        key={device.deviceId} 
+                        value={device.deviceId}
+                        className="bg-background hover:bg-accent focus:bg-accent"
+                      >
+                        {device.label}
+                      </SelectItem>
+                    ))}
+                  {devices.filter(device => device.deviceId && device.deviceId.trim() !== '').length === 0 && (
+                    <SelectItem value="no-devices" disabled>
+                      No audio devices available
                     </SelectItem>
-                  ))}
+                  )}
                 </SelectContent>
               </Select>
               
