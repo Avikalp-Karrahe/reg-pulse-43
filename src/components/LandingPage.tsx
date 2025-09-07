@@ -238,7 +238,7 @@ export const LandingPage = () => {
                 Live Risk
               </span>
               <br />
-              <span className="text-foreground">Intelligence</span>
+              <span className="text-slate-100">Intelligence</span>
             </motion.h2>
 
             <motion.p
