@@ -13,7 +13,8 @@ import {
   Globe,
   Star,
   CheckCircle,
-  Activity
+  Activity,
+  AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -465,6 +466,7 @@ export const LandingPage = () => {
                 </div>
               </div>
             </Card>
+          </motion.div>
 
           {/* Enhanced Feature Showcase */}
           <motion.div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20" variants={itemVariants}>
@@ -497,16 +499,18 @@ export const LandingPage = () => {
             </Card>
 
             <Card className="card-glass p-8 h-full group hover:scale-105 transition-all duration-500" role="region" aria-label="Analytics Dashboard feature">
-                  <div className="w-12 h-12 rounded-lg bg-orange-500/20 flex items-center justify-center mb-4 group-hover:bg-orange-500/30 transition-colors">
-                    <BarChart3 className="w-6 h-6 text-orange-400" aria-hidden="true" />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">Analytics Dashboard</h3>
-                  <p className="text-muted-foreground text-sm">
-                    Comprehensive reporting with risk trends, category breakdowns, and compliance metrics.
-                  </p>
-                </Card>
-              </motion.div>
-            </div>
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <BarChart3 className="w-8 h-8 text-indigo-400" aria-hidden="true" />
+              </div>
+              <h3 className="text-2xl font-semibold mb-4 text-indigo-400">Predictive Analytics</h3>
+              <p className="text-muted-foreground text-lg leading-relaxed mb-4">
+                Advanced reporting with risk trends, pattern analysis, and predictive insights to prevent violations before they occur.
+              </p>
+              <div className="flex items-center text-sm text-indigo-400 font-medium">
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Predictive risk modeling
+              </div>
+            </Card>
           </motion.div>
 
           {/* Final CTA */}
