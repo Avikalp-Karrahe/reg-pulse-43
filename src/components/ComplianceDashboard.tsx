@@ -18,6 +18,7 @@ import { FuturisticStats } from "./FuturisticStats";
 import { TestScenarios } from "./TestScenarios";
 import { QuickChecks } from "./QuickChecks";
 import { FileUpload } from "./FileUpload";
+import { LiveVoiceToText } from "./LiveVoiceToText";
 
 interface CallData {
   id: string;
@@ -32,6 +33,7 @@ export const ComplianceDashboard = () => {
   const [selectedDeviceName, setSelectedDeviceName] = useState<string | null>(null);
   const [permissionState, setPermissionState] = useState<PermissionState>('prompt');
   const [transcriptLines, setTranscriptLines] = useState<string[]>([]);
+  const [finalTranscripts, setFinalTranscripts] = useState<string[]>([]);
   const { toast } = useToast();
   const saveCall = useSaveCall();
   
@@ -53,6 +55,9 @@ export const ComplianceDashboard = () => {
     isSupported,
   } = useSpeechRecognition((finalTranscript) => {
     if (finalTranscript.trim()) {
+      // Add to final transcripts history
+      setFinalTranscripts(prev => [...prev, finalTranscript.trim()]);
+      // Send to compliance analysis
       sendMessage(finalTranscript);
     }
   });
@@ -113,6 +118,7 @@ export const ComplianceDashboard = () => {
     };
     
     setCurrentCall(newCall);
+    setFinalTranscripts([]); // Clear previous transcripts
     resetSession();
     
     try {
@@ -369,8 +375,17 @@ export const ComplianceDashboard = () => {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-250px)]">
-          {/* Live Transcription - Takes 2 columns */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Live Voice-to-Text - Top left */}
+          <div className="lg:col-span-1">
+            <LiveVoiceToText 
+              transcript={transcript}
+              isListening={isListening}
+              finalTranscripts={finalTranscripts}
+            />
+          </div>
+
+          {/* Live Analysis - Top right, spans 2 columns */}
           <div className="lg:col-span-2">
             <FuturisticTranscription 
               callId={currentCall.id} 
@@ -378,6 +393,13 @@ export const ComplianceDashboard = () => {
               isListening={isListening}
               issues={allIssues}
             />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+          {/* Risk Analysis Table - Takes 2 columns */}
+          <div className="lg:col-span-2">
+            <RiskAnalysisTable issues={allIssues} callId={currentCall.id} />
           </div>
 
           {/* Right sidebar with monitoring panels */}
