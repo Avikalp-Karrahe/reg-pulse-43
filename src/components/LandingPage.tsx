@@ -352,11 +352,11 @@ export const LandingPage = () => {
                 onMouseLeave={() => setIsButtonHovered(false)}
                 onClick={() => window.location.href = '/dashboard'}
               >
-                {/* Button text - white on hover */}
+                {/* Button text - visible by default, white on hover */}
                 <motion.div
-                  className="relative z-10 flex items-center font-semibold text-lg transition-colors duration-300"
+                  className="relative z-10 flex items-center font-semibold text-lg text-foreground"
                   animate={{
-                    color: isButtonHovered ? '#ffffff' : '#a3a3a3',
+                    color: isButtonHovered ? '#ffffff' : '#f8fafc',
                   }}
                   transition={{ duration: 0.3 }}
                 >
