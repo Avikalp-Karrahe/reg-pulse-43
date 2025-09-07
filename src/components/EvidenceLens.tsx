@@ -2,7 +2,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Play, AlertCircle, BookOpen, Clock } from "lucide-react";
+import { Play, AlertCircle, BookOpen, Clock, Copy, CheckCircle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 interface EvidenceLensProps {
   isOpen: boolean;
@@ -33,7 +35,7 @@ const highlightRiskyPhrases = (text: string) => {
     const regex = new RegExp(`\\b${phrase}\\b`, 'gi');
     highlightedText = highlightedText.replace(
       regex, 
-      `<span class="bg-gradient-to-r from-red-400/30 to-pink-400/30 text-red-900 dark:text-red-100 px-1 py-0.5 rounded-sm border border-red-300/50 shadow-sm font-medium animate-pulse">$&</span>`
+      `<mark class="bg-gradient-to-r from-red-400/40 to-pink-400/40 text-red-900 dark:text-red-100 px-1.5 py-0.5 rounded-md border border-red-300/60 shadow-lg shadow-red-500/20 font-medium animate-pulse backdrop-blur-sm">$&</mark>`
     );
   });
   
@@ -68,12 +70,41 @@ const formatTimestamp = (ms?: number) => {
 };
 
 export const EvidenceLens = ({ isOpen, onClose, issue }: EvidenceLensProps) => {
+  const { toast } = useToast();
+  const [copiedSnippet, setCopiedSnippet] = useState(false);
+  
   if (!issue) return null;
 
   const handleJumpToTimestamp = () => {
     if (issue.evidence_start_ms) {
       console.log('Jumping to timestamp:', issue.evidence_start_ms, 'ms');
       console.log('Time range:', formatTimestamp(issue.evidence_start_ms), '-', formatTimestamp(issue.evidence_end_ms));
+      toast({
+        title: "Timestamp Jump",
+        description: `Jumped to ${formatTimestamp(issue.evidence_start_ms)}`,
+      });
+    }
+  };
+
+  const handleCopySnippet = async () => {
+    if (issue.evidence_snippet) {
+      try {
+        // Strip HTML tags for clean copy
+        const cleanText = issue.evidence_snippet.replace(/<[^>]*>/g, '');
+        await navigator.clipboard.writeText(cleanText);
+        setCopiedSnippet(true);
+        toast({
+          title: "Evidence Copied",
+          description: "Evidence snippet copied to clipboard",
+        });
+        setTimeout(() => setCopiedSnippet(false), 2000);
+      } catch (err) {
+        toast({
+          title: "Copy Failed",
+          description: "Failed to copy evidence snippet",
+          variant: "destructive",
+        });
+      }
     }
   };
 
@@ -112,17 +143,32 @@ export const EvidenceLens = ({ isOpen, onClose, issue }: EvidenceLensProps) => {
                     <Clock className="h-5 w-5 text-primary" />
                     <h3 className="font-semibold">Evidence</h3>
                   </div>
-                  {issue.evidence_start_ms && (
+                  <div className="flex items-center space-x-2">
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      onClick={handleJumpToTimestamp}
-                      className="bg-gradient-to-r from-primary/10 to-primary/20 border-primary/30 hover:from-primary/20 hover:to-primary/30 transition-all"
+                      onClick={handleCopySnippet}
+                      className="bg-gradient-to-r from-secondary/10 to-secondary/20 border-secondary/30 hover:from-secondary/20 hover:to-secondary/30 transition-all"
                     >
-                      <Play className="h-4 w-4 mr-1" />
-                      {formatTimestamp(issue.evidence_start_ms)}
+                      {copiedSnippet ? (
+                        <CheckCircle className="h-4 w-4 mr-1 text-green-500" />
+                      ) : (
+                        <Copy className="h-4 w-4 mr-1" />
+                      )}
+                      {copiedSnippet ? "Copied!" : "Copy"}
                     </Button>
-                  )}
+                    {issue.evidence_start_ms && (
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={handleJumpToTimestamp}
+                        className="bg-gradient-to-r from-primary/10 to-primary/20 border-primary/30 hover:from-primary/20 hover:to-primary/30 transition-all"
+                      >
+                        <Play className="h-4 w-4 mr-1" />
+                        {formatTimestamp(issue.evidence_start_ms)}
+                      </Button>
+                    )}
+                  </div>
                 </div>
                 <div 
                   className="text-base leading-relaxed p-4 rounded-lg bg-gradient-to-r from-muted/50 to-muted/30 border border-border/50"
