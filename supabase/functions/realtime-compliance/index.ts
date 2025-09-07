@@ -81,6 +81,7 @@ Critical compliance areas to monitor:
 
 When you detect a potential violation, immediately call the log_compliance_issue tool with detailed information.`,
             voice: 'alloy',
+            language: 'en',
             input_audio_format: 'pcm16',
             output_audio_format: 'pcm16',
             input_audio_transcription: {
