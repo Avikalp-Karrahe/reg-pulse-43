@@ -681,15 +681,6 @@ export const LandingPage = () => {
               Experience neural compliance detection powered by Stanford-research architectures, 
               production-optimized for enterprise deployment with 99.94% accuracy guarantees.
             </p>
-            <div className="flex flex-wrap justify-center gap-4 mb-8 text-sm font-mono text-white">
-              <span>SOC2 Type II Certified</span>
-              <span className="text-emerald-400">•</span>
-              <span>GDPR/CCPA Compliant</span>
-              <span className="text-emerald-400">•</span>
-              <span>99.99% SLA Uptime</span>
-              <span className="text-emerald-400">•</span>
-              <span>Enterprise Security</span>
-            </div>
             <div className="flex justify-center">
               <Button 
                 asChild
