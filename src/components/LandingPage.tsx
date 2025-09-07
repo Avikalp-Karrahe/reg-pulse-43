@@ -295,19 +295,21 @@ export const LandingPage = () => {
                 className="h-16 px-12 text-lg font-semibold text-white hover:text-white bg-transparent border-0 hover:bg-transparent"
                 aria-label="Go to dashboard"
                 onMouseEnter={() => {
-                  // Speed up particles on hover
+                  // Launch particles faster on hover
                   const particleElements = document.querySelectorAll('[data-particle]');
                   particleElements.forEach((el) => {
                     const element = el as HTMLElement;
-                    element.style.animationDuration = '1s';
+                    element.style.animationDuration = '0.5s';
+                    element.style.transform = `${element.style.transform} scale(1.5)`;
                   });
                 }}
                 onMouseLeave={() => {
-                  // Reset particle speed
+                  // Reset particle speed and scale
                   const particleElements = document.querySelectorAll('[data-particle]');
                   particleElements.forEach((el) => {
                     const element = el as HTMLElement;
                     element.style.animationDuration = '';
+                    element.style.transform = element.style.transform.replace(' scale(1.5)', '');
                   });
                 }}
               >
