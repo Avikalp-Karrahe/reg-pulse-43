@@ -72,6 +72,7 @@ export const LandingPage = () => {
   const prefersReducedMotion = useReducedMotion();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [showDashboard, setShowDashboard] = useState(false);
+  const [isHoveringLaunchButton, setIsHoveringLaunchButton] = useState(false);
   const rafRef = useRef<number | null>(null);
   const lastTsRef = useRef(0);
   const heroRef = useRef(null);
@@ -181,7 +182,7 @@ export const LandingPage = () => {
                   scale: [0.8, 1.2, 0.8],
                 }}
                 transition={{
-                  duration: particle.dur,
+                  duration: isHoveringLaunchButton ? particle.dur * 0.5 : particle.dur, // 50% faster when hovering
                   repeat: Infinity,
                   delay: particle.delay,
                   ease: "easeInOut"
@@ -294,24 +295,8 @@ export const LandingPage = () => {
                 size="lg"
                 className="h-16 px-12 text-lg font-semibold text-white hover:text-white bg-transparent border-0 hover:bg-transparent"
                 aria-label="Go to dashboard"
-                onMouseEnter={() => {
-                  // Increase all particle speed by 50% on hover
-                  const particleElements = document.querySelectorAll('[data-particle]');
-                  particleElements.forEach((el, index) => {
-                    const element = el as HTMLElement;
-                    const originalDuration = particles[index]?.dur || 6;
-                    const newDuration = originalDuration * 0.5; // 50% faster
-                    element.style.animationDuration = `${newDuration}s`;
-                  });
-                }}
-                onMouseLeave={() => {
-                  // Reset all particle speeds
-                  const particleElements = document.querySelectorAll('[data-particle]');
-                  particleElements.forEach((el) => {
-                    const element = el as HTMLElement;
-                    element.style.animationDuration = '';
-                  });
-                }}
+                onMouseEnter={() => setIsHoveringLaunchButton(true)}
+                onMouseLeave={() => setIsHoveringLaunchButton(false)}
               >
                 <Link to="/dashboard">
                   <Play className="w-6 h-6 mr-3" aria-hidden="true" />
