@@ -176,8 +176,8 @@ export const LandingPage = () => {
                   height: `${particle.size}px`,
                   opacity: particle.opacity,
                   boxShadow: isHoveringLaunchButton ? '0 0 30px hsla(var(--emerald-500), 1), 0 0 60px hsla(var(--emerald-400), 0.8), 0 0 100px hsla(var(--emerald-300), 0.5)' : 
-                            isNearCursor ? '0 0 16px hsla(var(--red-600), 1), 0 0 32px hsla(var(--red-500), 0.7)' : 
-                            '0 0 8px rgba(255, 255, 255, 0.8)',
+                            isNearCursor ? '0 0 24px hsla(var(--red-600), 1), 0 0 48px hsla(var(--red-500), 0.9), 0 0 72px hsla(var(--red-400), 0.6)' : 
+                            '0 0 24px rgba(255, 255, 255, 0.9), 0 0 48px rgba(255, 255, 255, 0.6)',
                 }}
                 animate={isHoveringLaunchButton ? {
                   y: [0, -80, 0],
