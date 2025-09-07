@@ -162,7 +162,7 @@ export const LandingPage = () => {
             // Color priority: Green when hovering launch button, super bright red when near cursor, bright white by default
             const isNearCursor = distance < 100;
             const particleColor = isHoveringLaunchButton ? 'bg-emerald-400' : 
-                                 isNearCursor ? 'bg-red-600' : 'bg-white';
+                                 isNearCursor ? 'bg-red-600' : 'bg-red-500';
 
             return (
               <motion.div
@@ -177,7 +177,7 @@ export const LandingPage = () => {
                   opacity: particle.opacity,
                   boxShadow: isHoveringLaunchButton ? '0 0 80px hsla(var(--emerald-500), 1), 0 0 150px hsla(var(--emerald-400), 0.9), 0 0 250px hsla(var(--emerald-300), 0.7)' : 
                             isNearCursor ? '0 0 16px hsla(var(--red-600), 1), 0 0 32px hsla(var(--red-500), 0.7)' : 
-                            '0 0 8px rgba(255, 255, 255, 0.8)',
+                            '0 0 8px hsla(var(--red-500), 0.8), 0 0 16px hsla(var(--red-400), 0.6)',
                 }}
                 animate={isHoveringLaunchButton ? {
                   y: [0, -80, 0],
