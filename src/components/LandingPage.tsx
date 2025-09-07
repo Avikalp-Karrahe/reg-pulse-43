@@ -306,19 +306,23 @@ export const LandingPage = () => {
               className="flex justify-center mb-16"
               variants={itemVariants}
             >
-              <Button
-                asChild
-                size="lg"
-                className="h-16 px-12 text-lg font-semibold text-white hover:text-emerald-400 bg-transparent border-0 hover:bg-transparent transition-colors duration-300"
-                aria-label="Go to dashboard"
+              <div
                 onMouseEnter={() => setIsHoveringLaunchButton(true)}
                 onMouseLeave={() => setIsHoveringLaunchButton(false)}
+                style={{ padding: '60px' }} // Large hover area
               >
-                <Link to="/dashboard">
-                  <Play className="w-6 h-6 mr-3" aria-hidden="true" />
-                  Launch Dashboard
-                </Link>
-              </Button>
+                <Button
+                  asChild
+                  size="lg"
+                  className="h-16 px-12 text-lg font-semibold text-white hover:text-emerald-400 bg-transparent border-0 hover:bg-transparent transition-colors duration-300"
+                  aria-label="Go to dashboard"
+                >
+                  <Link to="/dashboard">
+                    <Play className="w-6 h-6 mr-3" aria-hidden="true" />
+                    Launch Dashboard
+                  </Link>
+                </Button>
+              </div>
             </motion.div>
 
             {/* Quick Navigation Cards */}
