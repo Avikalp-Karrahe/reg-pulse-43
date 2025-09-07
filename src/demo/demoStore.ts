@@ -89,26 +89,37 @@ class DemoStore {
     // Add the call
     this.data.calls.unshift(newCall);
 
-    // Add issues
-    const newIssues: Issue[] = callData.issues.map((issue, index) => ({
-      id: `demo-issue-${Date.now()}-${index}`,
-      call_id: newCall.id,
-      category: issue.category,
-      severity: issue.severity,
-      rationale: issue.rationale,
-      reg_reference: issue.reg_reference,
-      timestamp: issue.timestamp,
-      evidence_snippet: issue.evidenceSnippet || null,
-      evidence_start_ms: issue.evidenceStartMs || null,
-      evidence_end_ms: issue.evidenceEndMs || null,
-      model_rationale: `AI detected violation in demo mode`,
-      model_version: 'demo-v1',
-      user_id: 'demo-user-123',
-      organization_id: 'demo-org-456'
-    }));
+    // Add issues with escalation check
+    const newIssues: Issue[] = callData.issues.map((issue, index) => {
+      const processedIssue: Issue = {
+        id: `demo-issue-${Date.now()}-${index}`,
+        call_id: newCall.id,
+        category: issue.category,
+        severity: issue.severity,
+        rationale: issue.rationale,
+        reg_reference: issue.reg_reference,
+        timestamp: issue.timestamp,
+        evidence_snippet: issue.evidenceSnippet || null,
+        evidence_start_ms: issue.evidenceStartMs || null,
+        evidence_end_ms: issue.evidenceEndMs || null,
+        model_rationale: `AI detected violation in demo mode`,
+        model_version: 'demo-v1',
+        user_id: 'demo-user-123',
+        organization_id: 'demo-org-456'
+      };
+
+      // Check for escalation if setting is enabled
+      if (this.state.settings.enableSlackEscalation && 
+          (issue.severity === 'high' || issue.severity === 'critical')) {
+        this.escalateToSlack(processedIssue);
+      }
+
+      return processedIssue;
+    });
 
     this.data.issues.unshift(...newIssues);
     this.saveToStorage();
+    this.notify();
 
     return { callId: newCall.id, issueCount: newIssues.length };
   }
@@ -225,6 +236,48 @@ class DemoStore {
     transcript: [],
     settings: { enableSlackEscalation: true, reducedMotion: false }
   };
+
+  escalateToSlack(issue: any): void {
+    const escalationPayload = {
+      channel: "slack#risk-alerts",
+      category: issue.category,
+      severity: issue.severity,
+      snippet: issue.evidence_snippet || issue.rationale || "No evidence available",
+      link: `#/call/${issue.callId}`,
+      timestamp: new Date().toISOString()
+    };
+
+    // Add tool call to console
+    const toolCall: ToolCall = {
+      id: `escalate-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      tool: "notify.escalate",
+      data: escalationPayload,
+      duration: Math.floor(Math.random() * 200) + 100
+    };
+
+    this.addToolCall(toolCall);
+
+    // Console log the payload
+    console.log('🚨 Slack Escalation:', escalationPayload);
+
+    // Show toast notification (this will be handled by the component consuming this)
+    if (typeof window !== 'undefined' && window.dispatchEvent) {
+      window.dispatchEvent(new CustomEvent('slackEscalation', { 
+        detail: { category: issue.category, severity: issue.severity } 
+      }));
+    }
+  }
+
+  updateSettings(settings: Partial<typeof this.state.settings>): void {
+    this.state.settings = { ...this.state.settings, ...settings };
+    this.saveToStorage();
+    this.notify();
+  }
+
+  getSettings() {
+    return { ...this.state.settings };
+  }
 }
 
 export const demoStore = new DemoStore();
@@ -234,8 +287,10 @@ export interface ToolCall {
   id: string;
   timestamp: string;
   tool: string;
-  status: 'success' | 'error';
-  duration_ms: number;
-  input: any;
-  output: any;
+  status?: 'success' | 'error';
+  duration_ms?: number;
+  duration: number;
+  input?: any;
+  output?: any;
+  data?: any;
 }

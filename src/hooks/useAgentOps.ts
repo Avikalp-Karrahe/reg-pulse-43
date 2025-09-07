@@ -15,6 +15,7 @@ export const useAgentOps = () => {
       tool: 'rules.match',
       status: 'success',
       duration_ms: latencyMs,
+      duration: latencyMs,
       input: {
         rule_name: ruleName,
         phrase: phrase.substring(0, 100),
@@ -43,6 +44,7 @@ export const useAgentOps = () => {
       tool: 'agent.classify',
       status: 'success',
       duration_ms: latencyMs,
+      duration: latencyMs,
       input: {
         model,
         tokens,
@@ -72,6 +74,7 @@ export const useAgentOps = () => {
       tool: 'notify.escalate',
       status: 'success',
       duration_ms: latencyMs,
+      duration: latencyMs,
       input: {
         channel,
         snippet: snippet.substring(0, 150),

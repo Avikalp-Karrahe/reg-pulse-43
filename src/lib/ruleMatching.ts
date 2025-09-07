@@ -234,6 +234,7 @@ class RuleMatcher {
       tool: 'rules.match' as const,
       status: 'success' as const,
       duration_ms: latencyMs,
+      duration: latencyMs,
       input: {
         rule_name: ruleName,
         phrase: phrase.substring(0, 100),

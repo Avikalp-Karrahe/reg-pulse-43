@@ -5,10 +5,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
-import { Mic, MicOff, Settings, AlertTriangle, CheckCircle, ExternalLink, Info } from "lucide-react";
+import { Mic, MicOff, Settings, AlertTriangle, CheckCircle, ExternalLink, Info, MessageSquare } from "lucide-react";
 import { audioManager, AudioDevice, getPermissionErrorMessage, openChromeMicSettings } from "@/lib/audio";
 import { useToast } from "@/hooks/use-toast";
 import { DemoModeToggle } from "@/components/DemoBanner";
+import { Switch } from "@/components/ui/switch";
+import { demoStore } from "@/demo/demoStore";
+
 
 export const AudioInputSetup = () => {
   const [devices, setDevices] = useState<AudioDevice[]>([]);
@@ -18,13 +21,28 @@ export const AudioInputSetup = () => {
   const [audioLevels, setAudioLevels] = useState({ rms: 0, peak: 0 });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [slackEscalationEnabled, setSlackEscalationEnabled] = useState(demoStore.getSettings().enableSlackEscalation);
   const intervalRef = useRef<number | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     loadInitialState();
+    
+    // Listen for Slack escalation events
+    const handleSlackEscalation = (event: CustomEvent) => {
+      const { category, severity } = event.detail;
+      toast({
+        title: `Escalated to Slack: ${category}`,
+        description: `${severity.toUpperCase()} severity issue reported to #risk-alerts`,
+        variant: severity === 'critical' ? 'destructive' : 'default',
+      });
+    };
+    
+    window.addEventListener('slackEscalation', handleSlackEscalation as EventListener);
+    
     return () => {
       stopAudioStream();
+      window.removeEventListener('slackEscalation', handleSlackEscalation as EventListener);
     };
   }, []);
 
@@ -145,6 +163,17 @@ export const AudioInputSetup = () => {
 
   const selectedDevice = devices.find(d => d.deviceId === selectedDeviceId);
   const isWebSpeechSupported = audioManager.isWebSpeechSupported();
+
+  const handleSlackToggle = (enabled: boolean) => {
+    setSlackEscalationEnabled(enabled);
+    demoStore.updateSettings({ enableSlackEscalation: enabled });
+    toast({
+      title: enabled ? "Slack Escalation Enabled" : "Slack Escalation Disabled",
+      description: enabled 
+        ? "HIGH severity issues will now be escalated to Slack" 
+        : "Issues will no longer be escalated to Slack",
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -320,13 +349,32 @@ export const AudioInputSetup = () => {
         </Alert>
       )}
 
-      {/* Demo Mode Toggle */}
+      {/* Demo Mode Settings */}
       <Card>
         <CardHeader>
-          <CardTitle>Demo Mode</CardTitle>
+          <CardTitle>Demo Mode Settings</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <DemoModeToggle />
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <MessageSquare className="w-4 h-4" />
+              <div>
+                <label htmlFor="slack-escalation" className="text-sm font-medium">
+                  Simulate Slack Escalation
+                </label>
+                <p className="text-xs text-muted-foreground">
+                  Show toast notifications and log escalations for HIGH severity issues
+                </p>
+              </div>
+            </div>
+            <Switch
+              id="slack-escalation"
+              checked={slackEscalationEnabled}
+              onCheckedChange={handleSlackToggle}
+            />
+          </div>
         </CardContent>
       </Card>
       
