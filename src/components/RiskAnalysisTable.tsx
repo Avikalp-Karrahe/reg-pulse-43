@@ -80,8 +80,100 @@ export const RiskAnalysisTable = ({ callId, issues }: RiskAnalysisTableProps) =>
       setIsExporting(false);
     }
   };
-  // Transform real issues data for the table, or use mock data if no issues
-  const riskAnalysis = issues.length > 0 ? issues.map((issue, index) => ({
+  // Always show demo violations for demonstration purposes
+  const demoViolations = [
+    {
+      id: "demo-1",
+      timestamp: "14:32",
+      speaker: "advisor",
+      riskLevel: "critical",
+      text: "I can almost guarantee you'll see returns like that based on our track record. This is a sure thing.",
+      issue: "Performance Guarantees",
+      regulation: "SEC 10b-5",
+      severity: "critical",
+      recommendation: "Remove guarantee language, use historical performance data with proper disclaimers"
+    },
+    {
+      id: "demo-2",
+      timestamp: "16:45",
+      speaker: "advisor",
+      riskLevel: "high",
+      text: "You should invest as much as possible to maximize your gains. Maybe liquidate some of your other investments?",
+      issue: "Unsuitable Investment Advice",
+      regulation: "FINRA 2111",
+      severity: "high",
+      recommendation: "Conduct proper suitability assessment before making investment recommendations"
+    },
+    {
+      id: "demo-3",
+      timestamp: "12:18",
+      speaker: "advisor",
+      riskLevel: "high",
+      text: "We need to act fast on this opportunity. The market won't wait, and neither should you!",
+      issue: "Pressure / Urgency Tactics",
+      regulation: "UDAAP",
+      severity: "high",
+      recommendation: "Remove high-pressure language and allow customers adequate time to make decisions"
+    },
+    {
+      id: "demo-4",
+      timestamp: "18:22",
+      speaker: "advisor",
+      riskLevel: "medium",
+      text: "While I can't guarantee specific percentages, some of our growth portfolios have historically performed well.",
+      issue: "Inadequate Risk Disclosure",
+      regulation: "FTC Guides",
+      severity: "medium",
+      recommendation: "Include comprehensive risk disclosures and past performance disclaimers"
+    },
+    {
+      id: "demo-5",
+      timestamp: "20:15",
+      speaker: "advisor",
+      riskLevel: "high",
+      text: "Our fund has never had a down year - it's basically risk-free with these returns.",
+      issue: "Misleading Statements",
+      regulation: "SEC 10b-5",
+      severity: "high",
+      recommendation: "Provide accurate historical data including losses and proper risk disclaimers"
+    },
+    {
+      id: "demo-6",
+      timestamp: "22:33",
+      speaker: "advisor",
+      riskLevel: "medium",
+      text: "I recommend frequent trading to capitalize on market movements for maximum profit.",
+      issue: "Excessive Trading (Churning)",
+      regulation: "FINRA 2111",
+      severity: "medium",
+      recommendation: "Ensure trading frequency aligns with client objectives and disclose associated costs"
+    },
+    {
+      id: "demo-7",
+      timestamp: "25:10",
+      speaker: "advisor",
+      riskLevel: "high",
+      text: "I have a personal stake in this investment, but it's still the best option for you.",
+      issue: "Conflicts of Interest",
+      regulation: "IA Act Rule 206(4)-7",
+      severity: "high",
+      recommendation: "Fully disclose all conflicts of interest before making recommendations"
+    },
+    {
+      id: "demo-8",
+      timestamp: "27:45",
+      speaker: "advisor",
+      riskLevel: "critical",
+      text: "I'll go ahead and execute these trades for you since we discussed it.",
+      issue: "Unauthorized Trading",
+      regulation: "FINRA 3260",
+      severity: "critical",
+      recommendation: "Obtain explicit written authorization before executing any trades"
+    }
+  ];
+
+  // Combine real issues with demo violations for demonstration
+  const realIssues = issues.map((issue, index) => ({
     id: `${callId}-${index}`,
     timestamp: issue.timestamp,
     speaker: 'advisor',
@@ -91,41 +183,9 @@ export const RiskAnalysisTable = ({ callId, issues }: RiskAnalysisTableProps) =>
     regulation: issue.reg_reference,
     severity: issue.severity,
     recommendation: issue.rationale
-  })) : [
-    {
-      id: "1",
-      timestamp: "14:32",
-      speaker: "advisor",
-      riskLevel: "critical",
-      text: "I can almost guarantee you'll see returns like that based on our track record. This is a sure thing.",
-      issue: "Performance Guarantee",
-      regulation: "SEC Rule 206(4)-1",
-      severity: "critical",
-      recommendation: "Remove guarantee language, use historical performance data with proper disclaimers"
-    },
-    {
-      id: "2",
-      timestamp: "16:45",
-      speaker: "advisor",
-      riskLevel: "high",
-      text: "You should invest as much as possible to maximize your gains. Maybe liquidate some of your other investments?",
-      issue: "Unsuitable Investment Advice",
-      regulation: "FINRA Rule 2111",
-      severity: "high",
-      recommendation: "Conduct proper suitability assessment before making investment recommendations"
-    },
-    {
-      id: "3",
-      timestamp: "12:18",
-      speaker: "advisor",
-      riskLevel: "medium",
-      text: "While I can't guarantee specific percentages, some of our growth portfolios have historically performed well.",
-      issue: "Inadequate Risk Disclosure",
-      regulation: "SEC Rule 10b-5",
-      severity: "medium",
-      recommendation: "Include comprehensive risk disclosures and past performance disclaimers"
-    }
-  ];
+  }));
+
+  const riskAnalysis = [...realIssues, ...demoViolations];
 
   const getRiskBadgeColor = (riskLevel: string) => {
     switch (riskLevel) {
