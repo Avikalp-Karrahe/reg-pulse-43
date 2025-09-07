@@ -64,6 +64,14 @@ export default {
 					'high-text': 'hsl(var(--risk-high-text))',
 					'critical-text': 'hsl(var(--risk-critical-text))'
 				},
+				neon: {
+					cyan: 'hsl(var(--neon-cyan))',
+					green: 'hsl(var(--neon-green))',
+					yellow: 'hsl(var(--neon-yellow))',
+					orange: 'hsl(var(--neon-orange))',
+					red: 'hsl(var(--neon-red))',
+					purple: 'hsl(var(--neon-purple))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -96,11 +104,34 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-glow': {
+					'0%, 100%': { filter: 'drop-shadow(0 0 8px currentColor)' },
+					'50%': { filter: 'drop-shadow(0 0 20px currentColor) drop-shadow(0 0 32px currentColor)' }
+				},
+				'type-in': {
+					'from': { width: '0', opacity: '0' },
+					'to': { width: '100%', opacity: '1' }
+				},
+				'count-up': {
+					'from': { transform: 'scale(1.2)', opacity: '0.5' },
+					'to': { transform: 'scale(1)', opacity: '1' }
+				},
+				'ring-progress': {
+					'from': { 'stroke-dasharray': '0 251.2' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+				'type-in': 'type-in 0.6s ease-out forwards',
+				'count-up': 'count-up 0.4s ease-out',
+				'ring-progress': 'ring-progress 1s ease-out forwards'
+			},
+			backgroundImage: {
+				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+				'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
 			}
 		}
 	},

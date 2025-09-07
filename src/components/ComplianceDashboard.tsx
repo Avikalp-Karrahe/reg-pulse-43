@@ -12,6 +12,9 @@ import { useToast } from "@/hooks/use-toast";
 import { useSaveCall } from "@/hooks/useSaveCall";
 import { audioManager } from "@/lib/audio";
 import { Link } from "react-router-dom";
+import { FuturisticTranscription } from "./FuturisticTranscription";
+import { CircularRiskMeter } from "./CircularRiskMeter";
+import { FuturisticStats } from "./FuturisticStats";
 
 interface CallData {
   id: string;
@@ -311,156 +314,130 @@ export const ComplianceDashboard = () => {
   }
 
   if (currentCall.status === 'active') {
-    // Live call interface  
+    // Live call interface with futuristic design
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 particles-bg">
         {/* Call status header */}
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-xl font-semibold flex items-center space-x-2">
               {isListening ? (
-                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+                <div className="w-3 h-3 bg-neon-green rounded-full animate-pulse neon-glow" />
               ) : (
-                <div className="w-3 h-3 bg-gray-500 rounded-full" />
+                <div className="w-3 h-3 bg-muted rounded-full" />
               )}
-              <span>Live Call Monitoring</span>
+              <span className="text-neon-cyan neon-glow">LIVE MONITORING</span>
             </h2>
-            <p className="text-muted-foreground">{currentCall.id} • {formatDuration(currentCall.duration)}</p>
+            <p className="text-muted-foreground font-mono">
+              {currentCall.id} • {formatDuration(currentCall.duration)}
+            </p>
           </div>
           
-          <Button onClick={endCall} variant="destructive">
+          <Button 
+            onClick={endCall} 
+            variant="destructive"
+            className="bg-neon-red/20 border-neon-red text-neon-red hover:bg-neon-red/30 neon-glow"
+          >
             <PhoneOff className="w-4 h-4 mr-2" />
-            End Call
+            TERMINATE
           </Button>
         </div>
 
-        <div className="flex gap-6 h-[calc(100vh-250px)]">
-          {/* Main monitoring panel - 80% */}
-          <div className="flex-1 space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Risk Score */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Risk Assessment</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-muted-foreground">Current Risk Score</span>
-                      <span className="text-2xl font-bold">{Math.round(riskScore)}%</span>
-                    </div>
-                    <Progress value={riskScore} className="h-3" />
-                  </div>
-                  
-                  {transcript && (
-                    <div className="p-2 bg-muted/50 rounded text-sm">
-                      <span className="font-medium text-muted-foreground">Current: </span>
-                      <span>{transcript}</span>
-                    </div>
-                  )}
-                  
-                  <div className="pt-4 border-t border-border">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <div className="text-muted-foreground">Duration</div>
-                        <div className="font-mono text-lg">{formatDuration(currentCall.duration)}</div>
-                      </div>
-                      <div>
-                        <div className="text-muted-foreground">Status</div>
-                        <div className={`font-medium flex items-center space-x-1 ${isListening ? 'text-green-600' : 'text-gray-600'}`}>
-                          {isListening ? <Mic className="w-3 h-3" /> : <MicOff className="w-3 h-3" />}
-                          <span>{isListening ? 'Recording' : 'Paused'}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Quick Stats */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Analysis Summary</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-sm">Total Issues</span>
-                      <span className="font-medium">{allIssues.length}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Critical Issues</span>
-                      <span className="font-medium text-red-600">
-                        {allIssues.filter(i => i.severity === 'critical').length}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm">Processing</span>
-                      <span className="font-medium">{isLoading ? 'Analyzing...' : 'Ready'}</span>
-                    </div>
-                  </div>
-                  
-                  {allIssues.length > 0 && (
-                    <div className="mt-4 pt-4 border-t">
-                      <h4 className="text-sm font-medium mb-2">Recent Issues</h4>
-                      <div className="space-y-2 max-h-32 overflow-y-auto">
-                        {allIssues.slice(-3).map((issue, index) => (
-                          <div key={index} className="p-2 border rounded text-xs">
-                            <div className="flex justify-between items-center">
-                              <span className="font-medium">{issue.category}</span>
-                              <span className={`px-1 py-0.5 rounded text-xs ${
-                                issue.severity === 'critical' ? 'bg-red-100 text-red-800' :
-                                issue.severity === 'high' ? 'bg-orange-100 text-orange-800' :
-                                issue.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                                'bg-green-100 text-green-800'
-                              }`}>
-                                {issue.severity}
-                              </span>
-                            </div>
-                            <p className="text-muted-foreground mt-1 text-xs">{issue.rationale}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          {/* Live Transcription - 20% */}
-          <div className="w-80 min-w-80">
-            <LiveTranscription 
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-250px)]">
+          {/* Live Transcription - Takes 2 columns */}
+          <div className="lg:col-span-2">
+            <FuturisticTranscription 
               callId={currentCall.id} 
               content={streamingContent}
               isListening={isListening}
+              issues={allIssues}
             />
+          </div>
+
+          {/* Right sidebar with monitoring panels */}
+          <div className="space-y-6">
+            {/* Circular Risk Meter */}
+            <CircularRiskMeter 
+              riskScore={riskScore} 
+              isActive={isListening}
+            />
+
+            {/* Analysis Summary */}
+            <FuturisticStats
+              totalIssues={allIssues.length}
+              criticalIssues={allIssues.filter(i => i.severity === 'critical').length}
+              duration={currentCall.duration}
+              isProcessing={isLoading}
+            />
+
+            {/* Recent Issues Preview */}
+            {allIssues.length > 0 && (
+              <Card className="bg-card/50 backdrop-blur-sm border-primary/20 shadow-lg shadow-primary/10">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm text-neon-orange neon-glow">
+                    RECENT ALERTS
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {allIssues.slice(-3).map((issue, index) => (
+                    <div 
+                      key={index} 
+                      className="p-2 rounded border border-destructive/30 bg-destructive/10 backdrop-blur-sm animate-type-in"
+                    >
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-xs font-medium text-neon-red neon-glow">
+                          {issue.category}
+                        </span>
+                        <span className={`text-xs px-1 py-0.5 rounded ${
+                          issue.severity === 'critical' 
+                            ? 'bg-neon-red/20 text-neon-red' 
+                            : 'bg-neon-orange/20 text-neon-orange'
+                        }`}>
+                          {issue.severity.toUpperCase()}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {issue.rationale.substring(0, 80)}...
+                      </p>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>
     );
   }
 
-  // Post-call analysis
+  // Post-call analysis with futuristic styling
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 particles-bg">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-semibold">Call Analysis Complete</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-2xl font-semibold text-neon-cyan neon-glow">
+            ANALYSIS COMPLETE
+          </h2>
+          <p className="text-muted-foreground font-mono">
             {currentCall.id} • Duration: {formatDuration(currentCall.duration)}
           </p>
         </div>
         <div className="flex items-center space-x-4">
-          <span className={`px-3 py-1 rounded-full text-sm font-medium ${getRiskColor(riskScore)}`}>
-            Risk Score: {Math.round(riskScore)}%
+          <span className={`px-4 py-2 rounded-lg text-sm font-medium border backdrop-blur-sm ${getRiskColor(riskScore)} neon-glow`}>
+            RISK SCORE: {Math.round(riskScore)}%
           </span>
-          <Button variant="outline">
+          <Button 
+            variant="outline"
+            className="border-neon-cyan text-neon-cyan hover:bg-neon-cyan/20 neon-glow"
+          >
             <Download className="w-4 h-4 mr-2" />
-            Export Report
+            EXPORT REPORT
           </Button>
-          <Button onClick={() => setCurrentCall(null)}>
-            Start New Call
+          <Button 
+            onClick={() => setCurrentCall(null)}
+            className="bg-neon-green/20 border-neon-green text-neon-green hover:bg-neon-green/30 neon-glow"
+          >
+            NEW SESSION
           </Button>
         </div>
       </div>

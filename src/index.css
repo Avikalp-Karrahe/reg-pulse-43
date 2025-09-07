@@ -8,104 +8,100 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Professional FinTech light color scheme */
-    --background: 0 0% 100%;
-    --foreground: 222.2 47.4% 11.2%;
+    /* Futuristic dark theme with neon accents */
+    --background: 222 47% 4%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 47.4% 11.2%;
+    --card: 222 47% 6%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 47.4% 11.2%;
+    --popover: 222 47% 6%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 180 100% 50%;
+    --primary-foreground: 222 47% 4%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 217 32% 17%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 210 40% 98%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 217 32% 17%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 180 100% 50%;
+    --accent-foreground: 222 47% 4%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 100% 50%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 217 91% 60%;
+    --border: 217 32% 17%;
+    --input: 217 32% 17%;
+    --ring: 180 100% 50%;
 
-    /* Risk level colors for compliance - light theme */
-    --risk-safe: 120 60% 97%;
-    --risk-low: 60 80% 95%;
-    --risk-medium: 35 90% 90%;
-    --risk-high: 15 90% 85%;
-    --risk-critical: 0 90% 80%;
+    /* Futuristic neon risk colors */
+    --risk-safe: 120 100% 25%;
+    --risk-low: 60 100% 35%;
+    --risk-medium: 35 100% 45%;
+    --risk-high: 15 100% 50%;
+    --risk-critical: 0 100% 50%;
 
-    --risk-safe-text: 120 80% 25%;
-    --risk-low-text: 60 90% 30%;
-    --risk-medium-text: 35 95% 35%;
-    --risk-high-text: 15 95% 40%;
-    --risk-critical-text: 0 95% 45%;
+    --risk-safe-text: 120 100% 70%;
+    --risk-low-text: 60 100% 70%;
+    --risk-medium-text: 35 100% 70%;
+    --risk-high-text: 15 100% 70%;
+    --risk-critical-text: 0 100% 70%;
 
-    /* Professional gradients - light theme */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 70%));
-    --gradient-risk: linear-gradient(90deg, hsl(120 60% 97%), hsl(60 80% 95%), hsl(35 90% 90%), hsl(0 90% 80%));
+    /* Neon glow colors */
+    --neon-cyan: 180 100% 50%;
+    --neon-green: 120 100% 50%;
+    --neon-yellow: 60 100% 50%;
+    --neon-orange: 35 100% 50%;
+    --neon-red: 0 100% 50%;
+    --neon-purple: 270 100% 50%;
+
+    /* Futuristic gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(180 100% 50%), hsl(220 100% 50%));
+    --gradient-risk: linear-gradient(90deg, hsl(120 100% 50%), hsl(60 100% 50%), hsl(35 100% 50%), hsl(0 100% 50%));
+    --gradient-background: linear-gradient(135deg, hsl(222 47% 4%), hsl(217 32% 6%));
     
-    /* Shadows - light theme */
-    --shadow-elegant: 0 4px 20px -4px hsl(0 0% 0% / 0.1);
-    --shadow-glow: 0 0 20px hsl(217 91% 60% / 0.2);
+    /* Neon shadows and glows */
+    --shadow-neon-cyan: 0 0 20px hsl(180 100% 50% / 0.5);
+    --shadow-neon-green: 0 0 20px hsl(120 100% 50% / 0.5);
+    --shadow-neon-red: 0 0 20px hsl(0 100% 50% / 0.5);
+    --shadow-elegant: 0 8px 32px hsl(0 0% 0% / 0.4);
 
     --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 222 47% 4%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 180 100% 50%;
+    --sidebar-primary-foreground: 222 47% 4%;
+    --sidebar-accent: 217 32% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 32% 17%;
+    --sidebar-ring: 180 100% 50%;
   }
 
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
+  .light {
+    /* Keep light theme as fallback but focus on dark */
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 98%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 217 91% 60%;
   }
 }
 
@@ -116,5 +112,80 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    background: linear-gradient(135deg, hsl(var(--background)), hsl(222 47% 6%));
+    min-height: 100vh;
+  }
+
+  /* Futuristic glow effects */
+  .neon-glow {
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+
+  .neon-glow-intense {
+    filter: drop-shadow(0 0 16px currentColor) drop-shadow(0 0 24px currentColor);
+  }
+
+  .glow-border {
+    border: 1px solid;
+    border-image: linear-gradient(90deg, transparent, currentColor, transparent) 1;
+  }
+
+  /* Animations for futuristic effects */
+  @keyframes pulse-glow {
+    0%, 100% { filter: drop-shadow(0 0 8px currentColor); }
+    50% { filter: drop-shadow(0 0 20px currentColor) drop-shadow(0 0 32px currentColor); }
+  }
+
+  @keyframes type-in {
+    from { width: 0; opacity: 0; }
+    to { width: 100%; opacity: 1; }
+  }
+
+  @keyframes count-up {
+    from { transform: scale(1.2); opacity: 0.5; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes ring-progress {
+    from { stroke-dasharray: 0 251.2; }
+  }
+
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .animate-type-in {
+    animation: type-in 0.6s ease-out forwards;
+  }
+
+  .animate-count-up {
+    animation: count-up 0.4s ease-out;
+  }
+
+  .animate-ring-progress {
+    animation: ring-progress 1s ease-out forwards;
+  }
+
+  /* Background particle effect */
+  .particles-bg::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+      radial-gradient(circle at 20% 20%, hsl(180 100% 50% / 0.1) 1px, transparent 1px),
+      radial-gradient(circle at 80% 40%, hsl(120 100% 50% / 0.1) 1px, transparent 1px),
+      radial-gradient(circle at 40% 80%, hsl(270 100% 50% / 0.1) 1px, transparent 1px);
+    background-size: 100px 100px, 150px 150px, 120px 120px;
+    animation: drift 20s linear infinite;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  @keyframes drift {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(-100px, -100px); }
   }
 }
