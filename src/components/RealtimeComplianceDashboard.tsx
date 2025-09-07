@@ -247,30 +247,38 @@ export const RealtimeComplianceDashboard = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="h-[400px] flex flex-col">
-                <ScrollArea className="flex-1 mb-4">
-                  <div className="space-y-3 pr-4">
-                    {messages.map((message, index) => (
-                      <div
-                        key={index}
-                        className={`p-3 rounded-lg ${
-                          message.role === 'user'
-                            ? 'bg-cyan-500/20 border border-cyan-500/30 ml-8'
-                            : 'bg-muted/50 border border-border mr-8'
-                        }`}
-                      >
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className={`text-xs font-medium ${
-                            message.role === 'user' ? 'text-cyan-400' : 'text-primary'
-                          }`}>
-                            {message.role === 'user' ? 'You' : 'AI Assistant'}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(message.timestamp).toLocaleTimeString()}
-                          </span>
+                  <ScrollArea className="flex-1 mb-4">
+                    <div className="space-y-3 pr-4">
+                      {messages.length === 0 && (
+                        <div className="text-center text-muted-foreground py-8">
+                          Start speaking to begin the conversation...
                         </div>
-                        <p className="text-sm text-foreground">{message.content}</p>
-                      </div>
-                    ))}
+                      )}
+                      {messages.map((message, index) => {
+                        console.log('🔍 Rendering message:', message);
+                        return (
+                          <div
+                            key={index}
+                            className={`p-3 rounded-lg ${
+                              message.role === 'user'
+                                ? 'bg-cyan-500/20 border border-cyan-500/30 ml-8'
+                                : 'bg-muted/50 border border-border mr-8'
+                            }`}
+                          >
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className={`text-xs font-medium ${
+                                message.role === 'user' ? 'text-cyan-400' : 'text-primary'
+                              }`}>
+                                {message.role === 'user' ? 'You' : 'AI Assistant'}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {new Date(message.timestamp).toLocaleTimeString()}
+                              </span>
+                            </div>
+                            <p className="text-sm text-foreground">{message.content}</p>
+                          </div>
+                        );
+                      })}
                     
                     {/* Current transcript */}
                     {currentTranscript && (

@@ -101,13 +101,19 @@ export const useRealtimeCompliance = () => {
           case 'response.output_audio_transcript.done':
             // Add complete transcript to messages
             const transcript = data.transcript || currentTranscript.trim();
+            console.log('🎯 AI transcript received:', transcript);
             if (transcript) {
-              setMessages(prev => [...prev, {
-                role: 'assistant',
-                content: transcript,
-                timestamp: new Date().toISOString(),
-                type: 'text'
-              }]);
+              console.log('📝 Adding AI message to conversation');
+              setMessages(prev => {
+                const newMessages = [...prev, {
+                  role: 'assistant' as const,
+                  content: transcript,
+                  timestamp: new Date().toISOString(),
+                  type: 'text' as const
+                }];
+                console.log('💬 Updated messages array:', newMessages);
+                return newMessages;
+              });
               setCurrentTranscript('');
             }
             break;
