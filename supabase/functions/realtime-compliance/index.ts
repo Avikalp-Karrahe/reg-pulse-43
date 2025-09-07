@@ -11,7 +11,9 @@ interface OpenAIRealtimeMessage {
 }
 
 // Handle WebSocket upgrade and proxy to OpenAI Realtime API
-Deno.serve(async (req) => {
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+
+serve(async (req) => {
   console.log('Realtime compliance function called');
   
   // Handle CORS preflight requests
@@ -35,9 +37,15 @@ Deno.serve(async (req) => {
     const { socket: clientSocket, response } = Deno.upgradeWebSocket(req);
     
     // Connect to OpenAI Realtime API
+    console.log('Connecting to OpenAI Realtime API...');
     const openaiWs = new WebSocket(
       'wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01',
-      ['realtime', `openai-insecure-api-key.${openaiApiKey}`]
+      {
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'OpenAI-Beta': 'realtime=v1'
+        }
+      }
     );
 
     let sessionConfigured = false;

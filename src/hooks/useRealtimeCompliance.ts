@@ -52,7 +52,7 @@ export const useRealtimeCompliance = () => {
     try {
       console.log('Connecting to realtime compliance service...');
       
-      const wsUrl = 'wss://lrofbumospouflcegtbc.functions.supabase.co/realtime-compliance';
+      const wsUrl = 'wss://lrofbumospouflcegtbc.functions.supabase.co/functions/v1/realtime-compliance';
       wsRef.current = new WebSocket(wsUrl);
 
       wsRef.current.onopen = () => {
@@ -156,9 +156,10 @@ export const useRealtimeCompliance = () => {
 
       wsRef.current.onerror = (error) => {
         console.error('WebSocket error:', error);
+        setIsConnected(false);
         toast({
           title: "Connection Error",
-          description: "Failed to connect to compliance monitoring service",
+          description: "Failed to connect to compliance monitoring service. Please check your internet connection and try again.",
           variant: "destructive",
         });
       };
