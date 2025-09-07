@@ -7,12 +7,12 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { ComplianceDashboard } from "@/components/ComplianceDashboard";
 import { CallHistoryPage } from "@/components/CallHistoryPage";
-import { Analytics } from "@/components/Analytics";
+import { LazyAnalytics } from "@/components/LazyAnalytics";
 import { AudioInputSetup } from "@/components/AudioInputSetup";
 import { LandingPage } from "@/components/LandingPage";
 import { DemoBanner } from "@/components/DemoBanner";
 import { AgentOpsConsole } from "@/components/AgentOpsConsole";
-import { PresenterPanel } from "@/components/PresenterPanel";
+import { LazyPresenterPanel } from "@/components/LazyPresenterPanel";
 import { isDemoActive } from "@/app/dataAdapter";
 import NotFound from "./pages/NotFound";
 import { useState, useEffect } from "react";
@@ -105,11 +105,11 @@ const App = () => {
                     </header>
 
                     {/* Main Content */}
-                    <main className="flex-1 p-6">
+                    <main id="main-content" className="flex-1 p-6 focus:outline-none" tabIndex={-1}>
                       <Routes>
                         <Route path="/dashboard" element={<ComplianceDashboard />} />
                         <Route path="/history" element={<CallHistoryPage />} />
-                        <Route path="/analytics" element={<Analytics />} />
+                        <Route path="/analytics" element={<LazyAnalytics />} />
                         <Route path="/settings" element={<AudioInputSetup />} />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
@@ -120,10 +120,10 @@ const App = () => {
                     isOpen={isAgentOpsOpen} 
                     onClose={() => setIsAgentOpsOpen(false)} 
                   />
-                  <PresenterPanel
-                    isOpen={presenterPanelOpen}
-                    onClose={() => setPresenterPanelOpen(false)}
-                  />
+        <LazyPresenterPanel 
+          isOpen={presenterPanelOpen} 
+          onClose={() => setPresenterPanelOpen(false)} 
+        />
                 </div>
               </SidebarProvider>
             } />

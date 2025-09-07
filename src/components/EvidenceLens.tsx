@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Play, AlertCircle, BookOpen, Clock, Copy, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface EvidenceLensProps {
   isOpen: boolean;
@@ -108,12 +108,33 @@ export const EvidenceLens = ({ isOpen, onClose, issue }: EvidenceLensProps) => {
     }
   };
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      onClose();
+    }
+  };
+
+  // Focus management
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown);
+      return () => document.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [isOpen]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className={`max-w-2xl border-2 ${getSeverityGlow(issue.severity)} backdrop-blur-sm bg-background/95`}>
+      <DialogContent 
+        className={`max-w-2xl border-2 ${getSeverityGlow(issue.severity)} backdrop-blur-sm bg-background/95`}
+        aria-labelledby="evidence-lens-title"
+        aria-describedby="evidence-lens-description"
+      >
         <DialogHeader className="space-y-3">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            <DialogTitle 
+              id="evidence-lens-title"
+              className="text-xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent"
+            >
               Evidence Analysis
             </DialogTitle>
             <Badge className={getSeverityBadgeColor(issue.severity)}>

@@ -219,27 +219,37 @@ All colors MUST be HSL.
     75% { transform: translateX(-1%) translateY(-2%) scale(1.01); }
   }
 
-  /* Premium typography */
+  /* Typography Scale */
   .text-display-xl {
-    font-size: 4.5rem;
+    font-size: clamp(3.5rem, 8vw, 4.5rem);
     line-height: 1;
-    letter-spacing: -0.02em;
-    font-weight: 800;
-  }
-
-  .text-display-lg {
-    font-size: 3.75rem;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    font-weight: 800;
-  }
-
-  .text-display-md {
-    font-size: 3rem;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
     font-weight: 700;
+    letter-spacing: -0.025em;
   }
+  
+  .text-display-lg {
+    font-size: clamp(2.5rem, 6vw, 3rem);
+    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  
+  .text-display-md {
+    font-size: clamp(2rem, 4vw, 2.25rem);
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* Typography Responsive System */
+  h1 { @apply text-display-xl tracking-tight; }
+  h2 { @apply text-display-lg tracking-tight; }
+  body { @apply text-base; }
+  .caption { @apply text-xs; }
+
+  /* Section Spacing */
+  .section-spacing { @apply py-20 md:py-24; }
+  .section-spacing-mobile { @apply py-14; }
 
   .text-gradient {
     background: linear-gradient(135deg, hsl(var(--neon-cyan)), hsl(var(--neon-purple)));
@@ -255,6 +265,17 @@ All colors MUST be HSL.
     border: 1px solid hsla(var(--border), 0.5);
     border-radius: 2rem;
     box-shadow: 0 25px 50px -12px hsla(0, 0%, 0%, 0.25);
+    transition: all 0.12s cubic-bezier(0.16, 0.84, 0.44, 1);
+  }
+
+  .card-premium:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 
+      0 10px 25px -3px hsl(var(--foreground) / 0.15),
+      0 4px 6px -2px hsl(var(--foreground) / 0.1),
+      inset 0 1px 0 hsl(var(--primary) / 0.2),
+      0 0 0 1px hsl(var(--primary) / 0.3),
+      0 0 20px hsl(var(--primary) / 0.2);
   }
 
   .card-glass {

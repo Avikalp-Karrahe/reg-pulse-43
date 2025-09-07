@@ -119,6 +119,14 @@ export default {
 				},
 				'ring-progress': {
 					'from': { 'stroke-dasharray': '0 251.2' }
+				},
+				'hover-lift': {
+					'0%': { transform: 'translateY(0) scale(1)' },
+					'100%': { transform: 'translateY(-2px) scale(1.02)' }
+				},
+				'motion-safe': {
+					'0%': { opacity: '0', transform: 'translateY(10px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
 				}
 			},
 			animation: {
@@ -127,7 +135,9 @@ export default {
 				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
 				'type-in': 'type-in 0.6s ease-out forwards',
 				'count-up': 'count-up 0.4s ease-out',
-				'ring-progress': 'ring-progress 1s ease-out forwards'
+				'ring-progress': 'ring-progress 1s ease-out forwards',
+				'hover-lift': 'hover-lift 0.12s cubic-bezier(0.16, 0.84, 0.44, 1)',
+				'motion-safe': 'motion-safe 0.28s cubic-bezier(0.16, 0.84, 0.44, 1)'
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

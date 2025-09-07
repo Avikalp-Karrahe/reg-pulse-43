@@ -112,9 +112,15 @@ export const CircularRiskMeter = ({
   const isCritical = displayScore > 80;
 
   return (
-    <Card className={`bg-card/50 backdrop-blur-sm border-primary/20 shadow-lg shadow-primary/10 ${
+    <Card className={`bg-card/50 backdrop-blur-sm border-primary/20 shadow-lg shadow-primary/10 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 ${
       isCritical ? 'animate-pulse-glow' : ''
-    }`}>
+    }`}
+    role="progressbar"
+    aria-valuenow={displayScore}
+    aria-valuemin={0}
+    aria-valuemax={100}
+    aria-label={`Risk assessment: ${displayScore}% - ${risk.level} level`}
+    >
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center space-x-2 text-lg">
           {isCritical ? (

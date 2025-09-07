@@ -249,6 +249,28 @@ export const PresenterPanel = ({ isOpen, onClose }: PresenterPanelProps) => {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, customText]);
 
+  // Focus management and keyboard handling
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    // Focus first interactive element
+    const focusableElements = document.querySelectorAll(
+      '[data-presenter-panel] button:not([disabled]), [data-presenter-panel] textarea:not([disabled])'
+    );
+    if (focusableElements.length > 0) {
+      (focusableElements[0] as HTMLElement).focus();
+    }
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
@@ -258,15 +280,27 @@ export const PresenterPanel = ({ isOpen, onClose }: PresenterPanelProps) => {
       exit={{ x: '100%' }}
       transition={{ type: 'spring', damping: 20, stiffness: 100 }}
       className="fixed right-0 top-0 h-full w-96 bg-background/95 backdrop-blur-sm border-l border-border shadow-2xl z-50 overflow-y-auto"
+      data-presenter-panel
+      role="dialog"
+      aria-labelledby="presenter-panel-title"
+      aria-describedby="presenter-panel-description"
     >
       <div className="p-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold text-foreground">Presenter Panel</h2>
-          <Button variant="ghost" size="sm" onClick={onClose}>
+          <h2 id="presenter-panel-title" className="text-xl font-bold text-foreground">Presenter Panel</h2>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={onClose}
+            aria-label="Close presenter panel"
+          >
             <X className="w-4 h-4" />
           </Button>
         </div>
+        <p id="presenter-panel-description" className="sr-only">
+          Demo panel for testing compliance violations and real-time analysis
+        </p>
 
         {/* Quick Inject Phrases */}
         <Card>
@@ -284,6 +318,7 @@ export const PresenterPanel = ({ isOpen, onClose }: PresenterPanelProps) => {
                   disabled={isProcessing}
                   className="w-full justify-start text-left h-auto p-3"
                   variant="outline"
+                  aria-label={`Test compliance violation: ${phrase.category} - ${phrase.severity} severity`}
                 >
                   <div className="flex flex-col items-start w-full">
                     <div className="flex items-center gap-2 mb-1">
@@ -327,6 +362,7 @@ export const PresenterPanel = ({ isOpen, onClose }: PresenterPanelProps) => {
               onClick={handleCustomSubmit}
               disabled={!customText.trim() || isProcessing}
               className="w-full"
+              aria-label="Analyze custom text for compliance violations"
             >
               Analyze Text (Enter)
             </Button>
@@ -347,6 +383,7 @@ export const PresenterPanel = ({ isOpen, onClose }: PresenterPanelProps) => {
               disabled={isProcessing}
               className="w-full"
               variant="secondary"
+              aria-label="Run automated sequence of compliance violations for demo"
             >
               Replay Script Sequence
             </Button>
