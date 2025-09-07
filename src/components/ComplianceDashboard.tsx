@@ -179,56 +179,21 @@ export const ComplianceDashboard = () => {
     }
   };
 
-  const handleUploadTranscription = async (transcript: string, duration: number) => {
-    const newCall: CallData = {
-      id: `CALL-${Date.now()}`,
-      duration: 0,
-      riskScore: 0,
-      status: 'active'
-    };
-    
-    setCurrentCall(newCall);
-    setTranscriptLines([]);
-    resetSession();
-    
-    // Process transcript in segments for better visualization
-    const sentences = transcript.split(/[.!?]+/).filter(s => s.trim().length > 0);
-    const segmentDelay = Math.min(2000, Math.max(500, duration * 1000 / sentences.length));
-    
-    for (let i = 0; i < sentences.length; i++) {
-      const sentence = sentences[i].trim();
-      if (sentence) {
-        setTimeout(() => {
-          setTranscriptLines(prev => [...prev, sentence]);
-          sendMessage(sentence);
-        }, i * segmentDelay);
-      }
-    }
-    
-    // End call after processing
-    setTimeout(async () => {
-      const finalCall: CallData = {
-        ...newCall,
-        duration: duration,
-        riskScore: riskScore,
-        status: 'completed'
-      };
-      
-      setCurrentCall(finalCall);
-      
-      // Save call to Supabase
-      saveCall.mutate({
-        callId: newCall.id,
-        duration: duration,
-        riskScore: riskScore,
-        issues: allIssues,
-      });
-      
-      toast({
-        title: "Upload Complete",
-        description: `Recording analyzed successfully. Duration: ${Math.floor(duration / 60)}:${(duration % 60).toString().padStart(2, '0')}`,
-      });
-    }, sentences.length * segmentDelay + 1000);
+  const handleAnalysisComplete = (result: any) => {
+    toast({
+      title: "Analysis Complete",
+      description: `Analysis completed successfully with ${result.issues?.length || 0} issues found.`,
+    });
+  };
+
+  const handleIssueDetected = (issue: any) => {
+    // Issues are already managed by useToolhouseAgent
+    console.log('Issue detected:', issue);
+  };
+
+  const handleRiskScoreUpdate = (score: number) => {
+    // Risk score is already managed by useToolhouseAgent
+    console.log('Risk score updated:', score);
   };
 
   // Update risk score when Toolhouse provides new data
@@ -356,8 +321,10 @@ export const ComplianceDashboard = () => {
               </div>
               
               <FileUpload 
-                onTranscriptionComplete={handleUploadTranscription}
-                isProcessing={false}
+                onAnalysisComplete={handleAnalysisComplete}
+                onIssueDetected={handleIssueDetected}
+                onRiskScoreUpdate={handleRiskScoreUpdate}
+                isProcessing={isLoading}
               />
             </CardContent>
           </Card>

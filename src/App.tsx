@@ -11,7 +11,6 @@ import { Analytics } from "@/components/Analytics";
 import { AudioInputSetup } from "@/components/AudioInputSetup";
 import { DemoBanner } from "@/components/DemoBanner";
 import { isDemoMode } from "@/lib/demoConfig";
-import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
