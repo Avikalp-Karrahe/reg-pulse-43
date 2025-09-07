@@ -182,7 +182,7 @@ export const LandingPage = () => {
                   scale: [0.8, 1.2, 0.8],
                 }}
                 transition={{
-                  duration: isHoveringLaunchButton ? particle.dur * 0.5 : particle.dur, // 50% faster when hovering
+                  duration: isHoveringLaunchButton ? particle.dur * 0.25 : particle.dur, // 100% faster when hovering
                   repeat: Infinity,
                   delay: particle.delay,
                   ease: "easeInOut"
