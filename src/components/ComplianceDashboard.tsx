@@ -8,6 +8,7 @@ import { RiskAnalysisTable } from "./RiskAnalysisTable";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { useToolhouseAgent } from "@/hooks/useToolhouseAgent";
 import { useToast } from "@/hooks/use-toast";
+import { useSaveCall } from "@/hooks/useSaveCall";
 
 interface CallData {
   id: string;
@@ -19,6 +20,7 @@ interface CallData {
 export const ComplianceDashboard = () => {
   const [currentCall, setCurrentCall] = useState<CallData | null>(null);
   const { toast } = useToast();
+  const saveCall = useSaveCall();
   
   const {
     sendMessage,
@@ -116,18 +118,13 @@ export const ComplianceDashboard = () => {
         description: `Call completed with risk score: ${riskScore.toFixed(1)}%`,
       });
       
-      // Save call to history
-      const callHistory = JSON.parse(localStorage.getItem('callHistory') || '[]');
-      callHistory.push({
-        ...currentCall,
-        status: 'completed',
+      // Save call to Supabase
+      saveCall.mutate({
+        callId: currentCall.id,
+        duration: currentCall.duration,
         riskScore: riskScore,
         issues: allIssues,
-        transcript: streamingContent,
-        endTime: new Date().toISOString(),
-        date: new Date().toLocaleDateString(),
       });
-      localStorage.setItem('callHistory', JSON.stringify(callHistory));
     }
   };
 
