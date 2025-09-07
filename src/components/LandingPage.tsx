@@ -314,12 +314,12 @@ export const LandingPage = () => {
                 <Button
                   asChild
                   size="lg"
-                  className="h-16 px-12 text-lg font-semibold text-white hover:text-emerald-400 bg-transparent border-0 hover:bg-transparent transition-colors duration-300"
+                  className="h-20 px-16 text-xl font-bold text-red-500 hover:text-emerald-400 bg-transparent border-2 border-red-500/30 hover:border-emerald-500/50 hover:bg-transparent transition-all duration-300 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl"
                   aria-label="Go to dashboard"
                 >
-                  <Link to="/dashboard">
-                    <Play className="w-6 h-6 mr-3" aria-hidden="true" />
-                    Launch Dashboard
+                  <Link to="/dashboard" className="flex items-center">
+                    <Play className="w-7 h-7 mr-4" aria-hidden="true" />
+                    <span className="tracking-wide">Launch Dashboard</span>
                   </Link>
                 </Button>
               </div>
@@ -659,13 +659,13 @@ export const LandingPage = () => {
               <Button 
                 asChild
                 size="lg" 
-                className="button-premium h-16 px-12 text-lg" 
+                className="h-20 px-16 text-xl font-bold text-red-500 hover:text-emerald-400 bg-transparent border-2 border-red-500/30 hover:border-emerald-500/50 hover:bg-transparent transition-all duration-300 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl" 
                 onMouseEnter={() => setIsHoveringBottomCTA(true)}
                 onMouseLeave={() => setIsHoveringBottomCTA(false)}
               >
-                <Link to="/dashboard">
-                  <Play className="w-5 h-5 mr-2" />
-                  Launch Dashboard
+                <Link to="/dashboard" className="flex items-center">
+                  <Play className="w-7 h-7 mr-4" />
+                  <span className="tracking-wide">Launch Dashboard</span>
                 </Link>
               </Button>
             </div>
