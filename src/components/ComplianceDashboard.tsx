@@ -625,154 +625,150 @@ export const ComplianceDashboard = () => {
             <Card className="card-premium h-full">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent">
-                    AI Compliance Analysis
+                  <CardTitle className="text-lg bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
+                    Risk Analysis Table
                   </CardTitle>
-                  <div className="flex items-center gap-2">
-                    <Badge className="bg-cyan-500/20 text-cyan-400 border-cyan-500/20">
-                      {allIssues.length} Issues
-                    </Badge>
-                    <Badge className={`${getRiskColor(riskScore)} border-0`}>
-                      {riskScore.toFixed(1)}% Risk
-                    </Badge>
-                  </div>
                 </div>
               </CardHeader>
               <CardContent>
-                <FuturisticTranscription 
-                  callId={currentCall.id} 
-                  content={transcriptLines.length > 0 ? transcriptLines.join(' ') : streamingContent}
-                  isListening={isListening}
-                  issues={allIssues}
-                />
+                <div className="space-y-4">
+                  {/* Compliance Categories Checklist */}
+                  <div className="grid gap-3">
+                    {[
+                      { id: 'performance_guarantees', name: 'Performance Guarantees', regulation: 'SEC 10b-5' },
+                      { id: 'unsuitable_advice', name: 'Unsuitable Investment Advice', regulation: 'FINRA 2111' },
+                      { id: 'pressure_tactics', name: 'Pressure / Urgency Tactics', regulation: 'UDAAP' },
+                      { id: 'risk_disclosure', name: 'Inadequate Risk Disclosure', regulation: 'FTC Guides' },
+                      { id: 'misleading_statements', name: 'Misleading Statements', regulation: 'SEC 10b-5' },
+                      { id: 'churning', name: 'Excessive Trading (Churning)', regulation: 'FINRA 2111' },
+                      { id: 'conflicts_of_interest', name: 'Conflicts of Interest', regulation: 'IA Act Rule 206(4)-7' },
+                      { id: 'unauthorized_trading', name: 'Unauthorized Trading', regulation: 'FINRA 3260' }
+                    ].map((category) => {
+                      const hasIssue = allIssues.some(issue => 
+                        issue.category.toLowerCase().replace(/[^a-z0-9]/g, '_').includes(category.id.split('_')[0])
+                      );
+                      
+                      return (
+                        <div
+                          key={category.id}
+                          className={`flex items-center space-x-3 p-3 rounded-lg border transition-all ${
+                            hasIssue 
+                              ? 'bg-red-500/20 border-red-500/50 shadow-lg shadow-red-500/20' 
+                              : 'bg-green-500/10 border-green-500/30'
+                          }`}
+                        >
+                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${
+                            hasIssue 
+                              ? 'bg-red-500 border-red-500' 
+                              : 'bg-green-500 border-green-500'
+                          }`}>
+                            {hasIssue ? (
+                              <div className="w-3 h-3 bg-white rounded-full animate-pulse" />
+                            ) : (
+                              <div className="w-2 h-2 bg-white rounded-full" />
+                            )}
+                          </div>
+                          
+                          <div className="flex-1">
+                            <div className="flex items-center justify-between">
+                              <span className={`font-medium text-sm ${
+                                hasIssue ? 'text-red-400' : 'text-green-400'
+                              }`}>
+                                {category.name}
+                              </span>
+                              <Badge 
+                                variant="outline" 
+                                className={`text-xs ${
+                                  hasIssue 
+                                    ? 'border-red-500/50 text-red-400 bg-red-500/10' 
+                                    : 'border-green-500/50 text-green-400 bg-green-500/10'
+                                }`}
+                              >
+                                {hasIssue ? 'FLAGGED' : 'CLEAR'}
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {category.regulation}
+                            </p>
+                            
+                            {/* Show specific issue details if detected */}
+                            {hasIssue && allIssues
+                              .filter(issue => issue.category.toLowerCase().replace(/[^a-z0-9]/g, '_').includes(category.id.split('_')[0]))
+                              .map((issue, idx) => (
+                                <div key={idx} className="mt-2 p-2 bg-red-500/10 rounded border border-red-500/20">
+                                  <p className="text-xs text-red-300 font-medium">
+                                    Severity: {issue.severity.toUpperCase()}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    {issue.rationale}
+                                  </p>
+                                  {issue.evidenceSnippet && (
+                                    <p className="text-xs text-red-200 mt-1 italic">
+                                      "{issue.evidenceSnippet}"
+                                    </p>
+                                  )}
+                                </div>
+                              ))
+                            }
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                  {/* Summary Stats */}
+                  <div className="border-t pt-4 mt-4">
+                    <div className="grid grid-cols-2 gap-4 text-center">
+                      <div className="p-3 bg-red-500/10 rounded border border-red-500/20">
+                        <div className="text-2xl font-bold text-red-400">
+                          {allIssues.length}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          Total Issues
+                        </div>
+                      </div>
+                      <div className="p-3 bg-red-500/10 rounded border border-red-500/20">
+                        <div className="text-2xl font-bold text-red-400">
+                          {allIssues.filter(i => i.severity === 'critical' || i.severity === 'high').length}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          High Risk
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
         </motion.div>
 
-        {/* Bottom Analysis Grid */}
+        {/* Live Voice to Text Transcription */}
         <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 gap-8"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6 }}
         >
-          {/* Risk Analysis Table - Enhanced, takes 2 columns */}
-          <motion.div 
-            className="lg:col-span-2"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 }}
-          >
-            <Card className="card-premium h-full">
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">
-                    Risk Analysis & Violations
-                  </CardTitle>
-                  <Badge className="bg-orange-500/20 text-orange-400 border-orange-500/20">
-                    {allIssues.filter(i => i.severity === 'critical').length} Critical
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <RiskAnalysisTable issues={allIssues} callId={currentCall.id} />
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Right sidebar with monitoring panels */}
-          <motion.div 
-            className="space-y-6"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.7 }}
-          >
-            {/* Enhanced Circular Risk Meter */}
-            <Card className="card-premium">
-              <CardHeader className="text-center pb-4">
-                <CardTitle className="text-lg bg-gradient-to-r from-amber-400 to-orange-400 bg-clip-text text-transparent">
-                  Risk Monitor
+          <Card className="card-premium">
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+                  Live Transcription
                 </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CircularRiskMeter 
-                  riskScore={riskScore} 
-                  isActive={isListening}
-                />
-              </CardContent>
-            </Card>
-
-            {/* Enhanced Analysis Summary */}
-            <Card className="card-premium">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                  Live Statistics
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <FuturisticStats
-                  totalIssues={allIssues.length}
-                  criticalIssues={allIssues.filter(i => i.severity === 'critical').length}
-                  duration={currentCall.duration}
-                  isProcessing={isLoading}
-                />
-              </CardContent>
-            </Card>
-
-            {/* Enhanced Recent Issues Preview */}
-            {allIssues.length > 0 && (
-              <Card className="card-premium">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
-                      Recent Alerts
-                    </CardTitle>
-                    <Badge className="bg-red-500/20 text-red-400 border-red-500/20">
-                      {allIssues.slice(-3).length} New
-                    </Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  {allIssues.slice(-3).map((issue, index) => (
-                    <motion.div 
-                      key={index} 
-                      className="p-4 rounded-xl border border-red-500/20 bg-red-500/5 backdrop-blur-sm"
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                    >
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium text-red-400">
-                          {issue.category}
-                        </span>
-                        <Badge className={`text-xs ${
-                          issue.severity === 'critical' 
-                            ? 'bg-red-500/20 text-red-400 border-red-500/30' 
-                            : 'bg-orange-500/20 text-orange-400 border-orange-500/30'
-                        }`}>
-                          {issue.severity.toUpperCase()}
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-muted-foreground mb-2 leading-relaxed">
-                        {issue.rationale.substring(0, 100)}...
-                      </p>
-                      {issue.evidenceSnippet && (
-                        <div className="text-xs text-muted-foreground/80 border-t border-muted/20 pt-2 mt-2">
-                          <span className="font-mono text-cyan-400">Evidence:</span> {issue.evidenceSnippet.substring(0, 80)}...
-                          {issue.evidenceStartMs && (
-                            <span className="ml-2 text-xs bg-muted/20 px-2 py-1 rounded">
-                              {Math.floor(issue.evidenceStartMs / 1000)}s
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </motion.div>
-                  ))}
-                </CardContent>
-              </Card>
-            )}
-          </motion.div>
+                <Badge className={`${isListening ? 'bg-green-500/20 text-green-400 border-green-500/20' : 'bg-muted/20 text-muted-foreground border-muted/20'}`}>
+                  {isListening ? 'STREAMING' : 'PAUSED'}
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <LiveVoiceToText 
+                finalTranscripts={finalTranscripts}
+                transcript={transcript}
+                isListening={isListening}
+              />
+            </CardContent>
+          </Card>
         </motion.div>
       </motion.div>
     );
