@@ -100,10 +100,10 @@ export const LandingPage = () => {
       Array.from({ length: 250 }).map((_, i) => ({
         leftPct: Math.random() * 100,
         topPct: Math.random() * 100,
-        dur: 6 + Math.random() * 15,
+        dur: 4 + Math.random() * 8, // Faster (reduced from 6-21)
         delay: Math.random() * 8,
         key: i,
-        size: 0.5 + Math.random() * 2,
+        size: 1.5 + Math.random() * 3, // Bigger (increased from 0.5-2.5)
         opacity: 0.1 + Math.random() * 0.3,
       })),
     []
