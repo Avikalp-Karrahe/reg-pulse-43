@@ -23,6 +23,7 @@ export const RealtimeComplianceDashboard = () => {
     complianceIssues,
     guidance,
     currentTranscript,
+    isAgentSpeaking,
     connect,
     disconnect,
     startRecording,
@@ -278,16 +279,28 @@ export const RealtimeComplianceDashboard = () => {
                         );
                       })}
                     
-                    {/* Current transcript */}
-                    {currentTranscript && (
-                      <div className="p-3 rounded-lg bg-primary/10 border border-primary/20 mr-8 animate-fade-in">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-medium text-primary">AI Assistant</span>
-                          <span className="text-xs text-muted-foreground">speaking...</span>
-                        </div>
-                        <p className="text-sm text-foreground italic">{currentTranscript}</p>
-                      </div>
-                    )}
+                     {/* Current transcript */}
+                     {currentTranscript && (
+                       <div className="p-3 rounded-lg bg-primary/10 border border-primary/20 mr-8 animate-fade-in">
+                         <div className="flex items-center gap-2 mb-1">
+                           <span className="text-xs font-medium text-primary">AI Assistant</span>
+                           <span className="text-xs text-muted-foreground">speaking...</span>
+                         </div>
+                         <p className="text-sm text-foreground italic">{currentTranscript}</p>
+                       </div>
+                     )}
+
+                     {/* Agent speaking indicator */}
+                     {isAgentSpeaking && (
+                       <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/20 mr-8 animate-pulse">
+                         <div className="flex items-center gap-2 mb-1">
+                           <div className="w-2 h-2 bg-green-500 rounded-full animate-ping" />
+                           <span className="text-xs font-medium text-green-400">AI Assistant</span>
+                           <span className="text-xs text-muted-foreground">speaking aloud...</span>
+                         </div>
+                         <p className="text-sm text-green-300 italic">🔊 Voice output active</p>
+                       </div>
+                     )}
                   </div>
                 </ScrollArea>
                 

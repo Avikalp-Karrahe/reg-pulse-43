@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { AudioRecorder, encodeAudioForAPI, playAudioData, clearAudioQueue } from '@/lib/audioUtils';
 import { useToast } from '@/hooks/use-toast';
+import { ttsService } from '@/services/textToSpeech';
 
 interface ComplianceIssue {
   category: string;
@@ -32,10 +33,12 @@ export const useRealtimeCompliance = () => {
   const [guidance, setGuidance] = useState<ComplianceGuidance[]>([]);
   const [currentTranscript, setCurrentTranscript] = useState('');
   const [responseAudio, setResponseAudio] = useState<string>('');
+  const [isAgentSpeaking, setIsAgentSpeaking] = useState(false);
   
   const wsRef = useRef<WebSocket | null>(null);
   const audioRecorderRef = useRef<AudioRecorder | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const hasSpokenWelcome = useRef(false);
   const { toast } = useToast();
 
   // Initialize audio context
@@ -56,13 +59,26 @@ export const useRealtimeCompliance = () => {
       console.log('🌐 WebSocket URL:', wsUrl);
       wsRef.current = new WebSocket(wsUrl);
 
-      wsRef.current.onopen = () => {
+      wsRef.current.onopen = async () => {
         console.log('✅ Connected to realtime compliance WebSocket');
         setIsConnected(true);
         toast({
           title: "Connected",
           description: "Real-time compliance monitoring is active",
         });
+
+        // Speak welcome message when connected
+        if (!hasSpokenWelcome.current) {
+          hasSpokenWelcome.current = true;
+          try {
+            setIsAgentSpeaking(true);
+            await ttsService.speakWelcomeMessage();
+            setIsAgentSpeaking(false);
+          } catch (error) {
+            console.error('❌ Failed to speak welcome message:', error);
+            setIsAgentSpeaking(false);
+          }
+        }
       };
 
       wsRef.current.onmessage = async (event) => {
@@ -137,6 +153,18 @@ export const useRealtimeCompliance = () => {
               description: `${issue.category}: ${issue.rationale.substring(0, 100)}...`,
               variant: issue.severity === 'critical' || issue.severity === 'high' ? 'destructive' : 'default',
             });
+
+            // Speak compliance issue alert for high/critical issues
+            if (issue.severity === 'high' || issue.severity === 'critical') {
+              try {
+                setIsAgentSpeaking(true);
+                await ttsService.speakComplianceIssue(issue.category);
+                setIsAgentSpeaking(false);
+              } catch (error) {
+                console.error('❌ Failed to speak compliance issue:', error);
+                setIsAgentSpeaking(false);
+              }
+            }
             break;
 
           case 'compliance_guidance':
@@ -326,6 +354,8 @@ export const useRealtimeCompliance = () => {
     setGuidance([]);
     setCurrentTranscript('');
     setResponseAudio('');
+    setIsAgentSpeaking(false);
+    hasSpokenWelcome.current = false;
   }, []);
 
   return {
@@ -336,6 +366,7 @@ export const useRealtimeCompliance = () => {
     guidance,
     currentTranscript,
     responseAudio,
+    isAgentSpeaking,
     connect,
     disconnect,
     startRecording,
