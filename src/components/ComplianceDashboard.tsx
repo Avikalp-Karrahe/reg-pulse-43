@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import { FuturisticTranscription } from "./FuturisticTranscription";
 import { CircularRiskMeter } from "./CircularRiskMeter";
 import { FuturisticStats } from "./FuturisticStats";
+import { FileUpload } from "./FileUpload";
 
 interface CallData {
   id: string;
@@ -28,6 +29,7 @@ export const ComplianceDashboard = () => {
   const [showAudioSetupPrompt, setShowAudioSetupPrompt] = useState(false);
   const [selectedDeviceName, setSelectedDeviceName] = useState<string | null>(null);
   const [permissionState, setPermissionState] = useState<PermissionState>('prompt');
+  const [transcriptLines, setTranscriptLines] = useState<string[]>([]);
   const { toast } = useToast();
   const saveCall = useSaveCall();
   
@@ -175,6 +177,58 @@ export const ComplianceDashboard = () => {
     }
   };
 
+  const handleUploadTranscription = async (transcript: string, duration: number) => {
+    const newCall: CallData = {
+      id: `CALL-${Date.now()}`,
+      duration: 0,
+      riskScore: 0,
+      status: 'active'
+    };
+    
+    setCurrentCall(newCall);
+    setTranscriptLines([]);
+    resetSession();
+    
+    // Process transcript in segments for better visualization
+    const sentences = transcript.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const segmentDelay = Math.min(2000, Math.max(500, duration * 1000 / sentences.length));
+    
+    for (let i = 0; i < sentences.length; i++) {
+      const sentence = sentences[i].trim();
+      if (sentence) {
+        setTimeout(() => {
+          setTranscriptLines(prev => [...prev, sentence]);
+          sendMessage(sentence);
+        }, i * segmentDelay);
+      }
+    }
+    
+    // End call after processing
+    setTimeout(async () => {
+      const finalCall: CallData = {
+        ...newCall,
+        duration: duration,
+        riskScore: riskScore,
+        status: 'completed'
+      };
+      
+      setCurrentCall(finalCall);
+      
+      // Save call to Supabase
+      saveCall.mutate({
+        callId: newCall.id,
+        duration: duration,
+        riskScore: riskScore,
+        issues: allIssues,
+      });
+      
+      toast({
+        title: "Upload Complete",
+        description: `Recording analyzed successfully. Duration: ${Math.floor(duration / 60)}:${(duration % 60).toString().padStart(2, '0')}`,
+      });
+    }, sentences.length * segmentDelay + 1000);
+  };
+
   // Update risk score when Toolhouse provides new data
   useEffect(() => {
     if (currentCall && currentCall.status === 'active') {
@@ -299,13 +353,10 @@ export const ComplianceDashboard = () => {
                 </div>
               </div>
               
-              <Button variant="outline" className="w-full h-12 text-base" size="lg" disabled>
-                <Upload className="w-5 h-5 mr-2" />
-                Upload Recording
-              </Button>
-              <p className="text-xs text-center text-muted-foreground">
-                Upload feature coming soon
-              </p>
+              <FileUpload 
+                onTranscriptionComplete={handleUploadTranscription}
+                isProcessing={false}
+              />
             </CardContent>
           </Card>
         </div>
@@ -348,7 +399,7 @@ export const ComplianceDashboard = () => {
           <div className="lg:col-span-2">
             <FuturisticTranscription 
               callId={currentCall.id} 
-              content={streamingContent}
+              content={transcriptLines.length > 0 ? transcriptLines.join(' ') : streamingContent}
               isListening={isListening}
               issues={allIssues}
             />
