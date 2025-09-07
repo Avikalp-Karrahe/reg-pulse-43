@@ -11,7 +11,7 @@ import { Analytics } from "@/components/Analytics";
 import { AudioInputSetup } from "@/components/AudioInputSetup";
 import { LandingPage } from "@/components/LandingPage";
 import { DemoBanner } from "@/components/DemoBanner";
-import { isDemoMode } from "@/lib/demoConfig";
+import { isDemoActive } from "@/app/dataAdapter";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -35,7 +35,7 @@ const App = () => {
                   
                   <div className="flex-1 flex flex-col">
                     {/* Demo Banner */}
-                    {isDemoMode() && (
+                    {isDemoActive() && (
                       <DemoBanner className="mx-6 mt-4" />
                     )}
                     
@@ -52,13 +52,18 @@ const App = () => {
                           </div>
                         </div>
                       </div>
-                      <div>
+                      <div className="flex items-center space-x-3">
                         <NavLink 
                           to="/settings" 
                           className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                         >
                           Audio Settings
                         </NavLink>
+                        {isDemoActive() && (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-cyan-500/20 text-cyan-400 border border-cyan-500/30">
+                            DEMO
+                          </span>
+                        )}
                       </div>
                     </header>
 

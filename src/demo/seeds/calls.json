@@ -1,15 +1,35 @@
 [
   {
-    "id": "CALL-DEMO-001",
-    "callId": "CALL-DEMO-001",
-    "started_at": "2024-12-07T14:30:00Z",
-    "ended_at": "2024-12-07T14:35:42Z",
-    "duration_sec": 342,
-    "risk_score": 67,
+    "id": "550e8400-e29b-41d4-a716-446655440001",
+    "call_id": "DEMO-CALL-001",
+    "started_at": "2024-01-15T14:30:00Z",
+    "ended_at": "2024-01-15T14:45:30Z",
+    "duration_sec": 930,
+    "risk_score": 78,
     "status": "completed",
-    "participant": "Alex Morgan",
-    "client": "Investment Prospects LLC",
-    "call_type": "Sales Consultation",
-    "advisor_id": "ADV-001"
+    "user_id": "demo-user-123",
+    "organization_id": "demo-org-456"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440002", 
+    "call_id": "DEMO-CALL-002",
+    "started_at": "2024-01-16T10:15:00Z",
+    "ended_at": "2024-01-16T10:28:45Z",
+    "duration_sec": 825,
+    "risk_score": 25,
+    "status": "completed",
+    "user_id": "demo-user-123",
+    "organization_id": "demo-org-456"
+  },
+  {
+    "id": "550e8400-e29b-41d4-a716-446655440003",
+    "call_id": "DEMO-CALL-003", 
+    "started_at": "2024-01-17T16:20:00Z",
+    "ended_at": "2024-01-17T16:35:15Z",
+    "duration_sec": 915,
+    "risk_score": 52,
+    "status": "completed",
+    "user_id": "demo-user-123",
+    "organization_id": "demo-org-456"
   }
 ]

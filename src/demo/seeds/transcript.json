@@ -1,85 +1,148 @@
-[
-  {
-    "timestamp": "00:00:00",
-    "speaker": "Advisor",
-    "text": "Good afternoon! Thanks for your interest in our investment services. I'm Alex Morgan, and I'll be walking you through some exciting opportunities today."
+{
+  "550e8400-e29b-41d4-a716-446655440001": {
+    "title": "High-Risk Compliance Violations",
+    "transcript": [
+      {
+        "timestamp": "00:00:15",
+        "speaker": "Advisor",
+        "text": "Good afternoon, Mrs. Johnson. Thank you for taking the time to speak with me today about your investment portfolio."
+      },
+      {
+        "timestamp": "00:00:22", 
+        "speaker": "Client",
+        "text": "Hello, yes, I'm interested in learning about investment options for my retirement savings."
+      },
+      {
+        "timestamp": "00:02:15",
+        "speaker": "Advisor", 
+        "text": "I can guarantee you'll see at least 15% returns in the first year with our premium growth strategy. We've never had a client lose money with this approach.",
+        "violation": true,
+        "issue_id": "issue-001"
+      },
+      {
+        "timestamp": "00:05:10",
+        "speaker": "Advisor",
+        "text": "This investment is basically risk-free with our proven strategy. You don't need to worry about market downturns.",
+        "violation": true, 
+        "issue_id": "issue-004"
+      },
+      {
+        "timestamp": "00:08:45",
+        "speaker": "Advisor",
+        "text": "This is a limited time offer that expires today - you need to decide right now or you'll miss out on these incredible returns.",
+        "violation": true,
+        "issue_id": "issue-002"
+      },
+      {
+        "timestamp": "00:11:20", 
+        "speaker": "Advisor",
+        "text": "You should put all your retirement savings into this high-growth tech fund. It's perfect for someone in your situation.",
+        "violation": true,
+        "issue_id": "issue-003" 
+      },
+      {
+        "timestamp": "00:13:30",
+        "speaker": "Advisor",
+        "text": "Our track record shows consistent 20% annual returns over the past decade. You won't find better performance anywhere else.",
+        "violation": true,
+        "issue_id": "issue-005"
+      },
+      {
+        "timestamp": "00:15:00",
+        "speaker": "Client", 
+        "text": "This sounds almost too good to be true. Are you sure there are no risks involved?"
+      },
+      {
+        "timestamp": "00:15:30",
+        "speaker": "Advisor",
+        "text": "I understand your concern, but with our expertise and market position, we've eliminated virtually all the traditional risks. Let's get the paperwork started today."
+      }
+    ]
   },
-  {
-    "timestamp": "00:00:12", 
-    "speaker": "Client",
-    "text": "Hi Alex, nice to meet you. I'm looking for something that can help me grow my retirement savings more aggressively."
+  "550e8400-e29b-41d4-a716-446655440002": {
+    "title": "Low-Risk Advisory Session", 
+    "transcript": [
+      {
+        "timestamp": "00:00:10",
+        "speaker": "Advisor",
+        "text": "Good morning, Mr. Davis. I've reviewed your financial profile and I'd like to discuss some investment recommendations."
+      },
+      {
+        "timestamp": "00:00:18",
+        "speaker": "Client", 
+        "text": "Great, I'm looking for conservative options that align with my retirement timeline."
+      },
+      {
+        "timestamp": "00:02:30",
+        "speaker": "Advisor",
+        "text": "Based on your risk tolerance and timeline, I recommend a diversified portfolio with 60% bonds and 40% equities."
+      },
+      {
+        "timestamp": "00:07:30",
+        "speaker": "Advisor",
+        "text": "While there are some risks involved, they're minimal compared to the upside potential of this balanced approach.",
+        "violation": true,
+        "issue_id": "issue-006"
+      },
+      {
+        "timestamp": "00:10:15",
+        "speaker": "Client",
+        "text": "That sounds reasonable. What kind of returns should I expect?"
+      },
+      {
+        "timestamp": "00:10:45", 
+        "speaker": "Advisor",
+        "text": "Historically, this type of portfolio has averaged 7-9% annual returns, though past performance doesn't guarantee future results."
+      },
+      {
+        "timestamp": "00:13:20",
+        "speaker": "Advisor",
+        "text": "I'll prepare a detailed proposal for you to review. Take your time to consider all the information before making any decisions."
+      }
+    ]
   },
-  {
-    "timestamp": "00:00:24",
-    "speaker": "Advisor", 
-    "text": "Perfect! I have just the thing. We've developed a proprietary high-growth technology portfolio that's been performing exceptionally well."
-  },
-  {
-    "timestamp": "00:01:08",
-    "speaker": "Advisor",
-    "text": "This high-growth tech portfolio is perfect for everyone. No matter your age or situation, this works.",
-    "hasIssue": true,
-    "issueId": "ISSUE-002"
-  },
-  {
-    "timestamp": "00:01:22",
-    "speaker": "Client",
-    "text": "That sounds good, but I'm pretty risk-averse. Are there any downsides I should know about?"
-  },
-  {
-    "timestamp": "00:01:35",
-    "speaker": "Advisor",
-    "text": "Listen, I'll be completely honest with you. With our track record and the current market conditions..."
-  },
-  {
-    "timestamp": "00:02:22", 
-    "speaker": "Advisor",
-    "text": "You'll make 20% monthly, guaranteed. I've never had a client lose money with this strategy.",
-    "hasIssue": true,
-    "issueId": "ISSUE-001"
-  },
-  {
-    "timestamp": "00:02:38",
-    "speaker": "Client", 
-    "text": "Twenty percent monthly? That seems quite high. How is that possible?"
-  },
-  {
-    "timestamp": "00:02:51",
-    "speaker": "Advisor",
-    "text": "Our algorithm identifies market inefficiencies before the big firms catch on. It's really quite sophisticated."
-  },
-  {
-    "timestamp": "00:03:09",
-    "speaker": "Advisor",
-    "text": "You need to transfer the money today to lock in these rates. Don't think about it too long.",
-    "hasIssue": true,
-    "issueId": "ISSUE-003"
-  },
-  {
-    "timestamp": "00:03:24",
-    "speaker": "Client",
-    "text": "Today? I was hoping to discuss this with my spouse first. This is a big decision for us."
-  },
-  {
-    "timestamp": "00:03:38", 
-    "speaker": "Advisor",
-    "text": "I understand, but these opportunities don't last long. The market moves fast, and so do our best allocations."
-  },
-  {
-    "timestamp": "00:03:53",
-    "speaker": "Advisor", 
-    "text": "This is absolutely the best performing fund in the market right now.",
-    "hasIssue": true,
-    "issueId": "ISSUE-004"
-  },
-  {
-    "timestamp": "00:04:08",
-    "speaker": "Client",
-    "text": "Okay, let me think about this. Can you send me some documentation to review?"
-  },
-  {
-    "timestamp": "00:04:21",
-    "speaker": "Advisor",
-    "text": "Of course! I'll get that right over to you. But remember, the longer you wait, the more potential gains you're missing out on."
+  "550e8400-e29b-41d4-a716-446655440003": {
+    "title": "Moderate Risk Session",
+    "transcript": [
+      {
+        "timestamp": "00:00:12",
+        "speaker": "Advisor", 
+        "text": "Good afternoon, Ms. Williams. Let's discuss optimizing your current investment strategy."
+      },
+      {
+        "timestamp": "00:00:20",
+        "speaker": "Client",
+        "text": "I'm interested in potentially increasing my returns while managing risk appropriately."
+      },
+      {
+        "timestamp": "00:03:15",
+        "speaker": "Advisor",
+        "text": "I recommend shifting 30% of your portfolio to growth stocks. This could enhance your long-term returns significantly."
+      },
+      {
+        "timestamp": "00:08:45",
+        "speaker": "Advisor",
+        "text": "I can only hold this allocation for you until end of business today. These opportunities move quickly in the current market.",
+        "violation": true,
+        "issue_id": "issue-007"
+      },
+      {
+        "timestamp": "00:11:20",
+        "speaker": "Advisor", 
+        "text": "Market fluctuations are temporary - just stay the course and you'll be fine. Don't let short-term volatility worry you.",
+        "violation": true,
+        "issue_id": "issue-008"
+      },
+      {
+        "timestamp": "00:14:30",
+        "speaker": "Client",
+        "text": "I appreciate the advice. I'll need some time to think about this before making any changes."
+      },
+      {
+        "timestamp": "00:15:15", 
+        "speaker": "Advisor",
+        "text": "Of course, take the time you need. I'll follow up with detailed documentation of our discussion and the recommended strategy."
+      }
+    ]
   }
-]
+}

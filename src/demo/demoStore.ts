@@ -1,41 +1,192 @@
-interface CallData {
-  id: string;
-  callId: string;
-  started_at: string;
-  ended_at?: string;
-  duration_sec: number;
-  risk_score: number;
-  status: string;
-  participant?: string;
-  client?: string;
-  call_type?: string;
-  advisor_id?: string;
+import type { Call, Issue, SaveCallData } from '@/app/dataAdapter';
+import callsData from './seeds/calls.json';
+import issuesData from './seeds/issues.json';
+import transcriptData from './seeds/transcript.json';
+
+class DemoStore {
+  private readonly STORAGE_KEY = 'regCompliance_demo_data';
+  
+  private data: {
+    calls: Call[];
+    issues: Issue[];
+    transcripts: Record<string, any>;
+    lastModified: string;
+  };
+
+  constructor() {
+    this.data = this.loadFromStorage() || this.getDefaultData();
+  }
+
+  private getDefaultData() {
+    return {
+      calls: callsData as Call[],
+      issues: issuesData as Issue[],
+      transcripts: transcriptData,
+      lastModified: new Date().toISOString()
+    };
+  }
+
+  private loadFromStorage() {
+    if (typeof window === 'undefined') return null;
+    
+    try {
+      const stored = localStorage.getItem(this.STORAGE_KEY);
+      return stored ? JSON.parse(stored) : null;
+    } catch (error) {
+      console.warn('Failed to load demo data from storage:', error);
+      return null;
+    }
+  }
+
+  private saveToStorage() {
+    if (typeof window === 'undefined') return;
+    
+    try {
+      this.data.lastModified = new Date().toISOString();
+      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.data));
+    } catch (error) {
+      console.warn('Failed to save demo data to storage:', error);
+    }
+  }
+
+  // Public methods
+  getCalls(): Call[] {
+    return [...this.data.calls];
+  }
+
+  getCall(id: string): Call | null {
+    return this.data.calls.find(call => call.id === id) || null;
+  }
+
+  getIssues(): Issue[] {
+    return [...this.data.issues];
+  }
+
+  getIssuesForCall(callId: string): Issue[] {
+    return this.data.issues.filter(issue => issue.call_id === callId);
+  }
+
+  getTranscript(callId: string) {
+    return this.data.transcripts[callId] || null;
+  }
+
+  saveCall(callData: SaveCallData): { callId: string; issueCount: number } {
+    const newCall: Call = {
+      id: `demo-call-${Date.now()}`,
+      call_id: callData.callId,
+      started_at: new Date(Date.now() - callData.duration * 1000).toISOString(),
+      ended_at: new Date().toISOString(),
+      duration_sec: callData.duration,
+      risk_score: Math.round(callData.riskScore),
+      status: 'completed',
+      user_id: 'demo-user-123',
+      organization_id: 'demo-org-456'
+    };
+
+    // Add the call
+    this.data.calls.unshift(newCall);
+
+    // Add issues
+    const newIssues: Issue[] = callData.issues.map((issue, index) => ({
+      id: `demo-issue-${Date.now()}-${index}`,
+      call_id: newCall.id,
+      category: issue.category,
+      severity: issue.severity,
+      rationale: issue.rationale,
+      reg_reference: issue.reg_reference,
+      timestamp: issue.timestamp,
+      evidence_snippet: issue.evidenceSnippet || null,
+      evidence_start_ms: issue.evidenceStartMs || null,
+      evidence_end_ms: issue.evidenceEndMs || null,
+      model_rationale: `AI detected violation in demo mode`,
+      model_version: 'demo-v1',
+      user_id: 'demo-user-123',
+      organization_id: 'demo-org-456'
+    }));
+
+    this.data.issues.unshift(...newIssues);
+    this.saveToStorage();
+
+    return { callId: newCall.id, issueCount: newIssues.length };
+  }
+
+  getAnalytics() {
+    const totalCalls = this.data.calls.length;
+    const totalIssues = this.data.issues.length;
+    const avgRiskScore = this.data.calls.length > 0
+      ? Math.round(this.data.calls.reduce((sum, call) => sum + (call.risk_score || 0), 0) / this.data.calls.length)
+      : 0;
+
+    const issuesByCategory = this.data.issues.reduce((acc, issue) => {
+      acc[issue.category] = (acc[issue.category] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const issuesBySeverity = this.data.issues.reduce((acc, issue) => {
+      const severity = issue.severity || 'unknown';
+      acc[severity] = (acc[severity] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    return {
+      totalCalls,
+      totalIssues,
+      averageRiskScore: avgRiskScore,
+      issuesByCategory,
+      issuesBySeverity,
+      recentActivity: this.data.calls.slice(0, 5).map(call => ({
+        ...call,
+        issueCount: this.getIssuesForCall(call.id).length
+      }))
+    };
+  }
+
+  reset(): void {
+    this.data = this.getDefaultData();
+    this.saveToStorage();
+    
+    // Optionally trigger a page reload
+    if (typeof window !== 'undefined') {
+      setTimeout(() => window.location.reload(), 100);
+    }
+  }
+
+  // Legacy compatibility methods for existing components
+  subscribe(listener: () => void): () => void {
+    return () => {}; // No-op for demo mode
+  }
+
+  addIssue(issue: any) {
+    // No-op for demo mode
+  }
+
+  addToolCall(toolCall: any) {
+    // No-op for demo mode
+  }
+
+  addTranscriptEntry(entry: any) {
+    // No-op for demo mode
+  }
+
+  getToolCalls() {
+    return [];
+  }
+
+  state = { 
+    isDemoMode: true, 
+    toolCalls: [],
+    calls: [],
+    issues: [],
+    transcript: [],
+    settings: { enableSlackEscalation: true, reducedMotion: false }
+  };
+  notify() {}
 }
 
-interface IssueData {
-  id: string;
-  call_id: string;
-  category: string;
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  rationale: string;
-  reg_reference: string;
-  evidence_snippet: string;
-  evidence_start_ms: number;
-  evidence_end_ms: number;
-  model_rationale: string;
-  model_version: string;
-  timestamp: string;
-}
+export const demoStore = new DemoStore();
 
-interface TranscriptEntry {
-  timestamp: string;
-  speaker: string;
-  text: string;
-  hasIssue?: boolean;
-  issueId?: string;
-}
-
-interface ToolCall {
+// Export legacy types for compatibility
+export interface ToolCall {
   id: string;
   timestamp: string;
   tool: string;
@@ -44,200 +195,3 @@ interface ToolCall {
   input: any;
   output: any;
 }
-
-interface DemoState {
-  calls: CallData[];
-  issues: IssueData[];
-  transcript: TranscriptEntry[];
-  toolCalls: ToolCall[];
-  isDemoMode: boolean;
-  settings: {
-    enableSlackEscalation: boolean;
-    reducedMotion: boolean;
-  };
-}
-
-class DemoStore {
-  public state: DemoState;
-  private listeners: Set<() => void> = new Set();
-
-  constructor() {
-    this.state = this.loadFromStorage() || this.getInitialState();
-    this.saveToStorage();
-  }
-
-  private getInitialState(): DemoState {
-    return {
-      calls: [],
-      issues: [],
-      transcript: [],
-      toolCalls: [],
-      isDemoMode: true,
-      settings: {
-        enableSlackEscalation: true,
-        reducedMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches
-      }
-    };
-  }
-
-  private loadFromStorage(): DemoState | null {
-    try {
-      const stored = localStorage.getItem('regcompliance-demo');
-      return stored ? JSON.parse(stored) : null;
-    } catch {
-      return null;
-    }
-  }
-
-  private saveToStorage() {
-    try {
-      localStorage.setItem('regcompliance-demo', JSON.stringify(this.state));
-    } catch {
-      // Handle storage errors gracefully
-    }
-  }
-
-  public notify() {
-    this.listeners.forEach(listener => listener());
-    this.saveToStorage();
-  }
-
-  subscribe(listener: () => void): () => void {
-    this.listeners.add(listener);
-    return () => {
-      this.listeners.delete(listener);
-    };
-  }
-
-  // Getters
-  getCalls(): CallData[] {
-    return this.state.calls;
-  }
-
-  getIssues(): IssueData[] {
-    return this.state.issues;
-  }
-
-  getTranscript(): TranscriptEntry[] {
-    return this.state.transcript;
-  }
-
-  getToolCalls(): ToolCall[] {
-    return this.state.toolCalls;
-  }
-
-  getIsDemoMode(): boolean {
-    return this.state.isDemoMode;
-  }
-
-  getSettings() {
-    return this.state.settings;
-  }
-
-  // Setters
-  setDemoMode(enabled: boolean) {
-    this.state.isDemoMode = enabled;
-    this.notify();
-  }
-
-  setCalls(calls: CallData[]) {
-    this.state.calls = calls;
-    this.notify();
-  }
-
-  setIssues(issues: IssueData[]) {
-    this.state.issues = issues;
-    this.notify();
-  }
-
-  setTranscript(transcript: TranscriptEntry[]) {
-    this.state.transcript = transcript;
-    this.notify();
-  }
-
-  addIssue(issue: IssueData) {
-    this.state.issues.push(issue);
-    this.notify();
-  }
-
-  addToolCall(toolCall: ToolCall) {
-    this.state.toolCalls.push(toolCall);
-    this.notify();
-  }
-
-  addTranscriptEntry(entry: TranscriptEntry) {
-    this.state.transcript.push(entry);
-    this.notify();
-  }
-
-  updateSettings(updates: Partial<DemoState['settings']>) {
-    this.state.settings = { ...this.state.settings, ...updates };
-    this.notify();
-  }
-
-  // Seed data loading
-  async loadSeeds() {
-    try {
-      const [callsModule, issuesModule, transcriptModule] = await Promise.all([
-        import('./seeds/calls.json'),
-        import('./seeds/issues.json'), 
-        import('./seeds/transcript.json')
-      ]);
-
-      this.state.calls = callsModule.default as CallData[];
-      this.state.issues = issuesModule.default as IssueData[];
-      this.state.transcript = transcriptModule.default as TranscriptEntry[];
-      this.state.toolCalls = [];
-      this.notify();
-    } catch (error) {
-      console.error('Failed to load demo seeds:', error);
-    }
-  }
-
-  // Reset to initial state with seeds
-  async reset() {
-    this.state = this.getInitialState();
-    await this.loadSeeds();
-    this.notify();
-  }
-
-  // Calculate risk score from issues
-  calculateRiskScore(): number {
-    if (this.state.issues.length === 0) return 0;
-    
-    const severityWeights = { low: 1, medium: 2, high: 3, critical: 4 };
-    const totalWeight = this.state.issues.reduce(
-      (sum, issue) => sum + severityWeights[issue.severity], 
-      0
-    );
-    
-    return Math.min(100, (totalWeight / this.state.issues.length) * 25);
-  }
-}
-
-// Global demo store instance
-export const demoStore = new DemoStore();
-
-// Helper functions
-export const setDemo = (enabled: boolean) => {
-  demoStore.setDemoMode(enabled);
-  if (typeof window !== 'undefined') {
-    (window as any).__DEMO__ = enabled;
-  }
-};
-
-export const isDemoMode = () => {
-  if (typeof window !== 'undefined' && (window as any).__DEMO__) {
-    return true;
-  }
-  return demoStore.getIsDemoMode();
-};
-
-// Initialize demo mode
-if (typeof window !== 'undefined') {
-  (window as any).__DEMO__ = true;
-  demoStore.loadSeeds();
-}
-
-export type { CallData, IssueData, TranscriptEntry, ToolCall };
-export default demoStore;
