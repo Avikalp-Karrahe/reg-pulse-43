@@ -175,15 +175,15 @@ export const LandingPage = () => {
                   width: `${particle.size}px`,
                   height: `${particle.size}px`,
                   opacity: particle.opacity,
-                  boxShadow: isHoveringLaunchButton ? '0 0 200px hsla(var(--emerald-500), 1), 0 0 400px hsla(var(--emerald-400), 0.9), 0 0 800px hsla(var(--emerald-300), 0.8), 0 0 1200px hsla(var(--emerald-200), 0.6)' : 
-                            isNearCursor ? '0 0 24px hsla(var(--red-600), 1), 0 0 48px hsla(var(--red-500), 0.9), 0 0 72px hsla(var(--red-400), 0.6)' : 
+                  boxShadow: isHoveringLaunchButton ? '0 0 200px rgba(34, 197, 94, 1), 0 0 400px rgba(34, 197, 94, 0.9), 0 0 800px rgba(34, 197, 94, 0.8), 0 0 1200px rgba(34, 197, 94, 0.6)' : 
+                            isNearCursor ? '0 0 24px rgba(220, 38, 38, 1), 0 0 48px rgba(220, 38, 38, 0.9), 0 0 72px rgba(248, 113, 113, 0.6)' : 
                             '0 0 24px rgba(255, 255, 255, 0.9), 0 0 48px rgba(255, 255, 255, 0.6)',
                 }}
                 animate={isHoveringLaunchButton ? {
                   y: [0, -80, 0],
                   x: [0, Math.sin(particle.key) * 60, 0],
                   opacity: [particle.opacity, particle.opacity * 3, particle.opacity],
-                  scale: [1, 1.5, 1],
+                  scale: [1, 3, 1], // Much bigger scale for more glow visibility
                   transition: {
                     duration: particle.dur * 0.25, // 4x faster
                     repeat: Infinity,
