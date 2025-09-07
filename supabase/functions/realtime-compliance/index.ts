@@ -14,7 +14,7 @@ interface OpenAIRealtimeMessage {
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 serve(async (req) => {
-  console.log('Realtime compliance function called');
+  console.log('Realtime compliance function called, method:', req.method, 'headers:', Object.fromEntries(req.headers.entries()));
   
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -47,7 +47,7 @@ serve(async (req) => {
 
     // Handle OpenAI WebSocket events
     openaiWs.onopen = () => {
-      console.log('Connected to OpenAI Realtime API');
+      console.log('✅ Successfully connected to OpenAI Realtime API');
     };
 
     openaiWs.onmessage = (event) => {
@@ -193,7 +193,8 @@ When you detect a potential violation, immediately call the log_compliance_issue
     };
 
     openaiWs.onerror = (error) => {
-      console.error('OpenAI WebSocket error:', error);
+      console.error('❌ OpenAI WebSocket error:', error);
+      console.error('OpenAI WebSocket error details:', JSON.stringify(error));
       clientSocket.send(JSON.stringify({
         type: 'error',
         message: 'Connection to AI service failed'
@@ -207,7 +208,7 @@ When you detect a potential violation, immediately call the log_compliance_issue
 
     // Handle client WebSocket events
     clientSocket.onopen = () => {
-      console.log('Client connected to realtime compliance');
+      console.log('✅ Client successfully connected to realtime compliance');
     };
 
     clientSocket.onmessage = (event) => {

@@ -50,13 +50,14 @@ export const useRealtimeCompliance = () => {
 
   const connect = useCallback(async () => {
     try {
-      console.log('Connecting to realtime compliance service...');
+      console.log('🔄 Attempting to connect to realtime compliance service...');
       
       const wsUrl = 'wss://lrofbumospouflcegtbc.functions.supabase.co/functions/v1/realtime-compliance';
+      console.log('🌐 WebSocket URL:', wsUrl);
       wsRef.current = new WebSocket(wsUrl);
 
       wsRef.current.onopen = () => {
-        console.log('Connected to realtime compliance');
+        console.log('✅ Connected to realtime compliance WebSocket');
         setIsConnected(true);
         toast({
           title: "Connected",
@@ -155,7 +156,8 @@ export const useRealtimeCompliance = () => {
       };
 
       wsRef.current.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        console.error('❌ WebSocket connection error:', error);
+        console.error('WebSocket error event details:', JSON.stringify(error));
         setIsConnected(false);
         toast({
           title: "Connection Error",
@@ -164,8 +166,8 @@ export const useRealtimeCompliance = () => {
         });
       };
 
-      wsRef.current.onclose = () => {
-        console.log('WebSocket connection closed');
+      wsRef.current.onclose = (event) => {
+        console.log('WebSocket connection closed. Code:', event.code, 'Reason:', event.reason);
         setIsConnected(false);
         setIsRecording(false);
       };
