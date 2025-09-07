@@ -175,17 +175,28 @@ export const LandingPage = () => {
                   height: `${particle.size}px`,
                   opacity: particle.opacity,
                 }}
-                animate={{
+                animate={isHoveringLaunchButton ? {
                   y: [0, -80, 0],
                   x: [0, Math.sin(particle.key) * 60, 0],
                   opacity: [particle.opacity, particle.opacity * 2, particle.opacity],
                   scale: [0.8, 1.2, 0.8],
-                }}
-                transition={{
-                  duration: isHoveringLaunchButton ? particle.dur * 0.25 : particle.dur,
-                  repeat: Infinity,
-                  delay: particle.delay,
-                  ease: "easeInOut"
+                  transition: {
+                    duration: particle.dur * 0.25, // 4x faster
+                    repeat: Infinity,
+                    delay: particle.delay,
+                    ease: "easeInOut"
+                  }
+                } : {
+                  y: [0, -80, 0],
+                  x: [0, Math.sin(particle.key) * 60, 0],
+                  opacity: [particle.opacity, particle.opacity * 2, particle.opacity],
+                  scale: [0.8, 1.2, 0.8],
+                  transition: {
+                    duration: particle.dur, // Normal speed
+                    repeat: Infinity,
+                    delay: particle.delay,
+                    ease: "easeInOut"
+                  }
                 }}
               />
             );
