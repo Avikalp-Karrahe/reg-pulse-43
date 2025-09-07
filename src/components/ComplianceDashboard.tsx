@@ -373,7 +373,7 @@ export const ComplianceDashboard = () => {
                     </div>
                   </div>
                   <p className="text-muted-foreground leading-relaxed max-w-2xl">
-                    Switch to interactive AI voice assistant for live, two-way compliance conversations with advanced 
+                    Switch to interactive AI voice assistant for live, <span className="text-cyan-400 font-semibold bg-cyan-500/10 px-2 py-1 rounded">two-way compliance</span> conversations with advanced 
                     natural language processing and real-time risk assessment.
                   </p>
                 </div>
