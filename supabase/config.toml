@@ -2,3 +2,9 @@ project_id = "lrofbumospouflcegtbc"
 
 [functions.export-audit-pdf]
 verify_jwt = false
+
+[functions.voice-to-text]
+verify_jwt = false
+
+[functions.realtime-compliance]
+verify_jwt = false

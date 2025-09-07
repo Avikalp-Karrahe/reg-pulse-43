@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Mic, Upload, Phone, PhoneOff, Download, MicOff, Settings, X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Mic, Upload, Phone, PhoneOff, Download, MicOff, Settings, X, Zap } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { LiveTranscription } from "./LiveTranscription";
 import { RiskAnalysisTable } from "./RiskAnalysisTable";
@@ -19,6 +21,7 @@ import { TestScenarios } from "./TestScenarios";
 import { QuickChecks } from "./QuickChecks";
 import { FileUpload } from "./FileUpload";
 import { LiveVoiceToText } from "./LiveVoiceToText";
+import { RealtimeComplianceDashboard } from "./RealtimeComplianceDashboard";
 
 interface CallData {
   id: string;
@@ -28,6 +31,7 @@ interface CallData {
 }
 
 export const ComplianceDashboard = () => {
+  const [useRealtimeMode, setUseRealtimeMode] = useState(false);
   const [currentCall, setCurrentCall] = useState<CallData | null>(null);
   const [showAudioSetupPrompt, setShowAudioSetupPrompt] = useState(false);
   const [selectedDeviceName, setSelectedDeviceName] = useState<string | null>(null);
@@ -253,10 +257,42 @@ export const ComplianceDashboard = () => {
     return 'text-risk-critical-text bg-risk-critical';
   };
 
+  // Show realtime mode if enabled
+  if (useRealtimeMode) {
+    return <RealtimeComplianceDashboard />;
+  }
+
   if (!currentCall) {
     // Initial clean state
     return (
       <div className="space-y-6">
+        {/* Mode Toggle */}
+        <Card className="bg-card/50 backdrop-blur-sm border-cyan-500/20">
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-cyan-400" />
+                  <Label htmlFor="realtime-mode" className="text-lg font-semibold text-cyan-400">
+                    Real-time Voice AI Mode
+                  </Label>
+                  <Badge variant="outline" className="bg-cyan-500/20 text-cyan-400 border-cyan-500/30">
+                    NEW
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Switch to interactive AI voice assistant for live, two-way compliance conversations
+                </p>
+              </div>
+              <Switch
+                id="realtime-mode"
+                checked={useRealtimeMode}
+                onCheckedChange={setUseRealtimeMode}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Audio Setup Prompt */}
         {showAudioSetupPrompt && (
           <Alert>
