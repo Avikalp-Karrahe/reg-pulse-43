@@ -148,7 +148,7 @@ export const LandingPage = () => {
         aria-hidden="true" 
       />
 
-      {/* Particle convergence button system */}
+      {/* Elegant particle convergence system */}
       {!prefersReducedMotion && (
         <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
           {particles.map((particle) => {
@@ -162,51 +162,85 @@ export const LandingPage = () => {
             // Color change based on proximity (red when near cursor)
             const isNearCursor = distance < 100 && !isButtonHovered;
             
-            // Button formation positions (center of screen for button shape)
+            // Button formation - elegant oval/rounded rectangle outline
             const buttonCenterX = (typeof window !== 'undefined' ? window.innerWidth : 1000) / 2;
             const buttonCenterY = (typeof window !== 'undefined' ? window.innerHeight : 1000) / 2;
-            const buttonWidth = 280;
+            const buttonWidth = 320;
             const buttonHeight = 64;
+            const borderRadius = 32;
             
-            // Create button shape positions in a grid
-            const particlesPerRow = Math.ceil(Math.sqrt(particles.length));
-            const row = Math.floor(particle.key / particlesPerRow);
-            const col = particle.key % particlesPerRow;
-            const buttonX = buttonCenterX - buttonWidth/2 + (col / particlesPerRow) * buttonWidth;
-            const buttonY = buttonCenterY - buttonHeight/2 + (row / particlesPerRow) * buttonHeight;
+            // Create elegant button outline positions
+            let buttonX, buttonY;
+            
+            if (isButtonHovered) {
+              // Create a smooth rounded rectangle outline
+              const angle = (particle.key / particles.length) * Math.PI * 2;
+              const t = particle.key / particles.length;
+              
+              // Create rounded rectangle path
+              if (t < 0.25) {
+                // Top edge
+                const progress = t * 4;
+                buttonX = buttonCenterX - buttonWidth/2 + borderRadius + progress * (buttonWidth - 2 * borderRadius);
+                buttonY = buttonCenterY - buttonHeight/2;
+              } else if (t < 0.5) {
+                // Right edge
+                const progress = (t - 0.25) * 4;
+                buttonX = buttonCenterX + buttonWidth/2 - borderRadius + borderRadius * Math.cos(progress * Math.PI/2);
+                buttonY = buttonCenterY - buttonHeight/2 + borderRadius + progress * (buttonHeight - 2 * borderRadius);
+              } else if (t < 0.75) {
+                // Bottom edge
+                const progress = (t - 0.5) * 4;
+                buttonX = buttonCenterX + buttonWidth/2 - borderRadius - progress * (buttonWidth - 2 * borderRadius);
+                buttonY = buttonCenterY + buttonHeight/2;
+              } else {
+                // Left edge
+                const progress = (t - 0.75) * 4;
+                buttonX = buttonCenterX - buttonWidth/2 + borderRadius - borderRadius * Math.cos(progress * Math.PI/2);
+                buttonY = buttonCenterY + buttonHeight/2 - borderRadius - progress * (buttonHeight - 2 * borderRadius);
+              }
+              
+              // Add some organic variation
+              buttonX += Math.sin(particle.key * 0.1) * 8;
+              buttonY += Math.cos(particle.key * 0.1) * 4;
+            }
             
             let targetX = particle.leftPct;
             let targetY = particle.topPct;
             let particleColor = isNearCursor ? 'bg-red-400' : 'bg-emerald-400';
             
-            if (isButtonHovered) {
+            if (isButtonHovered && buttonX && buttonY) {
               targetX = (buttonX / (typeof window !== 'undefined' ? window.innerWidth : 1000)) * 100;
               targetY = (buttonY / (typeof window !== 'undefined' ? window.innerHeight : 1000)) * 100;
-              particleColor = 'bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-500';
+              particleColor = 'bg-cyan-400';
             }
 
             return (
               <motion.div
                 key={particle.key}
-                className={`absolute rounded-full ${particleColor}`}
+                className={`absolute rounded-full ${particleColor} blur-[0.5px]`}
                 style={{
-                  width: `${particle.size}px`,
-                  height: `${particle.size}px`,
+                  width: `${isButtonHovered ? particle.size * 1.5 : particle.size}px`,
+                  height: `${isButtonHovered ? particle.size * 1.5 : particle.size}px`,
                   opacity: particle.opacity,
+                  boxShadow: isButtonHovered ? `0 0 10px ${isNearCursor ? '#ef4444' : '#06b6d4'}` : 'none',
                 }}
                 animate={{
                   left: `${targetX}%`,
                   top: `${targetY}%`,
                   y: isButtonHovered ? 0 : [0, -80, 0],
                   x: isButtonHovered ? 0 : [0, Math.sin(particle.key) * 60, 0],
-                  opacity: isButtonHovered ? 0.8 : [particle.opacity, particle.opacity * 2, particle.opacity],
-                  scale: isButtonHovered ? 2 : [0.8, 1.2, 0.8],
+                  opacity: isButtonHovered ? 0.9 : [particle.opacity, particle.opacity * 2, particle.opacity],
+                  scale: isButtonHovered ? 1.5 : [0.8, 1.2, 0.8],
                 }}
                 transition={{
-                  duration: isButtonHovered ? 1.5 : particle.dur,
+                  duration: isButtonHovered ? 2 : particle.dur,
                   repeat: isButtonHovered ? 0 : Infinity,
-                  delay: isButtonHovered ? particle.key * 0.01 : particle.delay,
-                  ease: isButtonHovered ? "easeInOut" : "easeInOut"
+                  delay: isButtonHovered ? particle.key * 0.005 : particle.delay,
+                  ease: isButtonHovered ? [0.25, 0.46, 0.45, 0.94] : "easeInOut",
+                  type: isButtonHovered ? "spring" : "tween",
+                  stiffness: isButtonHovered ? 50 : undefined,
+                  damping: isButtonHovered ? 20 : undefined,
                 }}
               />
             );
