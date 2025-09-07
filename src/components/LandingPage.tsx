@@ -165,6 +165,7 @@ export const LandingPage = () => {
             return (
               <motion.div
                 key={particle.key}
+                data-particle
                 className={`absolute rounded-full ${particleColor}`}
                 style={{
                   left: `${particle.leftPct}%`,
@@ -291,8 +292,24 @@ export const LandingPage = () => {
               <Button
                 asChild
                 size="lg"
-                className="button-premium h-16 px-12 text-lg font-semibold"
+                className="button-premium h-16 px-12 text-lg font-semibold text-white hover:text-white"
                 aria-label="Go to dashboard"
+                onMouseEnter={() => {
+                  // Speed up particles on hover
+                  const particleElements = document.querySelectorAll('[data-particle]');
+                  particleElements.forEach((el) => {
+                    const element = el as HTMLElement;
+                    element.style.animationDuration = '1s';
+                  });
+                }}
+                onMouseLeave={() => {
+                  // Reset particle speed
+                  const particleElements = document.querySelectorAll('[data-particle]');
+                  particleElements.forEach((el) => {
+                    const element = el as HTMLElement;
+                    element.style.animationDuration = '';
+                  });
+                }}
               >
                 <Link to="/dashboard">
                   <Play className="w-6 h-6 mr-3" aria-hidden="true" />
