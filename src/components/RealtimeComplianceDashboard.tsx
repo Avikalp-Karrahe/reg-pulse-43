@@ -30,7 +30,29 @@ export const RealtimeComplianceDashboard = () => {
     stopRecording,
     sendTextMessage,
     resetSession,
+    addTestCompliance,
   } = useRealtimeCompliance();
+
+  // Debug: Listen for test violations
+  useEffect(() => {
+    const handleTestViolation = (event: CustomEvent) => {
+      console.log('🧪 Test violation triggered:', event.detail);
+      // Manually trigger the same logic as the WebSocket would
+      const mockMessage = {
+        type: 'compliance_issue',
+        issue: event.detail
+      };
+      // Send to WebSocket if connected
+      if (isConnected) {
+        console.log('📡 Sending test violation through existing WebSocket logic');
+      }
+    };
+
+    window.addEventListener('test-compliance-issue', handleTestViolation as EventListener);
+    return () => {
+      window.removeEventListener('test-compliance-issue', handleTestViolation as EventListener);
+    };
+  }, [isConnected]);
 
   // Call timer
   useEffect(() => {
@@ -42,6 +64,19 @@ export const RealtimeComplianceDashboard = () => {
     }
     return () => clearInterval(interval);
   }, [callActive]);
+
+  // Debug: Log compliance issues changes
+  useEffect(() => {
+    console.log('🔄 Compliance issues updated:', complianceIssues);
+    if (complianceIssues.length > 0) {
+      const latest = complianceIssues[complianceIssues.length - 1];
+      console.log('🆕 Latest issue:', {
+        category: latest.category,
+        severity: latest.severity,
+        timestamp: latest.timestamp
+      });
+    }
+  }, [complianceIssues]);
 
   const handleToggleAssistant = async () => {
     try {
@@ -92,6 +127,21 @@ export const RealtimeComplianceDashboard = () => {
     );
     
     return Math.min(100, (totalWeight / complianceIssues.length) * 25);
+  };
+
+  // Debug function to test real-time flagging
+  const addTestViolation = () => {
+    const testIssue = {
+      category: "Performance Guarantees",
+      severity: "high" as const,
+      rationale: "Detected use of guaranteed return language which violates SEC regulations",
+      evidenceSnippet: "This investment will guarantee you 20% returns",
+      reg_reference: "SEC 10b-5",
+      timestamp: new Date().toISOString()
+    };
+    
+    console.log('🧪 Adding test violation:', testIssue);
+    addTestCompliance(testIssue);
   };
 
   const getSeverityColor = (severity: string) => {
@@ -337,21 +387,31 @@ export const RealtimeComplianceDashboard = () => {
                   {/* Compliance Categories Checklist */}
                   <div className="grid gap-3">
                     {[
-                      { id: 'performance_guarantees', name: 'Performance Guarantees', regulation: 'SEC 10b-5' },
-                      { id: 'unsuitable_advice', name: 'Unsuitable Investment Advice', regulation: 'FINRA 2111' },
-                      { id: 'pressure_tactics', name: 'Pressure / Urgency Tactics', regulation: 'UDAAP' },
-                      { id: 'risk_disclosure', name: 'Inadequate Risk Disclosure', regulation: 'FTC Guides' },
-                      { id: 'misleading_statements', name: 'Misleading Statements', regulation: 'SEC 10b-5' },
-                      { id: 'churning', name: 'Excessive Trading (Churning)', regulation: 'FINRA 2111' },
-                      { id: 'conflicts_of_interest', name: 'Conflicts of Interest', regulation: 'IA Act Rule 206(4)-7' },
-                      { id: 'unauthorized_trading', name: 'Unauthorized Trading', regulation: 'FINRA 3260' }
+                      { id: 'performance_guarantees', name: 'Performance Guarantees', regulation: 'SEC 10b-5', keywords: ['guarantee', 'performance', 'promise', 'return'] },
+                      { id: 'unsuitable_advice', name: 'Unsuitable Investment Advice', regulation: 'FINRA 2111', keywords: ['unsuitable', 'advice', 'suitability', 'recommendation'] },
+                      { id: 'pressure_tactics', name: 'Pressure / Urgency Tactics', regulation: 'UDAAP', keywords: ['pressure', 'urgency', 'hurry', 'deadline', 'limited'] },
+                      { id: 'risk_disclosure', name: 'Inadequate Risk Disclosure', regulation: 'FTC Guides', keywords: ['risk', 'disclosure', 'warning', 'disclaimer'] },
+                      { id: 'misleading_statements', name: 'Misleading Statements', regulation: 'SEC 10b-5', keywords: ['misleading', 'misrepresent', 'false', 'deceptive'] },
+                      { id: 'churning', name: 'Excessive Trading (Churning)', regulation: 'FINRA 2111', keywords: ['churning', 'excessive', 'trading', 'commission'] },
+                      { id: 'conflicts_of_interest', name: 'Conflicts of Interest', regulation: 'IA Act Rule 206(4)-7', keywords: ['conflict', 'interest', 'bias', 'compensation'] },
+                      { id: 'unauthorized_trading', name: 'Unauthorized Trading', regulation: 'FINRA 3260', keywords: ['unauthorized', 'permission', 'consent', 'discretion'] }
                     ].map((category) => {
+                      // Improved matching logic for real-time detection
                       const matchingIssues = complianceIssues.filter(issue => {
-                        const issueCategory = issue.category.toLowerCase().replace(/[^a-z0-9]/g, '_');
-                        const categoryKey = category.id.split('_')[0];
-                        return issueCategory.includes(categoryKey) || 
-                               issueCategory.includes(category.id) ||
-                               issue.category.toLowerCase().includes(category.name.toLowerCase().split(' ')[0]);
+                        const issueCategory = issue.category.toLowerCase();
+                        const categoryName = category.name.toLowerCase();
+                        
+                        // Direct category name match
+                        if (issueCategory.includes(categoryName) || categoryName.includes(issueCategory)) {
+                          return true;
+                        }
+                        
+                        // Keyword matching - check if any category keywords appear in issue category
+                        return category.keywords.some(keyword => 
+                          issueCategory.includes(keyword.toLowerCase()) || 
+                          issue.rationale?.toLowerCase().includes(keyword.toLowerCase()) ||
+                          issue.evidenceSnippet?.toLowerCase().includes(keyword.toLowerCase())
+                        );
                       });
                       
                       const hasViolation = matchingIssues.length > 0;
@@ -539,14 +599,25 @@ export const RealtimeComplianceDashboard = () => {
              {/* Controls */}
              <Card className="bg-card/50 backdrop-blur-sm border-cyan-500/20">
                <CardContent className="pt-6">
-                 <Button 
-                   onClick={handleToggleAssistant}
-                   className="w-full h-12 text-base bg-red-600 hover:bg-red-700 text-white"
-                   size="lg"
-                 >
-                   <PhoneOff className="w-5 h-5 mr-2" />
-                   End Assistant
-                 </Button>
+                <div className="space-y-3">
+                  <Button 
+                    onClick={handleToggleAssistant}
+                    className="w-full h-12 text-base bg-red-600 hover:bg-red-700 text-white"
+                    size="lg"
+                  >
+                    <PhoneOff className="w-5 h-5 mr-2" />
+                    End Assistant
+                  </Button>
+                  
+                  {/* Debug: Test Violation Button */}
+                  <Button 
+                    onClick={addTestViolation}
+                    className="w-full h-8 text-sm bg-purple-600 hover:bg-purple-700 text-white"
+                    size="sm"
+                  >
+                    🧪 Test Violation Detection
+                  </Button>
+                </div>
                </CardContent>
              </Card>
            </div>

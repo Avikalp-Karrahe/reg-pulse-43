@@ -135,10 +135,20 @@ export const useRealtimeCompliance = () => {
             break;
 
           case 'compliance_issue':
-            // Handle compliance violation detected
+            // Handle compliance violation detected with enhanced logging
             const issue = data.issue;
-            console.log('Compliance issue detected:', issue);
-            setComplianceIssues(prev => [...prev, issue]);
+            console.log('🚨 COMPLIANCE ISSUE DETECTED:', {
+              category: issue.category,
+              severity: issue.severity,
+              rationale: issue.rationale,
+              evidence: issue.evidenceSnippet,
+              regulation: issue.reg_reference
+            });
+            setComplianceIssues(prev => {
+              const newIssues = [...prev, issue];
+              console.log('📋 Updated compliance issues count:', newIssues.length);
+              return newIssues;
+            });
             
             toast({
               title: `${issue.severity.toUpperCase()} Compliance Issue`,
@@ -347,6 +357,18 @@ export const useRealtimeCompliance = () => {
     hasSpokenWelcome.current = false;
   }, []);
 
+  // Debug function to test compliance detection
+  const addTestCompliance = useCallback((testIssue: ComplianceIssue) => {
+    console.log('🧪 Adding test compliance issue:', testIssue);
+    setComplianceIssues(prev => [...prev, testIssue]);
+    
+    toast({
+      title: `${testIssue.severity.toUpperCase()} Compliance Issue`,
+      description: `${testIssue.category}: ${testIssue.rationale.substring(0, 100)}...`,
+      variant: testIssue.severity === 'critical' || testIssue.severity === 'high' ? 'destructive' : 'default',
+    });
+  }, [toast]);
+
   return {
     isConnected,
     isRecording,
@@ -362,5 +384,6 @@ export const useRealtimeCompliance = () => {
     stopRecording,
     sendTextMessage,
     resetSession,
+    addTestCompliance, // Debug function
   };
 };
