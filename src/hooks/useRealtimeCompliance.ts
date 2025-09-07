@@ -105,11 +105,9 @@ export const useRealtimeCompliance = () => {
             const newDelta = data.delta || '';
             setCurrentTranscript(prev => {
               const updated = prev + newDelta;
-              // Run compliance check on every update with accumulated text
-              if (updated.length > 5) {
-                console.log('🔍 Triggering compliance check for transcript delta:', updated);
-                setTimeout(() => checkForComplianceViolations(), 50);
-              }
+              // Run compliance check on EVERY single character update
+              console.log('🔍 Triggering compliance check for transcript delta:', updated);
+              setTimeout(() => checkForComplianceViolations(), 10);
               return updated;
             });
             break;
@@ -385,90 +383,133 @@ export const useRealtimeCompliance = () => {
     const allText = allUserMessages.map(msg => msg.content).join(' ').toLowerCase();
     console.log('📝 All text to analyze:', allText);
 
-    // ULTRA AGGRESSIVE compliance patterns matching Wolf of Wall Street phrases
+    // ULTRA SENSITIVE compliance patterns - trigger on ANY financial mention
     const compliancePatterns = [
       {
         patterns: [
-          'make you money', 'consistently make you money', 'make.*money', 
-          'profit.*guaranteed', 'guaranteed.*profit', 'money.*guaranteed',
-          'will make', 'can make you', 'money'
+          'money', 'profit', 'return', 'gain', 'earn', 'make', 'invest', 'investment',
+          'stock', 'share', 'market', 'trading', 'buy', 'sell', 'portfolio',
+          'financial', 'finance', 'wealth', 'rich', 'income'
         ],
         category: 'Performance Guarantees',
         severity: 'critical' as const,
-        rationale: 'Explicit performance guarantees - SEC violation',
+        rationale: 'Any mention of financial gains or money triggers performance guarantee concerns',
         regulation: 'SEC Rule 10b-5'
       },
       {
         patterns: [
-          'only problem.*buy more', 'problem.*buy.*more', 'should.*buy more', 
-          'did.*buy more', 'didn.*buy more', 'buy everything'
+          'should', 'recommend', 'suggest', 'advice', 'tell', 'think', 'believe',
+          'put', 'place', 'allocate', 'move', 'transfer', 'best', 'good', 'great'
         ],
-        category: 'Unsuitable Advice',
+        category: 'Unsuitable Investment Advice',
         severity: 'critical' as const,
-        rationale: 'Recommending excessive investment without suitability analysis',
+        rationale: 'Investment recommendations without suitability analysis',
         regulation: 'FINRA Rule 2111'
       },
       {
         patterns: [
-          'broker.*trust', 'trust.*broker', 'consistently.*make', 
-          'benchmark.*future', 'wall street.*trust'
+          'now', 'today', 'quick', 'fast', 'hurry', 'urgent', 'soon', 'immediately',
+          'deadline', 'limited', 'opportunity', 'chance', 'time', 'act'
         ],
-        category: 'Misleading Claims',
+        category: 'Pressure / Urgency Tactics',
         severity: 'high' as const,
-        rationale: 'Making unsubstantiated trust or performance claims',
+        rationale: 'Time pressure or urgency language detected',
+        regulation: 'UDAAP'
+      },
+      {
+        patterns: [
+          'safe', 'secure', 'guaranteed', 'sure', 'certain', 'risk', 'stable',
+          'protected', 'insured', 'backed', 'promise', 'assure'
+        ],
+        category: 'Inadequate Risk Disclosure',
+        severity: 'high' as const,
+        rationale: 'Statements about safety or guarantees without proper risk disclosure',
+        regulation: 'FTC Guides'
+      },
+      {
+        patterns: [
+          'best', 'top', 'leading', 'number', 'first', 'winning', 'success',
+          'proven', 'track record', 'always', 'never', 'every', 'all'
+        ],
+        category: 'Misleading Statements',
+        severity: 'medium' as const,
+        rationale: 'Superlative or absolute claims that may mislead',
         regulation: 'SEC Rule 10b-5'
       },
       {
         patterns: [
-          'wolf.*wall street', 'boiler room', 'pump.*dump',
-          'sales.*script', 'pressure.*sell'
+          'more', 'additional', 'extra', 'increase', 'add', 'boost', 'maximize',
+          'double', 'triple', 'multiple', 'leverage', 'margin'
         ],
-        category: 'Fraudulent Schemes',
-        severity: 'critical' as const,
-        rationale: 'Reference to known fraudulent sales practices',
-        regulation: 'Securities Fraud Statutes'
+        category: 'Excessive Trading (Churning)',
+        severity: 'medium' as const,
+        rationale: 'Language suggesting excessive or inappropriate trading activity',
+        regulation: 'FINRA 2111'
+      },
+      {
+        patterns: [
+          'trust', 'benefit', 'commission', 'fee', 'payment', 'compensation',
+          'reward', 'bonus', 'incentive', 'conflict', 'interest'
+        ],
+        category: 'Conflicts of Interest',
+        severity: 'medium' as const,
+        rationale: 'Potential conflicts of interest or compensation issues',
+        regulation: 'IA Act Rule 206(4)-7'
+      },
+      {
+        patterns: [
+          'handle', 'manage', 'control', 'decide', 'choose', 'pick', 'select',
+          'discretion', 'authority', 'permission', 'authorization'
+        ],
+        category: 'Unauthorized Trading',
+        severity: 'high' as const,
+        rationale: 'Discussions of trading authority or discretion',
+        regulation: 'FINRA 3260'
       }
     ];
 
     let foundViolations = false;
 
-    // Check each pattern aggressively
+    // Check each pattern with MAXIMUM sensitivity
     compliancePatterns.forEach(rule => {
       rule.patterns.forEach(pattern => {
-        const regex = new RegExp(pattern, 'gi');
-        const matches = allText.match(regex);
+        // Ultra-loose matching - just check if word exists anywhere
+        const words = allText.split(/\s+/);
+        const patternWords = pattern.split(/\s+/);
         
-        if (matches) {
+        // If ANY word from pattern appears, trigger violation
+        const hasMatch = patternWords.some(patternWord => 
+          words.some(word => word.includes(patternWord.toLowerCase()))
+        );
+        
+        if (hasMatch) {
           foundViolations = true;
-          console.log(`🚨🚨🚨 COMPLIANCE VIOLATION DETECTED: "${pattern}" found ${matches.length} times`);
-          console.log(`🎯 Matches:`, matches);
+          console.log(`🚨🚨🚨 ULTRA-SENSITIVE VIOLATION: "${pattern}" triggered by text containing words`);
           
-          matches.forEach((match, index) => {
-            const issue = {
-              category: rule.category,
-              severity: rule.severity,
-              rationale: rule.rationale,
-              evidenceSnippet: `"${match}" - detected in transcript`,
-              reg_reference: rule.regulation,
-              timestamp: new Date().toISOString()
-            };
-            
-            console.log(`📋 Adding compliance issue #${index + 1}:`, issue);
-            
-            // Add to compliance issues
-            setComplianceIssues(prev => {
-              const newIssues = [...prev, issue];
-              console.log(`🚨 Updated compliance issues count: ${newIssues.length}`);
-              return newIssues;
-            });
-            
-            // Show immediate toast
-            toast({
-              title: `${rule.severity.toUpperCase()} VIOLATION DETECTED`,
-              description: `${rule.category}: "${match}"`,
-              variant: 'destructive',
-              duration: 5000,
-            });
+          const issue = {
+            category: rule.category,
+            severity: rule.severity,
+            rationale: rule.rationale,
+            evidenceSnippet: `Detected: "${pattern}" in conversation`,
+            reg_reference: rule.regulation,
+            timestamp: new Date().toISOString()
+          };
+          
+          console.log(`📋 Adding ultra-sensitive compliance issue:`, issue);
+          
+          // Add to compliance issues
+          setComplianceIssues(prev => {
+            const newIssues = [...prev, issue];
+            console.log(`🚨 Updated compliance issues count: ${newIssues.length}`);
+            return newIssues;
+          });
+          
+          // Show immediate toast
+          toast({
+            title: `${rule.severity.toUpperCase()} VIOLATION`,
+            description: `${rule.category}: "${pattern}"`,
+            variant: 'destructive',
+            duration: 2000,
           });
         }
       });
