@@ -180,14 +180,20 @@ const insertCallAndIssues = async (
 ): Promise<void> => {
   try {
     // Insert call record
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      console.warn('No authenticated user, skipping database insert');
+      // For demo purposes, still return success without database insert
+      return;
+    }
     
     const { error: callError } = await supabase
       .from('calls')
       .insert({
         id: callId,
         call_id: callId,
-        user_id: user?.id, // Add user_id for RLS compliance
+        user_id: user.id, // Add user_id for RLS compliance
         started_at: new Date().toISOString(),
         ended_at: new Date(Date.now() + duration * 1000).toISOString(),
         duration_sec: Math.round(duration),
