@@ -97,7 +97,7 @@ export const LandingPage = () => {
 
   const particles = useMemo(
     () =>
-      Array.from({ length: 500 }).map((_, i) => ({
+      Array.from({ length: 50 }).map((_, i) => ({
         leftPct: Math.random() * 100,
         topPct: Math.random() * 100,
         dur: 6 + Math.random() * 15,
@@ -147,31 +147,26 @@ export const LandingPage = () => {
         aria-hidden="true" 
       />
 
-      {/* Enhanced floating particles with cursor interaction */}
+      {/* Smooth floating particles with optimized cursor interaction */}
       {!prefersReducedMotion && (
         <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
           {particles.map((particle) => {
-            // Calculate distance from cursor to particle
-            const particleX = (particle.leftPct / 100) * window.innerWidth;
-            const particleY = (particle.topPct / 100) * window.innerHeight;
+            // Simplified cursor influence calculation
+            const particleX = (particle.leftPct / 100) * (typeof window !== 'undefined' ? window.innerWidth : 1000);
+            const particleY = (particle.topPct / 100) * (typeof window !== 'undefined' ? window.innerHeight : 1000);
             const distanceX = mousePosition.x - particleX;
             const distanceY = mousePosition.y - particleY;
             const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
             
-            // Cursor influence (attraction within 200px, repulsion within 100px)
-            const maxDistance = 200;
-            const repelDistance = 100;
+            // Gentle cursor influence (reduced complexity)
+            const maxDistance = 150;
             let cursorInfluenceX = 0;
             let cursorInfluenceY = 0;
             
             if (distance < maxDistance && distance > 0) {
-              const influence = distance < repelDistance ? -1 : 1;
-              const strength = distance < repelDistance ? 
-                (repelDistance - distance) / repelDistance : 
-                (maxDistance - distance) / maxDistance;
-              
-              cursorInfluenceX = (distanceX / distance) * strength * influence * 50;
-              cursorInfluenceY = (distanceY / distance) * strength * influence * 50;
+              const strength = (maxDistance - distance) / maxDistance * 0.3; // Reduced strength
+              cursorInfluenceX = (distanceX / distance) * strength * 30;
+              cursorInfluenceY = (distanceY / distance) * strength * 30;
             }
 
             return (
@@ -186,11 +181,10 @@ export const LandingPage = () => {
                   opacity: particle.opacity,
                 }}
                 animate={{
-                  y: [0, -200 + cursorInfluenceY, -50 + cursorInfluenceY, -180 + cursorInfluenceY, 0],
-                  x: [0, Math.sin(particle.key) * 150 + cursorInfluenceX, Math.cos(particle.key) * 120 + cursorInfluenceX, Math.sin(particle.key + 2) * 100 + cursorInfluenceX, 0],
-                  opacity: [particle.opacity, particle.opacity * (3 + (distance < 150 ? 1 : 0)), particle.opacity * 1.5, particle.opacity * 2.5, particle.opacity],
-                  scale: [0.3, 2 + (distance < 100 ? 0.5 : 0), 1, 1.8, 0.3],
-                  rotate: [0, 180, 90, 270, 360],
+                  y: [0, -80 + cursorInfluenceY, 0],
+                  x: [0, Math.sin(particle.key) * 60 + cursorInfluenceX, 0],
+                  opacity: [particle.opacity, particle.opacity * 2, particle.opacity],
+                  scale: [0.8, 1.2, 0.8],
                 }}
                 transition={{
                   duration: particle.dur,
