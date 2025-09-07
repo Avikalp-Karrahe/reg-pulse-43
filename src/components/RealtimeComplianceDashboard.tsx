@@ -43,36 +43,29 @@ export const RealtimeComplianceDashboard = () => {
     return () => clearInterval(interval);
   }, [callActive]);
 
-  const handleStartCall = async () => {
+  const handleToggleAssistant = async () => {
     try {
-      if (!isConnected) {
+      if (!isConnected && !isRecording) {
+        // Start everything
         await connect();
+        await startRecording();
+        setCallActive(true);
+        setCallDuration(0);
+        resetSession();
+      } else {
+        // Stop everything
+        stopRecording();
+        disconnect();
+        setCallActive(false);
+        setCallDuration(0);
       }
-      await startRecording();
-      setCallActive(true);
-      setCallDuration(0);
-      resetSession();
     } catch (error) {
-      console.error('Error starting call:', error);
+      console.error('Error toggling assistant:', error);
       toast({
-        title: "Error Starting Call",
-        description: "Failed to start recording. Please check microphone permissions.",
+        title: "Error",
+        description: "Failed to toggle assistant. Please check microphone permissions.",
         variant: "destructive",
       });
-    }
-  };
-
-  const handleEndCall = () => {
-    stopRecording();
-    setCallActive(false);
-    setCallDuration(0);
-  };
-
-  const handleToggleRecording = async () => {
-    if (isRecording) {
-      stopRecording();
-    } else {
-      await startRecording();
     }
   };
 
@@ -148,12 +141,25 @@ export const RealtimeComplianceDashboard = () => {
               </div>
               
               <Button 
-                onClick={handleStartCall}
-                className="w-full h-12 text-base bg-cyan-600 hover:bg-cyan-700 text-white"
+                onClick={handleToggleAssistant}
+                className={`w-full h-12 text-base text-white ${
+                  isConnected || isRecording 
+                    ? 'bg-red-600 hover:bg-red-700' 
+                    : 'bg-cyan-600 hover:bg-cyan-700'
+                }`}
                 size="lg"
               >
-                <Phone className="w-5 h-5 mr-2" />
-                Start Live Assistant
+                {isConnected || isRecording ? (
+                  <>
+                    <PhoneOff className="w-5 h-5 mr-2" />
+                    End Assistant
+                  </>
+                ) : (
+                  <>
+                    <Phone className="w-5 h-5 mr-2" />
+                    Start Live Assistant
+                  </>
+                )}
               </Button>
               
               <p className="text-xs text-muted-foreground text-center">
@@ -198,15 +204,6 @@ export const RealtimeComplianceDashboard = () => {
                 </>
               )}
             </div>
-            
-              <Button 
-                onClick={handleEndCall} 
-                variant="destructive"
-                className="bg-red-600 hover:bg-red-700 border-red-500"
-              >
-                <PhoneOff className="w-4 h-4 mr-2" />
-                End Assistant
-              </Button>
           </div>
         </div>
 
@@ -219,30 +216,12 @@ export const RealtimeComplianceDashboard = () => {
                 <CardTitle className="text-lg text-cyan-400 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {isRecording ? (
-                      <Mic className="w-5 h-5 text-green-500" />
+                      <Mic className="w-5 h-5 text-green-500 animate-pulse" />
                     ) : (
                       <MicOff className="w-5 h-5 text-muted-foreground" />
                     )}
                     Live Conversation
                   </div>
-                  <Button
-                    onClick={handleToggleRecording}
-                    size="sm"
-                    variant={isRecording ? "destructive" : "default"}
-                    className={isRecording ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}
-                  >
-                    {isRecording ? (
-                      <>
-                        <MicOff className="w-4 h-4 mr-1" />
-                        Stop Mic
-                      </>
-                    ) : (
-                      <>
-                        <Mic className="w-4 h-4 mr-1" />
-                        Start Mic
-                      </>
-                    )}
-                  </Button>
                 </CardTitle>
               </CardHeader>
               <CardContent className="h-[400px] flex flex-col">
