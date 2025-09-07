@@ -1,0 +1,82 @@
+<svg width="1024" height="400" viewBox="0 0 1024 400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1a1a1a"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </radialGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/> 
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1024" height="400" fill="url(#bg)"/>
+  
+  <!-- Animated particles -->
+  <g opacity="0.6">
+    <circle cx="100" cy="80" r="2" fill="#10b981">
+      <animate attributeName="opacity" values="0.3;1;0.3" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="200" cy="120" r="1.5" fill="#10b981">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="300" cy="60" r="2.5" fill="#10b981">
+      <animate attributeName="opacity" values="0.2;0.8;0.2" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="450" cy="100" r="1" fill="#10b981">
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="3.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="600" cy="70" r="2" fill="#10b981">
+      <animate attributeName="opacity" values="0.3;0.9;0.3" dur="2.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="750" cy="110" r="1.5" fill="#10b981">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="3.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="850" cy="90" r="2" fill="#10b981">
+      <animate attributeName="opacity" values="0.2;0.7;0.2" dur="4.2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="950" cy="130" r="1" fill="#10b981">
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="2.3s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Bottom particles -->
+    <circle cx="150" cy="320" r="1.5" fill="#10b981">
+      <animate attributeName="opacity" values="0.3;0.8;0.3" dur="3.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="350" cy="350" r="2" fill="#10b981">
+      <animate attributeName="opacity" values="0.2;1;0.2" dur="2.7s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="550" cy="330" r="1" fill="#10b981">
+      <animate attributeName="opacity" values="0.5;0.9;0.5" dur="3.3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="750" cy="360" r="2.5" fill="#10b981">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="4.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="900" cy="340" r="1.5" fill="#10b981">
+      <animate attributeName="opacity" values="0.4;1;0.4" dur="2.9s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Main title -->
+  <text x="512" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="white" filter="url(#glow)">
+    Deploy Research-Grade 
+  </text>
+  <text x="512" y="230" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#10b981" filter="url(#glow)">
+    Intelligence
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="512" y="270" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="#10b981" opacity="0.9">
+    Switch on compliant conversations. Live voice AI that flags violations
+  </text>
+  
+  <!-- CTA Button -->
+  <rect x="410" y="300" width="204" height="50" rx="25" fill="none" stroke="#10b981" stroke-width="2" opacity="0.8"/>
+  <text x="512" y="330" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="#10b981" font-weight="500">
+    ▶ Launch Dashboard
+  </text>
+</svg>
