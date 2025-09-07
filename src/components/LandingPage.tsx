@@ -677,7 +677,7 @@ export const LandingPage = () => {
           {/* Final CTA - Research Grade */}
           <motion.div className="text-center py-20 pb-72" variants={itemVariants}>
             <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-foreground">Deploy Research-Grade <span className="text-emerald-400">Intelligence</span></h2>
-            <p className="text-xl text-muted-foreground mb-4 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-xl text-emerald-400 mb-4 max-w-4xl mx-auto leading-relaxed">
               Switch on compliant conversations. Live voice AI that flags violations in green 
             </p>
             <div className="flex justify-center">
