@@ -62,6 +62,8 @@ export const useAllIssues = () => {
           category,
           severity,
           timestamp,
+          rationale,
+          reg_reference,
           calls!inner(started_at, risk_score)
         `)
         .order('timestamp', { ascending: false });
@@ -75,6 +77,8 @@ export const useAllIssues = () => {
         category: issue.category,
         severity: issue.severity,
         timestamp: issue.timestamp,
+        rationale: issue.rationale,
+        regReference: issue.reg_reference,
         callDate: issue.calls?.started_at,
         riskScore: issue.calls?.risk_score || 0,
       }));
