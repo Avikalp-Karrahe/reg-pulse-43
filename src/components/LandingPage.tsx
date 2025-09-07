@@ -352,24 +352,13 @@ export const LandingPage = () => {
                 onMouseLeave={() => setIsButtonHovered(false)}
                 onClick={() => window.location.href = '/dashboard'}
               >
-                {/* Button background that appears when particles converge */}
+                {/* Button text - white on hover */}
                 <motion.div
-                  className="absolute inset-0 rounded-lg bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-500 opacity-0"
+                  className="relative z-10 flex items-center font-semibold text-lg transition-colors duration-300"
                   animate={{
-                    opacity: isButtonHovered ? 0.9 : 0,
-                    scale: isButtonHovered ? 1 : 0.8,
+                    color: isButtonHovered ? '#ffffff' : '#a3a3a3',
                   }}
-                  transition={{ duration: 0.5 }}
-                />
-                
-                {/* Button text */}
-                <motion.div
-                  className="relative z-10 flex items-center text-white font-semibold text-lg"
-                  animate={{
-                    opacity: isButtonHovered ? 1 : 0.3,
-                    scale: isButtonHovered ? 1 : 0.9,
-                  }}
-                  transition={{ duration: 0.5 }}
+                  transition={{ duration: 0.3 }}
                 >
                   <Play className="w-6 h-6 mr-3" />
                   Launch Dashboard
