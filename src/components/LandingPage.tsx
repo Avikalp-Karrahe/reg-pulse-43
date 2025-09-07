@@ -676,7 +676,7 @@ export const LandingPage = () => {
 
           {/* Final CTA - Research Grade */}
           <motion.div className="text-center py-20" variants={itemVariants}>
-            <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-foreground">Deploy Research-Grade Intelligence</h2>
+            <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-foreground">Deploy Research-Grade <span className="text-emerald-400">Intelligence</span></h2>
             <p className="text-xl text-muted-foreground mb-4 max-w-4xl mx-auto leading-relaxed">
               Experience neural compliance detection powered by Stanford-research architectures, 
               production-optimized for enterprise deployment with 99.94% accuracy guarantees.
