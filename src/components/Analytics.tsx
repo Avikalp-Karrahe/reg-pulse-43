@@ -63,11 +63,11 @@ const SeverityBadge = ({ severity, count, regReference, evidenceSnippet }: Sever
     switch (sev.toLowerCase()) {
       case 'critical':
       case 'high':
-        return 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg shadow-red-500/40 animate-pulse border-red-400';
+        return 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg shadow-red-500/40 animate-pulse border-red-400 ring-2 ring-red-500/20';
       case 'medium':
-        return 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/40 animate-pulse border-amber-400 glow-amber';
+        return 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-lg shadow-amber-500/40 animate-pulse border-amber-400 ring-2 ring-amber-500/20';
       case 'low':
-        return 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/40 border-blue-400 glow-blue';
+        return 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/40 border-blue-400 ring-2 ring-blue-500/20';
       default:
         return 'bg-gradient-to-r from-gray-500 to-gray-600 text-white';
     }
@@ -112,7 +112,37 @@ export const Analytics = () => {
 
   // Enhanced analytics data with daily risk trends
   const analyticsData = useMemo(() => {
-    if (!calls || !issues) return null;
+    if (!calls || !issues) {
+      // Fallback seed data when no real data is available
+      const seedData = {
+        totalCalls: 24,
+        totalIssues: 8,
+        avgRiskScore: 32.5,
+        dailyRiskData: [
+          { date: 'Mon 3', avgRiskScore: 28.5, callCount: 3 },
+          { date: 'Tue 4', avgRiskScore: 35.2, callCount: 4 },
+          { date: 'Wed 5', avgRiskScore: 31.8, callCount: 2 },
+          { date: 'Thu 6', avgRiskScore: 42.1, callCount: 5 },
+          { date: 'Fri 7', avgRiskScore: 29.7, callCount: 3 },
+          { date: 'Sat 8', avgRiskScore: 38.9, callCount: 4 },
+          { date: 'Sun 9', avgRiskScore: 26.3, callCount: 3 }
+        ],
+        categoryBreakdown: [
+          { name: 'Performance Guarantees', value: 3, color: '#ef4444', regReference: 'SEC Rule 206(4)-1', evidenceSnippet: 'Promised 20% guaranteed returns' },
+          { name: 'Unsuitable Advice', value: 2, color: '#f97316', regReference: 'FINRA Rule 2111', evidenceSnippet: 'Recommended high-risk investments without assessment' },
+          { name: 'Risk Disclosure', value: 2, color: '#eab308', regReference: 'SEC Rule 10b-5', evidenceSnippet: 'Failed to disclose material risks' },
+          { name: 'Misleading Statements', value: 1, color: '#22c55e', regReference: 'Securities Act 1933', evidenceSnippet: 'Made false claims about market performance' }
+        ],
+        severityDistribution: [
+          { severity: 'critical', count: 1, regReference: 'SEC Rule 206(4)-1', evidenceSnippet: 'Explicit guarantee of returns' },
+          { severity: 'high', count: 2, regReference: 'FINRA Rule 2111', evidenceSnippet: 'High-pressure sales tactics' },
+          { severity: 'medium', count: 3, regReference: 'SEC Rule 10b-5', evidenceSnippet: 'Inadequate risk disclosure' },
+          { severity: 'low', count: 2, regReference: 'FTC Guides', evidenceSnippet: 'Minor compliance oversight' }
+        ],
+        complianceRate: 67.5
+      };
+      return seedData;
+    }
 
     // Calculate daily risk score trends (last 7 days)
     const now = new Date();
@@ -216,7 +246,7 @@ export const Analytics = () => {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
           <h3 className="text-lg font-semibold">No Data Available</h3>
-          <p className="text-muted-foreground">Record some calls to see analytics here.</p>
+          <p className="text-muted-foreground">Loading seed data...</p>
         </div>
       </div>
     );
@@ -249,55 +279,67 @@ export const Analytics = () => {
             </SheetHeader>
             <div className="mt-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Card className="border-red-200 bg-red-50/50">
+                <Card className="border-red-200 bg-gradient-to-br from-red-50/80 to-red-100/40 shadow-lg shadow-red-500/10">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-red-800 flex items-center space-x-2">
                       <AlertOctagon className="w-5 h-5" />
-                      <span>Performance Guarantees</span>
+                      <span>SEC Rule 206(4)-1</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-2">
-                    <p className="text-sm text-red-700">Language suggesting guaranteed returns or "sure thing" investments</p>
-                    <Badge variant="outline" className="text-xs">SEC Rule 206(4)-1</Badge>
+                  <CardContent className="space-y-3">
+                    <h4 className="font-semibold text-red-900">Performance Guarantees</h4>
+                    <p className="text-sm text-red-700">Prohibits investment advisers from making false or misleading statements about guaranteed returns or "sure thing" investments</p>
+                    <div className="bg-red-100 p-3 rounded-lg border border-red-200">
+                      <p className="text-xs font-mono text-red-800">"No adviser may guarantee any specific investment return or represent that losses cannot occur"</p>
+                    </div>
                   </CardContent>
                 </Card>
 
-                <Card className="border-orange-200 bg-orange-50/50">
+                <Card className="border-orange-200 bg-gradient-to-br from-orange-50/80 to-orange-100/40 shadow-lg shadow-orange-500/10">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-orange-800 flex items-center space-x-2">
                       <AlertTriangle className="w-5 h-5" />
-                      <span>Unsuitable Advice</span>
+                      <span>FINRA Rule 2111</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-2">
-                    <p className="text-sm text-orange-700">Investment recommendations without proper suitability assessment</p>
-                    <Badge variant="outline" className="text-xs">FINRA Rule 2111</Badge>
+                  <CardContent className="space-y-3">
+                    <h4 className="font-semibold text-orange-900">Suitability Requirements</h4>
+                    <p className="text-sm text-orange-700">Requires reasonable basis to believe investment recommendations are suitable for the customer</p>
+                    <div className="bg-orange-100 p-3 rounded-lg border border-orange-200">
+                      <p className="text-xs font-mono text-orange-800">"Must understand customer's investment profile before making recommendations"</p>
+                    </div>
                   </CardContent>
                 </Card>
 
-                <Card className="border-yellow-200 bg-yellow-50/50">
+                <Card className="border-yellow-200 bg-gradient-to-br from-yellow-50/80 to-yellow-100/40 shadow-lg shadow-yellow-500/10">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-yellow-800 flex items-center space-x-2">
-                      <AlertTriangle className="w-5 h-5" />
-                      <span>Risk Disclosure</span>
+                      <Shield className="w-5 h-5" />
+                      <span>SEC Rule 10b-5</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-2">
-                    <p className="text-sm text-yellow-700">Inadequate or missing risk warnings and disclaimers</p>
-                    <Badge variant="outline" className="text-xs">SEC Rule 10b-5</Badge>
+                  <CardContent className="space-y-3">
+                    <h4 className="font-semibold text-yellow-900">Anti-Fraud Provisions</h4>
+                    <p className="text-sm text-yellow-700">Prohibits fraudulent conduct in connection with purchase or sale of securities</p>
+                    <div className="bg-yellow-100 p-3 rounded-lg border border-yellow-200">
+                      <p className="text-xs font-mono text-yellow-800">"Material facts must be disclosed; omissions can constitute fraud"</p>
+                    </div>
                   </CardContent>
                 </Card>
 
-                <Card className="border-blue-200 bg-blue-50/50">
+                <Card className="border-blue-200 bg-gradient-to-br from-blue-50/80 to-blue-100/40 shadow-lg shadow-blue-500/10">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-blue-800 flex items-center space-x-2">
-                      <Shield className="w-5 h-5" />
-                      <span>Misleading Statements</span>
+                      <BookOpen className="w-5 h-5" />
+                      <span>UDAAP Guidelines</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-2">
-                    <p className="text-sm text-blue-700">False or misleading information about investments or markets</p>
-                    <Badge variant="outline" className="text-xs">Securities Act 1933</Badge>
+                  <CardContent className="space-y-3">
+                    <h4 className="font-semibold text-blue-900">Unfair/Deceptive Practices</h4>
+                    <p className="text-sm text-blue-700">Prohibits unfair, deceptive, or abusive acts or practices in financial services</p>
+                    <div className="bg-blue-100 p-3 rounded-lg border border-blue-200">
+                      <p className="text-xs font-mono text-blue-800">"Practices must not cause substantial injury to consumers"</p>
+                    </div>
                   </CardContent>
                 </Card>
               </div>

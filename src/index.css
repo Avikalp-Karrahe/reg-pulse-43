@@ -323,4 +323,14 @@ All colors MUST be HSL.
     padding: 0.125rem 0.25rem;
     box-shadow: 0 0 8px hsla(var(--destructive), 0.3);
   }
+  
+  /* Shimmer animation for tiles */
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
 }
