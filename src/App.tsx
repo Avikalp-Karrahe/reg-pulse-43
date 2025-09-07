@@ -12,6 +12,7 @@ import { AudioInputSetup } from "@/components/AudioInputSetup";
 import { LandingPage } from "@/components/LandingPage";
 import { DemoBanner } from "@/components/DemoBanner";
 import { AgentOpsConsole } from "@/components/AgentOpsConsole";
+import { PresenterPanel } from "@/components/PresenterPanel";
 import { isDemoActive } from "@/app/dataAdapter";
 import NotFound from "./pages/NotFound";
 import { useState, useEffect } from "react";
@@ -20,12 +21,18 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const [isAgentOpsOpen, setIsAgentOpsOpen] = useState(false);
+  const [presenterPanelOpen, setPresenterPanelOpen] = useState(false);
 
-  // Keyboard shortcut for Agent Ops Console
+  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'o' || event.key === 'O') {
+        event.preventDefault();
         setIsAgentOpsOpen(prev => !prev);
+      }
+      if (event.key === 'p' || event.key === 'P') {
+        event.preventDefault();
+        setPresenterPanelOpen(prev => !prev);
       }
     };
 
@@ -76,6 +83,13 @@ const App = () => {
                         >
                           Agent Ops {isAgentOpsOpen ? '🟢' : '⚫'}
                         </button>
+                        <button
+                          onClick={() => setPresenterPanelOpen(!presenterPanelOpen)}
+                          className="px-3 py-1 text-xs font-mono border rounded hover:bg-accent transition-colors"
+                          title="Toggle Presenter Panel (Press 'P')"
+                        >
+                          Presenter {presenterPanelOpen ? '🟢' : '⚫'}
+                        </button>
                         <NavLink 
                           to="/settings" 
                           className="text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -105,6 +119,10 @@ const App = () => {
                   <AgentOpsConsole 
                     isOpen={isAgentOpsOpen} 
                     onClose={() => setIsAgentOpsOpen(false)} 
+                  />
+                  <PresenterPanel
+                    isOpen={presenterPanelOpen}
+                    onClose={() => setPresenterPanelOpen(false)}
                   />
                 </div>
               </SidebarProvider>
