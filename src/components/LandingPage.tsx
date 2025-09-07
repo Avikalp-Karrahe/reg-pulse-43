@@ -314,7 +314,7 @@ export const LandingPage = () => {
                 <Button
                   asChild
                   size="lg"
-                  className="h-16 px-12 text-lg font-bold text-red-500 hover:text-emerald-400 bg-transparent border-2 border-red-500/30 hover:border-emerald-500/50 hover:bg-transparent transition-all duration-300 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl"
+                  className={`h-16 px-12 text-lg font-bold ${isHoveringLaunchButton ? 'text-emerald-400 border-emerald-500/50' : 'text-red-500 border-red-500/30'} bg-transparent border-2 hover:bg-transparent transition-all duration-300 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl`}
                   aria-label="Go to dashboard"
                 >
                   <Link to="/dashboard" className="flex items-center">
@@ -659,7 +659,7 @@ export const LandingPage = () => {
               <Button 
                 asChild
                 size="lg" 
-                className="h-16 px-12 text-lg font-bold text-red-500 hover:text-emerald-400 bg-transparent border-2 border-red-500/30 hover:border-emerald-500/50 hover:bg-transparent transition-all duration-300 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl" 
+                className={`h-16 px-12 text-lg font-bold ${isHoveringBottomCTA ? 'text-emerald-400 border-emerald-500/50' : 'text-red-500 border-red-500/30'} bg-transparent border-2 hover:bg-transparent transition-all duration-300 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl`}
                 onMouseEnter={() => setIsHoveringBottomCTA(true)}
                 onMouseLeave={() => setIsHoveringBottomCTA(false)}
               >
