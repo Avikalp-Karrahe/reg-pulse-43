@@ -1,0 +1,15 @@
+[
+  {
+    "id": "CALL-DEMO-001",
+    "callId": "CALL-DEMO-001",
+    "started_at": "2024-12-07T14:30:00Z",
+    "ended_at": "2024-12-07T14:35:42Z",
+    "duration_sec": 342,
+    "risk_score": 67,
+    "status": "completed",
+    "participant": "Alex Morgan",
+    "client": "Investment Prospects LLC",
+    "call_type": "Sales Consultation",
+    "advisor_id": "ADV-001"
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "ISSUE-001",
+    "call_id": "CALL-DEMO-001",
+    "category": "Performance Guarantees", 
+    "severity": "high",
+    "rationale": "Advisor made explicit performance guarantee claiming '20% monthly returns guaranteed' which violates SEC regulations prohibiting guaranteed investment returns.",
+    "reg_reference": "SEC Rule 10b-5, Investment Advisers Act Section 206",
+    "evidence_snippet": "You'll make 20% monthly, guaranteed. I've never had a client lose money with this strategy.",
+    "evidence_start_ms": 142000,
+    "evidence_end_ms": 146500,
+    "model_rationale": "The phrase 'guaranteed' combined with specific return percentages constitutes an impermissible performance guarantee under securities law.",
+    "model_version": "demo-v1",
+    "timestamp": "2024-12-07T14:32:22Z"
+  },
+  {
+    "id": "ISSUE-002", 
+    "call_id": "CALL-DEMO-001",
+    "category": "Unsuitable Advice",
+    "severity": "medium",
+    "rationale": "Advisor suggested investment strategy is 'perfect for everyone' without conducting proper suitability assessment or considering client-specific factors.",
+    "reg_reference": "FINRA Rule 2111 (Suitability)",
+    "evidence_snippet": "This high-growth tech portfolio is perfect for everyone. No matter your age or situation, this works.",
+    "evidence_start_ms": 68000,
+    "evidence_end_ms": 72000,
+    "model_rationale": "Blanket recommendations without individual suitability analysis violate FINRA suitability requirements.",
+    "model_version": "demo-v1",
+    "timestamp": "2024-12-07T14:31:08Z"
+  },
+  {
+    "id": "ISSUE-003",
+    "call_id": "CALL-DEMO-001", 
+    "category": "Pressure/Urgency",
+    "severity": "medium",
+    "rationale": "Advisor applied inappropriate pressure tactics urging immediate fund transfer without allowing adequate consideration time.",
+    "reg_reference": "UDAAP Guidelines, FINRA Rule 2010",
+    "evidence_snippet": "You need to transfer the money today to lock in these rates. Don't think about it too long.",
+    "evidence_start_ms": 189000,
+    "evidence_end_ms": 191000,
+    "model_rationale": "High-pressure sales tactics that discourage deliberation may constitute unfair or deceptive practices.",
+    "model_version": "demo-v1",
+    "timestamp": "2024-12-07T14:33:09Z"
+  },
+  {
+    "id": "ISSUE-004",
+    "call_id": "CALL-DEMO-001",
+    "category": "Risk Disclosure", 
+    "severity": "low",
+    "rationale": "Advisor made unsubstantiated comparative claim about market performance without proper disclosure of risks and basis for comparison.",
+    "reg_reference": "FTC Guides, SEC Marketing Rule",
+    "evidence_snippet": "This is absolutely the best performing fund in the market right now.",
+    "evidence_start_ms": 233000,
+    "evidence_end_ms": 235000,
+    "model_rationale": "Superlative claims require substantiation and appropriate risk disclosures to avoid misleading investors.",
+    "model_version": "demo-v1",
+    "timestamp": "2024-12-07T14:33:53Z"
+  }
+]

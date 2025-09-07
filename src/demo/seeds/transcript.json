@@ -1,0 +1,85 @@
+[
+  {
+    "timestamp": "00:00:00",
+    "speaker": "Advisor",
+    "text": "Good afternoon! Thanks for your interest in our investment services. I'm Alex Morgan, and I'll be walking you through some exciting opportunities today."
+  },
+  {
+    "timestamp": "00:00:12", 
+    "speaker": "Client",
+    "text": "Hi Alex, nice to meet you. I'm looking for something that can help me grow my retirement savings more aggressively."
+  },
+  {
+    "timestamp": "00:00:24",
+    "speaker": "Advisor", 
+    "text": "Perfect! I have just the thing. We've developed a proprietary high-growth technology portfolio that's been performing exceptionally well."
+  },
+  {
+    "timestamp": "00:01:08",
+    "speaker": "Advisor",
+    "text": "This high-growth tech portfolio is perfect for everyone. No matter your age or situation, this works.",
+    "hasIssue": true,
+    "issueId": "ISSUE-002"
+  },
+  {
+    "timestamp": "00:01:22",
+    "speaker": "Client",
+    "text": "That sounds good, but I'm pretty risk-averse. Are there any downsides I should know about?"
+  },
+  {
+    "timestamp": "00:01:35",
+    "speaker": "Advisor",
+    "text": "Listen, I'll be completely honest with you. With our track record and the current market conditions..."
+  },
+  {
+    "timestamp": "00:02:22", 
+    "speaker": "Advisor",
+    "text": "You'll make 20% monthly, guaranteed. I've never had a client lose money with this strategy.",
+    "hasIssue": true,
+    "issueId": "ISSUE-001"
+  },
+  {
+    "timestamp": "00:02:38",
+    "speaker": "Client", 
+    "text": "Twenty percent monthly? That seems quite high. How is that possible?"
+  },
+  {
+    "timestamp": "00:02:51",
+    "speaker": "Advisor",
+    "text": "Our algorithm identifies market inefficiencies before the big firms catch on. It's really quite sophisticated."
+  },
+  {
+    "timestamp": "00:03:09",
+    "speaker": "Advisor",
+    "text": "You need to transfer the money today to lock in these rates. Don't think about it too long.",
+    "hasIssue": true,
+    "issueId": "ISSUE-003"
+  },
+  {
+    "timestamp": "00:03:24",
+    "speaker": "Client",
+    "text": "Today? I was hoping to discuss this with my spouse first. This is a big decision for us."
+  },
+  {
+    "timestamp": "00:03:38", 
+    "speaker": "Advisor",
+    "text": "I understand, but these opportunities don't last long. The market moves fast, and so do our best allocations."
+  },
+  {
+    "timestamp": "00:03:53",
+    "speaker": "Advisor", 
+    "text": "This is absolutely the best performing fund in the market right now.",
+    "hasIssue": true,
+    "issueId": "ISSUE-004"
+  },
+  {
+    "timestamp": "00:04:08",
+    "speaker": "Client",
+    "text": "Okay, let me think about this. Can you send me some documentation to review?"
+  },
+  {
+    "timestamp": "00:04:21",
+    "speaker": "Advisor",
+    "text": "Of course! I'll get that right over to you. But remember, the longer you wait, the more potential gains you're missing out on."
+  }
+]
