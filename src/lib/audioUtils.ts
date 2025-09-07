@@ -10,8 +10,21 @@ export class AudioRecorder {
 
   async start() {
     try {
-      console.log('Starting audio recorder...');
+      console.log('🎤 Starting audio recorder...');
       
+      // Check if microphone permission is granted
+      try {
+        const permission = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+        console.log('🔐 Microphone permission status:', permission.state);
+        
+        if (permission.state === 'denied') {
+          throw new Error('Microphone permission denied. Please enable microphone access in your browser settings.');
+        }
+      } catch (permError) {
+        console.warn('⚠️ Could not check microphone permissions:', permError);
+      }
+      
+      console.log('📡 Requesting microphone access...');
       this.stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           sampleRate: 24000,
@@ -21,6 +34,8 @@ export class AudioRecorder {
           autoGainControl: true
         }
       });
+      
+      console.log('✅ Microphone access granted, creating audio context...');
 
       this.audioContext = new AudioContext({
         sampleRate: 24000,
