@@ -285,7 +285,7 @@ export const LandingPage = () => {
             </motion.p>
 
             <motion.div 
-              className="flex flex-wrap justify-center gap-4 mb-12 text-sm text-muted-foreground font-mono"
+              className="flex flex-wrap justify-center gap-4 mb-6 text-sm text-muted-foreground font-mono"
               variants={itemVariants}
             >
               <span className="bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
