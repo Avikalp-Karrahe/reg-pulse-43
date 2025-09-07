@@ -43,6 +43,8 @@ export const ComplianceDashboard = () => {
   const [permissionState, setPermissionState] = useState<PermissionState>('prompt');
   const [transcriptLines, setTranscriptLines] = useState<string[]>([]);
   const [finalTranscripts, setFinalTranscripts] = useState<string[]>([]);
+  const [uploadedIssues, setUploadedIssues] = useState<any[]>([]);
+  const [uploadedRiskScore, setUploadedRiskScore] = useState<number>(0);
   const { toast } = useToast();
   const saveCall = useSaveCall();
   
@@ -195,6 +197,20 @@ export const ComplianceDashboard = () => {
   };
 
   const handleAnalysisComplete = (result: any) => {
+    // Store the uploaded issues and risk score
+    setUploadedIssues(result.issues || []);
+    setUploadedRiskScore(result.riskScore || 0);
+    
+    // Create a completed call to show the results
+    const completedCall: CallData = {
+      id: result.callId || `UPLOAD-${Date.now()}`,
+      duration: Math.floor((result.transcript?.length || 0) / 10), // Rough estimate based on transcript length
+      riskScore: result.riskScore || 0,
+      status: 'completed'
+    };
+    
+    setCurrentCall(completedCall);
+    
     toast({
       title: "Analysis Complete",
       description: `Analysis completed successfully with ${result.issues?.length || 0} issues found.`,
@@ -202,13 +218,13 @@ export const ComplianceDashboard = () => {
   };
 
   const handleIssueDetected = (issue: any) => {
-    // Issues are already managed by useToolhouseAgent
-    console.log('Issue detected:', issue);
+    // Add issues to uploaded issues during streaming
+    setUploadedIssues(prev => [...prev, issue]);
   };
 
   const handleRiskScoreUpdate = (score: number) => {
-    // Risk score is already managed by useToolhouseAgent
-    console.log('Risk score updated:', score);
+    // Update uploaded risk score during streaming
+    setUploadedRiskScore(score);
   };
 
   // Update risk score when Toolhouse provides new data
@@ -703,7 +719,7 @@ export const ComplianceDashboard = () => {
                     <div className="grid grid-cols-2 gap-4 text-center">
                       <div className="p-3 bg-red-500/10 rounded border border-red-500/20">
                         <div className="text-2xl font-bold text-red-400">
-                          {allIssues.length}
+                          {(currentCall?.id.startsWith('UPLOAD-') ? uploadedIssues : allIssues).length}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           Total Issues
@@ -711,7 +727,7 @@ export const ComplianceDashboard = () => {
                       </div>
                       <div className="p-3 bg-red-500/10 rounded border border-red-500/20">
                         <div className="text-2xl font-bold text-red-400">
-                          {allIssues.filter(i => i.severity === 'critical' || i.severity === 'high').length}
+                          {(currentCall?.id.startsWith('UPLOAD-') ? uploadedIssues : allIssues).filter(i => i.severity === 'critical' || i.severity === 'high').length}
                         </div>
                         <div className="text-xs text-muted-foreground">
                           High Risk
@@ -769,8 +785,8 @@ export const ComplianceDashboard = () => {
           </p>
         </div>
         <div className="flex items-center space-x-4">
-          <span className={`px-4 py-2 rounded-lg text-sm font-medium border backdrop-blur-sm ${getRiskColor(riskScore)} neon-glow`}>
-            RISK SCORE: {Math.round(riskScore)}%
+          <span className={`px-4 py-2 rounded-lg text-sm font-medium border backdrop-blur-sm ${getRiskColor(currentCall.id.startsWith('UPLOAD-') ? uploadedRiskScore : riskScore)} neon-glow`}>
+            RISK SCORE: {Math.round(currentCall.id.startsWith('UPLOAD-') ? uploadedRiskScore : riskScore)}%
           </span>
           <Button 
             variant="outline"
@@ -788,7 +804,7 @@ export const ComplianceDashboard = () => {
         </div>
       </div>
 
-      <RiskAnalysisTable callId={currentCall.id} issues={allIssues} />
+      <RiskAnalysisTable callId={currentCall.id} issues={currentCall.id.startsWith('UPLOAD-') ? uploadedIssues : allIssues} />
     </div>
   );
 };
