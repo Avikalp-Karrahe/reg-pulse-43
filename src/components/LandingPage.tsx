@@ -105,7 +105,7 @@ export const LandingPage = () => {
         dur: 4 + Math.random() * 8, // Faster (reduced from 6-21)
         delay: Math.random() * 8,
         key: i,
-        size: 1.5 + Math.random() * 3, // Bigger (increased from 0.5-2.5)
+        size: (1.5 + Math.random() * 3) * 2, // 2x larger particles
         opacity: 0.1 + Math.random() * 0.3,
       })),
     []
