@@ -112,7 +112,7 @@ export const LandingPage = () => {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-background via-background to-secondary/20">
+    <div className="min-h-screen relative overflow-hidden bg-background">
       {/* Skip link for a11y */}
       <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:z-50 focus:top-4 focus:left-4 focus:px-3 focus:py-2 focus:rounded-md focus:bg-background focus:text-foreground">
         Skip to content
@@ -139,9 +139,9 @@ export const LandingPage = () => {
         />
       )}
 
-      {/* Additional ambient lighting */}
+      {/* Subtle ambient lighting */}
       <div 
-        className="fixed inset-0 bg-gradient-to-t from-emerald-500/5 via-transparent to-cyan-500/5 pointer-events-none z-0" 
+        className="fixed inset-0 bg-gradient-to-t from-emerald-500/3 via-transparent to-cyan-500/3 pointer-events-none z-0" 
         aria-hidden="true" 
       />
 
