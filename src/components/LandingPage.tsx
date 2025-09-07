@@ -122,8 +122,8 @@ export const LandingPage = () => {
             <Card className="card-premium p-8 mb-8">
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Risk Meter */}
-                <div className="lg:col-span-1 mx-[11px] my-0">
-                  <div className="relative w-48 h-48 mx-auto">
+                <div className="lg:col-span-1 flex justify-center items-center">
+                  <div className="relative w-48 h-48">
                     <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                       <circle cx="50" cy="50" r="40" stroke="hsl(var(--border))" strokeWidth="8" fill="none" />
                       <motion.circle cx="50" cy="50" r="40" stroke="hsl(var(--neon-orange))" strokeWidth="8" fill="none" strokeLinecap="round" strokeDasharray="251.2" initial={{
@@ -135,7 +135,7 @@ export const LandingPage = () => {
                       delay: 1
                     }} className="neon-glow" />
                     </svg>
-                    <div className="absolute inset-0 flex items-center justify-center overflow-hidden mx-0 px-[84px] py-[34px] my-[5px] bg-slate-950 rounded-full">
+                    <div className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-full bg-slate-950/80 backdrop-blur-sm">
                       {/* Cinematic backdrop with film grain */}
                       <motion.div style={{
                       background: `radial-gradient(circle at 50% 50%, 
