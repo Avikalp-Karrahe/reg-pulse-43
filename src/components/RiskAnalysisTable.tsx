@@ -1,15 +1,34 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { AlertTriangle, Clock, User, UserCheck, Download, Eye } from "lucide-react";
+import { Clock, User, UserCheck, AlertTriangle, Shield, TrendingUp } from "lucide-react";
+
+interface ComplianceIssue {
+  category: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  rationale: string;
+  reg_reference: string;
+  timestamp: string;
+}
 
 interface RiskAnalysisTableProps {
   callId: string;
+  issues: ComplianceIssue[];
 }
 
-export const RiskAnalysisTable = ({ callId }: RiskAnalysisTableProps) => {
-  const riskAnalysis = [
+export const RiskAnalysisTable = ({ callId, issues }: RiskAnalysisTableProps) => {
+  // Transform real issues data for the table, or use mock data if no issues
+  const riskAnalysis = issues.length > 0 ? issues.map((issue, index) => ({
+    id: `${callId}-${index}`,
+    timestamp: issue.timestamp,
+    speaker: 'advisor',
+    riskLevel: issue.severity,
+    text: `Statement containing ${issue.category.toLowerCase()} language`,
+    issue: issue.category,
+    regulation: issue.reg_reference,
+    severity: issue.severity,
+    recommendation: issue.rationale
+  })) : [
     {
       id: "1",
       timestamp: "14:32",
@@ -18,7 +37,7 @@ export const RiskAnalysisTable = ({ callId }: RiskAnalysisTableProps) => {
       text: "I can almost guarantee you'll see returns like that based on our track record. This is a sure thing.",
       issue: "Performance Guarantee",
       regulation: "SEC Rule 206(4)-1",
-      severity: "High",
+      severity: "critical",
       recommendation: "Remove guarantee language, use historical performance data with proper disclaimers"
     },
     {
@@ -29,7 +48,7 @@ export const RiskAnalysisTable = ({ callId }: RiskAnalysisTableProps) => {
       text: "You should invest as much as possible to maximize your gains. Maybe liquidate some of your other investments?",
       issue: "Unsuitable Investment Advice",
       regulation: "FINRA Rule 2111",
-      severity: "High",
+      severity: "high",
       recommendation: "Conduct proper suitability assessment before making investment recommendations"
     },
     {
@@ -40,19 +59,8 @@ export const RiskAnalysisTable = ({ callId }: RiskAnalysisTableProps) => {
       text: "While I can't guarantee specific percentages, some of our growth portfolios have historically performed well.",
       issue: "Inadequate Risk Disclosure",
       regulation: "SEC Rule 10b-5",
-      severity: "Medium",
+      severity: "medium",
       recommendation: "Include comprehensive risk disclosures and past performance disclaimers"
-    },
-    {
-      id: "4",
-      timestamp: "08:45",
-      speaker: "advisor",
-      riskLevel: "low",
-      text: "We offer a range of products suitable for different risk profiles.",
-      issue: "Generic Product Description",
-      regulation: "FINRA Rule 2210",
-      severity: "Low",
-      recommendation: "Provide specific product details and risk characteristics"
     }
   ];
 
@@ -68,25 +76,31 @@ export const RiskAnalysisTable = ({ callId }: RiskAnalysisTableProps) => {
   };
 
   const getSeverityColor = (severity: string) => {
-    switch (severity) {
-      case 'Low': return 'text-yellow-600 bg-yellow-50';
-      case 'Medium': return 'text-orange-600 bg-orange-50';
-      case 'High': return 'text-red-600 bg-red-50';
-      default: return 'text-gray-600 bg-gray-50';
+    switch (severity.toLowerCase()) {
+      case 'critical': return 'bg-red-200 text-red-900 border-red-300';
+      case 'high': return 'bg-red-100 text-red-800 border-red-200';
+      case 'medium': return 'bg-orange-100 text-orange-800 border-orange-200';
+      case 'low': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
+
+  const totalIssues = riskAnalysis.length;
+  const criticalIssues = riskAnalysis.filter(item => item.severity === 'critical').length;
+  const highIssues = riskAnalysis.filter(item => item.severity === 'high').length;
+  const mediumRisks = riskAnalysis.filter(item => item.severity === 'medium').length;
 
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">  
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <AlertTriangle className="w-5 h-5 text-red-500" />
+              <AlertTriangle className="h-4 w-4 text-red-500" />
               <div>
-                <p className="text-2xl font-bold text-red-600">2</p>
-                <p className="text-sm text-muted-foreground">Critical Issues</p>
+                <p className="text-xs text-muted-foreground">Critical Issues</p>
+                <p className="text-xl font-bold text-red-600">{criticalIssues}</p>
               </div>
             </div>
           </CardContent>
@@ -95,10 +109,10 @@ export const RiskAnalysisTable = ({ callId }: RiskAnalysisTableProps) => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <AlertTriangle className="w-5 h-5 text-orange-500" />
+              <TrendingUp className="h-4 w-4 text-orange-500" />
               <div>
-                <p className="text-2xl font-bold text-orange-600">1</p>
-                <p className="text-sm text-muted-foreground">Medium Risk</p>
+                <p className="text-xs text-muted-foreground">High/Medium Risks</p>
+                <p className="text-xl font-bold text-orange-600">{highIssues + mediumRisks}</p>
               </div>
             </div>
           </CardContent>
@@ -107,10 +121,10 @@ export const RiskAnalysisTable = ({ callId }: RiskAnalysisTableProps) => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <Clock className="w-5 h-5 text-blue-500" />
+              <Clock className="h-4 w-4 text-blue-500" />
               <div>
-                <p className="text-2xl font-bold">23:45</p>
-                <p className="text-sm text-muted-foreground">Call Duration</p>
+                <p className="text-xs text-muted-foreground">Total Issues</p>
+                <p className="text-xl font-bold">{totalIssues}</p>
               </div>
             </div>
           </CardContent>
@@ -119,133 +133,119 @@ export const RiskAnalysisTable = ({ callId }: RiskAnalysisTableProps) => {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center space-x-2">
-              <AlertTriangle className="w-5 h-5 text-primary" />
+              <Shield className="h-4 w-4 text-green-500" />
               <div>
-                <p className="text-2xl font-bold text-red-600">75%</p>
-                <p className="text-sm text-muted-foreground">Overall Risk</p>
+                <p className="text-xs text-muted-foreground">Overall Risk</p>
+                <p className="text-xl font-bold">{criticalIssues > 0 ? 'HIGH' : highIssues > 0 ? 'MEDIUM' : 'LOW'}</p>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Risk Analysis Table */}
+      {/* Detailed Analysis Table */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Compliance Risk Analysis</CardTitle>
-            <div className="flex space-x-2">
-              <Button variant="outline" size="sm">
-                <Eye className="w-4 h-4 mr-2" />
-                View Transcript
-              </Button>
-              <Button variant="outline" size="sm">
-                <Download className="w-4 h-4 mr-2" />
-                Export Report
-              </Button>
-            </div>
-          </div>
+          <CardTitle className="flex items-center space-x-2">
+            <span>Detailed Risk Analysis</span>
+            <Badge variant="outline" className="text-xs">
+              {totalIssues} {totalIssues === 1 ? 'Issue' : 'Issues'} Found
+            </Badge>
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Time</TableHead>
-                <TableHead>Speaker</TableHead>
-                <TableHead>Risk Level</TableHead>
-                <TableHead>Issue Type</TableHead>
-                <TableHead>Regulation</TableHead>
-                <TableHead>Severity</TableHead>
-                <TableHead>Statement</TableHead>
-                <TableHead>Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {riskAnalysis.map((item) => (
-                <TableRow key={item.id} className="hover:bg-muted/50">
-                  <TableCell className="font-mono text-sm">
-                    {item.timestamp}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center space-x-2">
-                      {item.speaker === 'advisor' ? (
-                        <UserCheck className="w-4 h-4 text-blue-500" />
-                      ) : (
-                        <User className="w-4 h-4 text-gray-500" />
-                      )}
-                      <span className="text-sm">
-                        {item.speaker === 'advisor' ? 'Advisor' : 'Client'}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={getRiskBadgeColor(item.riskLevel)} variant="outline">
-                      {item.riskLevel.toUpperCase()}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="font-medium">
-                    {item.issue}
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {item.regulation}
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={getSeverityColor(item.severity)} variant="outline">
-                      {item.severity}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="min-w-[300px] max-w-[400px]">
-                    <div className="text-sm bg-muted/30 p-2 rounded">
-                      <p className="break-words whitespace-normal">
-                        "{item.text}"
-                      </p>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
-                      {(item.riskLevel === 'high' || item.riskLevel === 'critical') && (
-                        <Button variant="outline" size="sm" className="text-orange-600 hover:text-orange-700 hover:bg-orange-50">
-                          Send Clarification
-                        </Button>
-                      )}
-                    </div>
-                  </TableCell>
+          {totalIssues > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[80px]">Time</TableHead>
+                  <TableHead className="w-[80px]">Speaker</TableHead>
+                  <TableHead className="w-[100px]">Risk Level</TableHead>
+                  <TableHead className="w-[150px]">Issue Type</TableHead>
+                  <TableHead className="w-[120px]">Regulation</TableHead>
+                  <TableHead className="w-[100px]">Severity</TableHead>
+                  <TableHead>Statement</TableHead>
+                  <TableHead>Action Required</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {riskAnalysis.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell className="font-mono text-xs">{item.timestamp}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center space-x-1">
+                        {item.speaker === 'advisor' ? (
+                          <UserCheck className="w-3 h-3" />
+                        ) : (
+                          <User className="w-3 h-3" />
+                        )}
+                        <span className="text-xs capitalize">{item.speaker}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge className={getRiskBadgeColor(item.riskLevel)} variant="outline">
+                        {item.riskLevel}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-xs">{item.issue}</TableCell>
+                    <TableCell className="text-xs font-mono">{item.regulation}</TableCell>
+                    <TableCell>
+                      <Badge className={getSeverityColor(item.severity)} variant="outline">
+                        {item.severity}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-sm max-w-[300px]">
+                      <div className="truncate" title={item.text}>
+                        {item.text}
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-xs max-w-[250px]">
+                      <div className="truncate" title={item.recommendation}>
+                        {item.recommendation}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              <Shield className="w-12 h-12 mx-auto mb-2 text-green-500" />
+              <h3 className="text-lg font-medium">No Issues Detected</h3>
+              <p className="text-sm">The call analysis hasn't identified any compliance concerns yet.</p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
       {/* Recommendations */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Compliance Recommendations</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {riskAnalysis.filter(item => item.riskLevel === 'critical' || item.riskLevel === 'high').map((item) => (
-              <div key={item.id} className="p-4 border border-orange-200 rounded-lg bg-orange-50">
-                <div className="flex items-start space-x-3">
-                  <AlertTriangle className="w-5 h-5 text-orange-600 mt-0.5" />
-                  <div className="flex-1">
-                    <h4 className="font-medium text-orange-900">{item.issue}</h4>
-                    <p className="text-sm text-orange-700 mt-1">{item.recommendation}</p>
-                    <div className="flex items-center space-x-4 mt-2">
-                      <span className="text-xs text-orange-600 bg-orange-100 px-2 py-1 rounded">
-                        {item.regulation}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        Timestamp: {item.timestamp}
-                      </span>
+      {(criticalIssues > 0 || highIssues > 0) && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-red-600">Priority Recommendations</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {riskAnalysis
+                .filter(item => item.severity === 'critical' || item.severity === 'high')
+                .map((item) => (
+                  <div key={item.id} className="p-3 border rounded-lg bg-red-50 border-red-200">
+                    <div className="flex items-start space-x-2">
+                      <AlertTriangle className="w-4 h-4 text-red-500 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-medium text-red-800">{item.issue}</h4>
+                        <p className="text-sm text-red-700 mt-1">{item.recommendation}</p>
+                        <div className="text-xs text-red-600 mt-1">
+                          Regulation: {item.regulation} • Severity: {item.severity}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+                ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
