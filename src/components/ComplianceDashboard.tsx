@@ -15,6 +15,8 @@ import { Link } from "react-router-dom";
 import { FuturisticTranscription } from "./FuturisticTranscription";
 import { CircularRiskMeter } from "./CircularRiskMeter";
 import { FuturisticStats } from "./FuturisticStats";
+import { TestScenarios } from "./TestScenarios";
+import { QuickChecks } from "./QuickChecks";
 import { FileUpload } from "./FileUpload";
 
 interface CallData {
@@ -360,6 +362,12 @@ export const ComplianceDashboard = () => {
             </CardContent>
           </Card>
         </div>
+        
+        {/* Quick Validation Checks */}
+        <QuickChecks />
+        
+        {/* Test Scenarios Section */}
+        <TestScenarios />
       </div>
     );
   }
