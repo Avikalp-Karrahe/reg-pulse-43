@@ -23,6 +23,12 @@ export const useSaveCall = () => {
 
   return useMutation({
     mutationFn: async ({ callId, duration, riskScore, issues }: SaveCallData) => {
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error('User not authenticated');
+      }
+
       // First, save the call
       const { data: callData, error: callError } = await supabase
         .from('calls')
@@ -32,6 +38,7 @@ export const useSaveCall = () => {
           risk_score: Math.round(riskScore),
           status: 'completed',
           ended_at: new Date().toISOString(),
+          user_id: user.id,
         })
         .select('id')
         .single();
@@ -49,6 +56,7 @@ export const useSaveCall = () => {
           rationale: issue.rationale,
           reg_reference: issue.reg_reference,
           timestamp: issue.timestamp,
+          user_id: user.id,
         }));
 
         const { error: issuesError } = await supabase
