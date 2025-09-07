@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { CircularRiskMeter } from "./CircularRiskMeter";
 import { FuturisticStats } from "./FuturisticStats";
+import { ComplianceChecklist } from "./ComplianceChecklist";
 import { useToast } from "@/hooks/use-toast";
 
 export const RealtimeComplianceDashboard = () => {
@@ -337,6 +338,12 @@ export const RealtimeComplianceDashboard = () => {
 
           {/* Right column - Monitoring panels */}
           <div className="space-y-6">
+            {/* Compliance Checklist */}
+            <ComplianceChecklist 
+              complianceIssues={complianceIssues}
+              isActive={isRecording}
+            />
+
             {/* Risk meter */}
             <CircularRiskMeter 
               riskScore={calculateRiskScore()} 
