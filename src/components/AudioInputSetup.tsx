@@ -14,6 +14,8 @@ import { demoStore } from "@/demo/demoStore";
 
 
 export const AudioInputSetup = () => {
+  console.log('AudioInputSetup component loaded');
+  
   const [devices, setDevices] = useState<AudioDevice[]>([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
   const [permissionState, setPermissionState] = useState<PermissionState>('prompt');

@@ -110,7 +110,12 @@ const App = () => {
                         <Route path="/dashboard" element={<ComplianceDashboard />} />
                         <Route path="/history" element={<CallHistoryPage />} />
                         <Route path="/analytics" element={<LazyAnalytics />} />
-                        <Route path="/settings" element={<AudioInputSetup />} />
+                        <Route path="/settings" element={
+                          <>
+                            {(() => { console.log('Settings route accessed'); return null; })()}
+                            <AudioInputSetup />
+                          </>
+                        } />
                         <Route path="*" element={<NotFound />} />
                       </Routes>
                     </main>
