@@ -1,5 +1,6 @@
 import { Phone, History, BarChart3, Settings, Home } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
+import { ThemeToggle } from "./ThemeToggle";
 
 import {
   Sidebar,
@@ -11,6 +12,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
+  SidebarFooter,
   useSidebar,
 } from "@/components/ui/sidebar";
 
@@ -54,6 +56,12 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      
+      <SidebarFooter className="p-4">
+        <div className="flex items-center justify-center">
+          <ThemeToggle />
+        </div>
+      </SidebarFooter>
     </Sidebar>
   );
 }
