@@ -402,17 +402,17 @@ export const ComplianceDashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.6 }}
         >
-          {/* Start Monitoring Panel */}
+          {/* Start Assistant Panel */}
           <Card className="card-premium overflow-hidden">
             <CardHeader className="text-center pb-4">
               <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-emerald-500/20 via-cyan-500/20 to-indigo-500/20 flex items-center justify-center mx-auto mb-4">
                 <Mic className="w-10 h-10 text-emerald-400" />
               </div>
               <CardTitle className="text-2xl bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-400 bg-clip-text text-transparent">
-                Start Compliance Monitoring
+                Launch Live Compliance Assistant
               </CardTitle>
               <p className="text-muted-foreground leading-relaxed">
-                Record and analyze calls for regulatory compliance using advanced AI-powered real-time analysis
+                Start your AI-powered compliance assistant for real-time voice monitoring, guidance, and risk assessment during live conversations
               </p>
             </CardHeader>
             <CardContent className="space-y-6 p-8">
@@ -423,7 +423,7 @@ export const ComplianceDashboard = () => {
                 disabled={!isSupported}
               >
                 <PlayCircle className="w-6 h-6 mr-3" />
-                Begin Live Monitoring
+                Launch Assistant
               </Button>
               
               {selectedDeviceName && (
