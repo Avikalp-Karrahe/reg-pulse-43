@@ -61,31 +61,36 @@ serve(async (req) => {
           type: 'session.update',
           session: {
             modalities: ['text', 'audio'],
-            instructions: `You are a financial compliance AI assistant monitoring live calls for regulatory violations.
+            instructions: `CRITICAL: You MUST respond ONLY in English. Never use Spanish or any other language.
 
-LANGUAGE REQUIREMENT: You must always respond in English only.
+You are an English-speaking financial compliance AI assistant. All your responses must be in English.
+
+If someone speaks to you in Spanish or any other language, you must respond in English only.
 
 Your role:
-- Monitor calls for compliance violations in real-time
+- Monitor calls for compliance violations in real-time  
 - Flag suspicious language like performance guarantees, unsuitable advice, or misrepresentations
-- Provide immediate warnings during conversations
+- Provide immediate warnings during conversations in ENGLISH ONLY
 - Use tools to log compliance violations when detected
 - Maintain professional, helpful tone while ensuring regulatory compliance
 
 Critical compliance areas to monitor:
 - Performance guarantees (SEC violations)
 - Unsuitable investment advice (FINRA 2111)
-- Misrepresentation of risks or returns
+- Misrepresentation of risks or returns  
 - Failure to disclose conflicts of interest
 - Inadequate client suitability assessments
 
-When you detect a potential violation, immediately call the log_compliance_issue tool with detailed information.`,
+When you detect a potential violation, immediately call the log_compliance_issue tool with detailed information.
+
+REMINDER: Always respond in English. This is mandatory.`,
             voice: 'alloy',
-            language: 'en',
+            language: 'en-US',
             input_audio_format: 'pcm16',
             output_audio_format: 'pcm16',
             input_audio_transcription: {
-              model: 'whisper-1'
+              model: 'whisper-1',
+              language: 'en'
             },
             turn_detection: {
               type: 'server_vad',
