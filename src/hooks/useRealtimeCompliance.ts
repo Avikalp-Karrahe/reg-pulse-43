@@ -67,18 +67,8 @@ export const useRealtimeCompliance = () => {
           description: "Real-time compliance monitoring is active",
         });
 
-        // Speak welcome message when connected
-        if (!hasSpokenWelcome.current) {
-          hasSpokenWelcome.current = true;
-          try {
-            setIsAgentSpeaking(true);
-            await ttsService.speakWelcomeMessage();
-            setIsAgentSpeaking(false);
-          } catch (error) {
-            console.error('❌ Failed to speak welcome message:', error);
-            setIsAgentSpeaking(false);
-          }
-        }
+        // Welcome message disabled to prevent conflict with OpenAI Realtime API
+        // The OpenAI Realtime API will handle the initial greeting
       };
 
       wsRef.current.onmessage = async (event) => {
@@ -154,17 +144,8 @@ export const useRealtimeCompliance = () => {
               variant: issue.severity === 'critical' || issue.severity === 'high' ? 'destructive' : 'default',
             });
 
-            // Speak compliance issue alert for high/critical issues
-            if (issue.severity === 'high' || issue.severity === 'critical') {
-              try {
-                setIsAgentSpeaking(true);
-                await ttsService.speakComplianceIssue(issue.category);
-                setIsAgentSpeaking(false);
-              } catch (error) {
-                console.error('❌ Failed to speak compliance issue:', error);
-                setIsAgentSpeaking(false);
-              }
-            }
+            // TTS disabled to prevent conflict with OpenAI Realtime API
+            // The OpenAI assistant will handle all voice responses
             break;
 
           case 'compliance_guidance':
