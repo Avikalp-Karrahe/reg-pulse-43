@@ -287,8 +287,8 @@ export const LandingPage = () => {
                 return (
                   <div key={stat.label} className="text-center">
                     <Icon className="w-8 h-8 text-emerald-400 mx-auto mb-3" />
-                    <div className="text-3xl font-bold text-foreground mb-1">{stat.value}</div>
-                    <div className="text-sm text-muted-foreground">{stat.label}</div>
+                    <div className="text-3xl font-bold text-black mb-1">{stat.value}</div>
+                    <div className="text-sm text-black">{stat.label}</div>
                   </div>
                 );
               })}
