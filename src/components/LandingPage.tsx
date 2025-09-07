@@ -327,7 +327,7 @@ export const LandingPage = () => {
 
             {/* Elegant Scroll Indicator */}
             <motion.div 
-              className="flex flex-col items-center mt-12 mb-16"
+              className="flex flex-col items-center mt-6 mb-8"
               variants={itemVariants}
             >
               <div className="text-sm text-muted-foreground/70 font-mono mb-3 tracking-wider">
