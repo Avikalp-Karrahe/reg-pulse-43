@@ -14,7 +14,9 @@ import {
   Star,
   CheckCircle,
   Activity,
-  AlertTriangle
+  AlertTriangle,
+  History,
+  Settings
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -254,13 +256,15 @@ export const LandingPage = () => {
               variants={itemVariants}
             >
               <Button
+                asChild
                 size="lg"
                 className="button-premium h-16 px-12 text-lg font-semibold"
-                onClick={() => setShowDashboard(true)}
-                aria-label="Experience live demo"
+                aria-label="Go to dashboard"
               >
-                <Play className="w-6 h-6 mr-3" aria-hidden="true" />
-                Experience Live Demo
+                <Link to="/dashboard">
+                  <Play className="w-6 h-6 mr-3" aria-hidden="true" />
+                  Launch Dashboard
+                </Link>
               </Button>
 
               <Button
@@ -274,6 +278,35 @@ export const LandingPage = () => {
                   <BarChart3 className="w-6 h-6 mr-3" aria-hidden="true" />
                   View Analytics
                 </Link>
+              </Button>
+            </motion.div>
+
+            {/* Quick Navigation */}
+            <motion.div 
+              variants={itemVariants}
+              className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8"
+            >
+              <Button asChild variant="ghost" className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10">
+                <Link to="/history">
+                  <History className="w-6 h-6 mb-2 text-emerald-400" />
+                  <span className="text-sm text-black">Call History</span>
+                </Link>
+              </Button>
+              
+              <Button asChild variant="ghost" className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10">
+                <Link to="/settings">
+                  <Settings className="w-6 h-6 mb-2 text-emerald-400" />
+                  <span className="text-sm text-black">Settings</span>
+                </Link>
+              </Button>
+              
+              <Button 
+                variant="ghost" 
+                className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 md:col-span-1 col-span-2"
+                onClick={() => setShowDashboard(true)}
+              >
+                <Activity className="w-6 h-6 mb-2 text-emerald-400" />
+                <span className="text-sm text-black">Live Demo</span>
               </Button>
             </motion.div>
 
@@ -517,16 +550,31 @@ export const LandingPage = () => {
           <motion.div className="text-center py-20" variants={itemVariants}>
             <h2 className="text-4xl font-bold mb-6 text-black">Ready to Transform Compliance?</h2>
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              Experience AI-powered risk detection with our live demo.
+              Experience AI-powered risk detection across all our features.
             </p>
-            <Button 
-              size="lg" 
-              className="button-premium h-16 px-12 text-lg" 
-              onClick={() => setShowDashboard(true)}
-            >
-              <Play className="w-5 h-5 mr-2" />
-              Start Live Demo
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button 
+                asChild
+                size="lg" 
+                className="button-premium h-16 px-12 text-lg" 
+              >
+                <Link to="/dashboard">
+                  <Play className="w-5 h-5 mr-2" />
+                  Start Dashboard
+                </Link>
+              </Button>
+              <Button 
+                asChild
+                variant="outline"
+                size="lg" 
+                className="h-16 px-12 text-lg border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10" 
+              >
+                <Link to="/analytics">
+                  <BarChart3 className="w-5 h-5 mr-2" />
+                  View Analytics
+                </Link>
+              </Button>
+            </div>
           </motion.div>
         </motion.main>
       </div>
