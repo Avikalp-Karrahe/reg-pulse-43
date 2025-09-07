@@ -68,7 +68,7 @@ Risky promises & pressure tactics slip through live calls and create regulatory 
 **Hackathon:** Lovable Ditto Hackathon
 
 ### Team Members
-- **Avikalp Karrahe** (Owner) - Product & AI Engineering
+- **Avikalp Karrahe** - Product & AI Engineering
 - **Aditya Pattani** - Market Analysis & Business Development  
 - **Kshitij G** - Technical Architecture
 - **Amy Zhuang** - Analytics & Dashboard
