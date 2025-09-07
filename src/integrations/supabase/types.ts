@@ -20,27 +20,33 @@ export type Database = {
           duration_sec: number | null
           ended_at: string | null
           id: string
+          organization_id: string | null
           risk_score: number | null
           started_at: string
           status: string | null
+          user_id: string | null
         }
         Insert: {
           call_id: string
           duration_sec?: number | null
           ended_at?: string | null
           id?: string
+          organization_id?: string | null
           risk_score?: number | null
           started_at?: string
           status?: string | null
+          user_id?: string | null
         }
         Update: {
           call_id?: string
           duration_sec?: number | null
           ended_at?: string | null
           id?: string
+          organization_id?: string | null
           risk_score?: number | null
           started_at?: string
           status?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -54,10 +60,12 @@ export type Database = {
           id: string
           model_rationale: string | null
           model_version: string | null
+          organization_id: string | null
           rationale: string | null
           reg_reference: string | null
           severity: string | null
           timestamp: string | null
+          user_id: string | null
         }
         Insert: {
           call_id: string
@@ -68,10 +76,12 @@ export type Database = {
           id?: string
           model_rationale?: string | null
           model_version?: string | null
+          organization_id?: string | null
           rationale?: string | null
           reg_reference?: string | null
           severity?: string | null
           timestamp?: string | null
+          user_id?: string | null
         }
         Update: {
           call_id?: string
@@ -82,10 +92,12 @@ export type Database = {
           id?: string
           model_rationale?: string | null
           model_version?: string | null
+          organization_id?: string | null
           rationale?: string | null
           reg_reference?: string | null
           severity?: string | null
           timestamp?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
