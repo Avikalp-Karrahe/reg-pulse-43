@@ -72,7 +72,6 @@ export const LandingPage = () => {
   const prefersReducedMotion = useReducedMotion();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [showDashboard, setShowDashboard] = useState(false);
-  const [isButtonHovered, setIsButtonHovered] = useState(false);
   const rafRef = useRef<number | null>(null);
   const lastTsRef = useRef(0);
   const heroRef = useRef(null);
@@ -148,7 +147,7 @@ export const LandingPage = () => {
         aria-hidden="true" 
       />
 
-      {/* Elegant particle convergence system */}
+      {/* Smooth floating particles with color-changing cursor interaction */}
       {!prefersReducedMotion && (
         <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
           {particles.map((particle) => {
@@ -160,87 +159,31 @@ export const LandingPage = () => {
             const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
             
             // Color change based on proximity (red when near cursor)
-            const isNearCursor = distance < 100 && !isButtonHovered;
-            
-            // Button formation - elegant oval/rounded rectangle outline
-            const buttonCenterX = (typeof window !== 'undefined' ? window.innerWidth : 1000) / 2;
-            const buttonCenterY = (typeof window !== 'undefined' ? window.innerHeight : 1000) / 2;
-            const buttonWidth = 320;
-            const buttonHeight = 64;
-            const borderRadius = 32;
-            
-            // Create elegant button outline positions
-            let buttonX, buttonY;
-            
-            if (isButtonHovered) {
-              // Create a smooth rounded rectangle outline
-              const angle = (particle.key / particles.length) * Math.PI * 2;
-              const t = particle.key / particles.length;
-              
-              // Create rounded rectangle path
-              if (t < 0.25) {
-                // Top edge
-                const progress = t * 4;
-                buttonX = buttonCenterX - buttonWidth/2 + borderRadius + progress * (buttonWidth - 2 * borderRadius);
-                buttonY = buttonCenterY - buttonHeight/2;
-              } else if (t < 0.5) {
-                // Right edge
-                const progress = (t - 0.25) * 4;
-                buttonX = buttonCenterX + buttonWidth/2 - borderRadius + borderRadius * Math.cos(progress * Math.PI/2);
-                buttonY = buttonCenterY - buttonHeight/2 + borderRadius + progress * (buttonHeight - 2 * borderRadius);
-              } else if (t < 0.75) {
-                // Bottom edge
-                const progress = (t - 0.5) * 4;
-                buttonX = buttonCenterX + buttonWidth/2 - borderRadius - progress * (buttonWidth - 2 * borderRadius);
-                buttonY = buttonCenterY + buttonHeight/2;
-              } else {
-                // Left edge
-                const progress = (t - 0.75) * 4;
-                buttonX = buttonCenterX - buttonWidth/2 + borderRadius - borderRadius * Math.cos(progress * Math.PI/2);
-                buttonY = buttonCenterY + buttonHeight/2 - borderRadius - progress * (buttonHeight - 2 * borderRadius);
-              }
-              
-              // Add some organic variation
-              buttonX += Math.sin(particle.key * 0.1) * 8;
-              buttonY += Math.cos(particle.key * 0.1) * 4;
-            }
-            
-            let targetX = particle.leftPct;
-            let targetY = particle.topPct;
-            let particleColor = isNearCursor ? 'bg-red-400' : 'bg-emerald-400';
-            
-            if (isButtonHovered && buttonX && buttonY) {
-              targetX = (buttonX / (typeof window !== 'undefined' ? window.innerWidth : 1000)) * 100;
-              targetY = (buttonY / (typeof window !== 'undefined' ? window.innerHeight : 1000)) * 100;
-              particleColor = 'bg-cyan-400';
-            }
+            const isNearCursor = distance < 100;
+            const particleColor = isNearCursor ? 'bg-red-400' : 'bg-emerald-400';
 
             return (
               <motion.div
                 key={particle.key}
-                className={`absolute rounded-full ${particleColor} blur-[0.5px]`}
+                className={`absolute rounded-full ${particleColor}`}
                 style={{
-                  width: `${isButtonHovered ? particle.size * 1.5 : particle.size}px`,
-                  height: `${isButtonHovered ? particle.size * 1.5 : particle.size}px`,
+                  left: `${particle.leftPct}%`,
+                  top: `${particle.topPct}%`,
+                  width: `${particle.size}px`,
+                  height: `${particle.size}px`,
                   opacity: particle.opacity,
-                  boxShadow: isButtonHovered ? `0 0 10px ${isNearCursor ? '#ef4444' : '#06b6d4'}` : 'none',
                 }}
                 animate={{
-                  left: `${targetX}%`,
-                  top: `${targetY}%`,
-                  y: isButtonHovered ? 0 : [0, -80, 0],
-                  x: isButtonHovered ? 0 : [0, Math.sin(particle.key) * 60, 0],
-                  opacity: isButtonHovered ? 0.9 : [particle.opacity, particle.opacity * 2, particle.opacity],
-                  scale: isButtonHovered ? 1.5 : [0.8, 1.2, 0.8],
+                  y: [0, -80, 0],
+                  x: [0, Math.sin(particle.key) * 60, 0],
+                  opacity: [particle.opacity, particle.opacity * 2, particle.opacity],
+                  scale: [0.8, 1.2, 0.8],
                 }}
                 transition={{
-                  duration: isButtonHovered ? 2 : particle.dur,
-                  repeat: isButtonHovered ? 0 : Infinity,
-                  delay: isButtonHovered ? particle.key * 0.005 : particle.delay,
-                  ease: isButtonHovered ? [0.25, 0.46, 0.45, 0.94] : "easeInOut",
-                  type: isButtonHovered ? "spring" : "tween",
-                  stiffness: isButtonHovered ? 50 : undefined,
-                  damping: isButtonHovered ? 20 : undefined,
+                  duration: particle.dur,
+                  repeat: Infinity,
+                  delay: particle.delay,
+                  ease: "easeInOut"
                 }}
               />
             );
@@ -345,25 +288,17 @@ export const LandingPage = () => {
               className="flex justify-center mb-16"
               variants={itemVariants}
             >
-              {/* Invisible button area that triggers particle convergence */}
-              <div
-                className="relative z-50 w-80 h-16 cursor-pointer flex items-center justify-center"
-                onMouseEnter={() => setIsButtonHovered(true)}
-                onMouseLeave={() => setIsButtonHovered(false)}
-                onClick={() => window.location.href = '/dashboard'}
+              <Button
+                asChild
+                size="lg"
+                className="button-premium h-16 px-12 text-lg font-semibold"
+                aria-label="Go to dashboard"
               >
-                {/* Button text - visible by default, white on hover */}
-                <motion.div
-                  className="relative z-10 flex items-center font-semibold text-lg text-foreground"
-                  animate={{
-                    color: isButtonHovered ? '#ffffff' : '#f8fafc',
-                  }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <Play className="w-6 h-6 mr-3" />
+                <Link to="/dashboard">
+                  <Play className="w-6 h-6 mr-3" aria-hidden="true" />
                   Launch Dashboard
-                </motion.div>
-              </div>
+                </Link>
+              </Button>
             </motion.div>
 
             {/* Quick Navigation Cards */}
