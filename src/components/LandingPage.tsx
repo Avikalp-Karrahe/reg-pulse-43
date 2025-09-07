@@ -228,7 +228,7 @@ export const LandingPage = () => {
                 aria-label="Powered by advanced AI technology"
               >
                 <Sparkles className="w-4 h-4 mr-2" aria-hidden="true" />
-                Powered by Advanced AI • Real-time Analysis
+                Powered by ToolHouse, Vapi & OpenAI
               </Badge>
             </motion.div>
 
