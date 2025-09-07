@@ -463,33 +463,95 @@ export const RealtimeComplianceDashboard = () => {
                     })}
                   </div>
                   
-                  {/* Summary Stats */}
-                  <div className="border-t pt-4 mt-4">
-                    <div className="grid grid-cols-2 gap-4 text-center">
-                      <div className="p-3 bg-red-500/10 rounded border border-red-500/20">
-                        <div className="text-2xl font-bold text-red-400">
-                          {complianceIssues.length}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          Total Issues
-                        </div>
-                      </div>
-                      <div className="p-3 bg-red-500/10 rounded border border-red-500/20">
-                        <div className="text-2xl font-bold text-red-400">
-                          {complianceIssues.filter(i => i.severity === 'critical' || i.severity === 'high').length}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          High Risk
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+                   {/* Risk Score Progress */}
+                   <div className="mt-6 p-4 rounded-lg bg-muted/20 border border-muted-foreground/20">
+                     <div className="flex items-center justify-between mb-2">
+                       <span className="text-sm font-medium text-muted-foreground">Overall Risk Score</span>
+                       <span className={`text-sm font-bold ${
+                         calculateRiskScore() > 75 ? 'text-red-400' : 
+                         calculateRiskScore() > 50 ? 'text-orange-400' : 
+                         calculateRiskScore() > 25 ? 'text-yellow-400' : 'text-green-400'
+                       }`}>
+                         {calculateRiskScore().toFixed(0)}%
+                       </span>
+                     </div>
+                     <Progress 
+                       value={calculateRiskScore()} 
+                       className={`h-3 ${
+                         calculateRiskScore() > 75 ? 'bg-red-900/20' : 
+                         calculateRiskScore() > 50 ? 'bg-orange-900/20' : 
+                         calculateRiskScore() > 25 ? 'bg-yellow-900/20' : 'bg-green-900/20'
+                       }`}
+                     />
+                   </div>
+                 </div>
+               </CardContent>
+             </Card>
+
+             {/* Live Compliance Issues - Enhanced for Demo */}
+             {complianceIssues.length > 0 && (
+               <Card className="bg-card/50 backdrop-blur-sm border-red-500/20 animate-pulse shadow-lg shadow-red-500/20">
+                 <CardHeader>
+                   <CardTitle className="text-lg text-red-400 flex items-center gap-2">
+                     🚨 LIVE VIOLATIONS DETECTED
+                     <Badge variant="destructive" className="animate-pulse bg-red-600 text-white">
+                       {complianceIssues.length}
+                     </Badge>
+                   </CardTitle>
+                 </CardHeader>
+                 <CardContent>
+                   <ScrollArea className="h-[250px]">
+                     <div className="space-y-3">
+                       {complianceIssues.slice(-5).map((issue, index) => (
+                         <Alert key={index} className={`${getSeverityColor(issue.severity)} border-2 shadow-lg transition-all duration-500 hover:scale-105 animate-fade-in`}>
+                           <AlertTitle className="text-sm flex items-center justify-between">
+                             <span className="font-bold">{issue.category}</span>
+                             <Badge variant="secondary" className={`text-xs font-bold ${
+                               issue.severity === 'critical' ? 'bg-red-600 text-white' :
+                               issue.severity === 'high' ? 'bg-orange-600 text-white' :
+                               issue.severity === 'medium' ? 'bg-yellow-600 text-white' :
+                               'bg-blue-600 text-white'
+                             }`}>
+                               {issue.severity.toUpperCase()}
+                             </Badge>
+                           </AlertTitle>
+                           <AlertDescription className="text-xs space-y-2">
+                             <p className="font-medium">{issue.rationale}</p>
+                             {issue.evidenceSnippet && (
+                               <div className="mt-2 p-3 bg-black/20 rounded-md border-l-4 border-red-500">
+                                 <p className="text-xs italic text-red-300">
+                                   <strong>Evidence:</strong> "{issue.evidenceSnippet}"
+                                 </p>
+                               </div>
+                             )}
+                             <p className="text-xs text-muted-foreground">
+                               <strong>Regulation:</strong> {issue.reg_reference}
+                             </p>
+                           </AlertDescription>
+                         </Alert>
+                       ))}
+                     </div>
+                   </ScrollArea>
+                 </CardContent>
+               </Card>
+             )}
+
+             {/* Controls */}
+             <Card className="bg-card/50 backdrop-blur-sm border-cyan-500/20">
+               <CardContent className="pt-6">
+                 <Button 
+                   onClick={handleToggleAssistant}
+                   className="w-full h-12 text-base bg-red-600 hover:bg-red-700 text-white"
+                   size="lg"
+                 >
+                   <PhoneOff className="w-5 h-5 mr-2" />
+                   End Assistant
+                 </Button>
+               </CardContent>
+             </Card>
+           </div>
+         </div>
+       </div>
+     </div>
+   );
+ };
