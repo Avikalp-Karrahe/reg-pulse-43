@@ -159,6 +159,47 @@ export const LandingPage = () => {
                       />
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
+                      {/* Cinematic depth layers */}
+                      <motion.div
+                        className="absolute inset-0 bg-gradient-conic from-red-500/10 via-orange-500/5 to-red-500/10 rounded-full blur-3xl"
+                        animate={{ 
+                          rotate: 360,
+                          scale: [1, 1.2, 1],
+                        }}
+                        transition={{ 
+                          rotate: { duration: 20, repeat: Infinity, ease: "linear" },
+                          scale: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+                        }}
+                      />
+                      
+                      {/* Pulsing energy ring */}
+                      <motion.div
+                        className="absolute w-32 h-32 border border-orange-400/30 rounded-full"
+                        animate={{ 
+                          scale: [1, 1.5, 1],
+                          opacity: [0.3, 0.1, 0.3]
+                        }}
+                        transition={{ 
+                          duration: 3, 
+                          repeat: Infinity, 
+                          ease: "easeInOut",
+                          delay: 0.5
+                        }}
+                      />
+                      
+                      {/* Inner glow effect */}
+                      <motion.div
+                        className="absolute w-24 h-24 bg-orange-500/20 rounded-full blur-xl"
+                        animate={{ 
+                          scale: [0.8, 1.2, 0.8],
+                          opacity: [0.2, 0.4, 0.2]
+                        }}
+                        transition={{ 
+                          duration: 2, 
+                          repeat: Infinity, 
+                          ease: "easeInOut"
+                        }}
+                      />
                       <div className="text-center">
                         <motion.div 
                           className="text-3xl font-bold text-orange-400"
