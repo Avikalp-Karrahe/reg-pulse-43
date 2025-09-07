@@ -188,7 +188,7 @@ const insertCallAndIssues = async (
         started_at: new Date().toISOString(),
         ended_at: new Date(Date.now() + duration * 1000).toISOString(),
         duration_sec: Math.round(duration),
-        risk_score: riskScore,
+        risk_score: Math.round(riskScore), // Round risk score to integer
         status: 'completed'
       });
     
