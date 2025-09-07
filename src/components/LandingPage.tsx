@@ -325,35 +325,6 @@ export const LandingPage = () => {
               </div>
             </motion.div>
 
-            {/* Quick Navigation Cards */}
-            <motion.div 
-              variants={itemVariants}
-              className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-12"
-            >
-              <Button asChild variant="ghost" className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 border border-border/50 hover:border-emerald-500/30 transition-colors">
-                <Link to="/history">
-                  <History className="w-6 h-6 mb-2 text-emerald-400" />
-                  <span className="text-sm text-foreground">Call History</span>
-                </Link>
-              </Button>
-              
-              <Button asChild variant="ghost" className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 border border-border/50 hover:border-emerald-500/30 transition-colors">
-                <Link to="/settings">
-                  <Settings className="w-6 h-6 mb-2 text-emerald-400" />
-                  <span className="text-sm text-foreground">Settings</span>
-                </Link>
-              </Button>
-              
-              <Button 
-                variant="ghost" 
-                className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 md:col-span-1 col-span-2 border border-border/50 hover:border-emerald-500/30 transition-colors"
-                onClick={() => setShowDashboard(true)}
-              >
-                <Activity className="w-6 h-6 mb-2 text-emerald-400" />
-                <span className="text-sm text-foreground">Preview</span>
-              </Button>
-            </motion.div>
-
             {/* Elegant Scroll Indicator */}
             <motion.div 
               className="flex flex-col items-center mt-12 mb-16"
@@ -411,6 +382,35 @@ export const LandingPage = () => {
                   </svg>
                 </motion.div>
               </motion.div>
+            </motion.div>
+
+            {/* Quick Navigation Cards */}
+            <motion.div 
+              variants={itemVariants}
+              className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-2xl mx-auto mb-12"
+            >
+              <Button asChild variant="ghost" className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 border border-border/50 hover:border-emerald-500/30 transition-colors">
+                <Link to="/history">
+                  <History className="w-6 h-6 mb-2 text-emerald-400" />
+                  <span className="text-sm text-foreground">Call History</span>
+                </Link>
+              </Button>
+              
+              <Button asChild variant="ghost" className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 border border-border/50 hover:border-emerald-500/30 transition-colors">
+                <Link to="/settings">
+                  <Settings className="w-6 h-6 mb-2 text-emerald-400" />
+                  <span className="text-sm text-foreground">Settings</span>
+                </Link>
+              </Button>
+              
+              <Button 
+                variant="ghost" 
+                className="h-auto p-4 flex-col text-center hover:bg-emerald-500/10 md:col-span-1 col-span-2 border border-border/50 hover:border-emerald-500/30 transition-colors"
+                onClick={() => setShowDashboard(true)}
+              >
+                <Activity className="w-6 h-6 mb-2 text-emerald-400" />
+                <span className="text-sm text-foreground">Preview</span>
+              </Button>
             </motion.div>
 
             {/* Trust Indicators */}
