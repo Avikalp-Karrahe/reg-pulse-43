@@ -159,27 +159,29 @@ export const LandingPage = () => {
             const distanceY = mousePosition.y - particleY;
             const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
             
-            // Color change based on proximity (red when near cursor)
+            // Color change based on proximity or hover state
             const isNearCursor = distance < 100;
-            const particleColor = isNearCursor ? 'bg-red-400' : 'bg-emerald-400';
+            const particleColor = isHoveringLaunchButton ? 'bg-emerald-400' : 
+                                 isNearCursor ? 'bg-red-400' : 'bg-emerald-400';
 
             return (
               <motion.div
                 key={particle.key}
                 data-particle
-                className={`absolute rounded-full ${particleColor}`}
+                className={`absolute rounded-full transition-all duration-300 ${particleColor}`}
                 style={{
                   left: `${particle.leftPct}%`,
                   top: `${particle.topPct}%`,
                   width: `${particle.size}px`,
                   height: `${particle.size}px`,
                   opacity: particle.opacity,
+                  boxShadow: isHoveringLaunchButton ? '0 0 8px hsla(var(--emerald-500), 0.6)' : 'none',
                 }}
                 animate={isHoveringLaunchButton ? {
                   y: [0, -80, 0],
                   x: [0, Math.sin(particle.key) * 60, 0],
-                  opacity: [particle.opacity, particle.opacity * 2, particle.opacity],
-                  scale: [0.8, 1.2, 0.8],
+                  opacity: [particle.opacity, particle.opacity * 3, particle.opacity],
+                  scale: [1, 1.5, 1],
                   transition: {
                     duration: particle.dur * 0.25, // 4x faster
                     repeat: Infinity,
