@@ -696,16 +696,18 @@ export const LandingPage = () => {
 
             {/* Vapi Voice Widget */}
             <motion.div 
-              className="mb-8 flex justify-center"
+              className="mb-8 flex justify-center relative z-50"
               variants={itemVariants}
             >
-              <div className="bg-card/30 backdrop-blur-sm border border-emerald-500/30 rounded-2xl p-6">
+              <div className="bg-card backdrop-blur-sm border border-emerald-500/30 rounded-2xl p-6 shadow-lg">
                 <h3 className="text-lg font-semibold text-emerald-400 mb-3">Talk to Ivy - AI Compliance Assistant</h3>
                 <div 
+                  className="relative z-50"
                   dangerouslySetInnerHTML={{
                     __html: `<vapi-widget 
                       assistant-id="e263a068-6f1c-44dd-adc7-bfef527f50bb" 
-                      public-key="5109d358-3f22-41c2-bd0e-70e059604e6a">
+                      public-key="5109d358-3f22-41c2-bd0e-70e059604e6a"
+                      style="position: relative; z-index: 9999;">
                     </vapi-widget>`
                   }}
                 />
