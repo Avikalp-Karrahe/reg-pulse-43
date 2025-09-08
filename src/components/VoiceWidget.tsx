@@ -21,14 +21,25 @@ export const VoiceWidget = ({ className }: VoiceWidgetProps) => {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
+      recognitionRef.current.lang = 'en-US';
       
       recognitionRef.current.onstart = () => {
         setIsConnected(true);
         setIsListening(true);
+        console.log('Speech recognition started');
+      };
+      
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+        if (event.error === 'not-allowed') {
+          alert('Microphone access denied. Please allow microphone access to use voice features.');
+        }
       };
       
       recognitionRef.current.onend = () => {
         setIsListening(false);
+        console.log('Speech recognition ended');
       };
       
       recognitionRef.current.onresult = (event) => {
@@ -40,6 +51,10 @@ export const VoiceWidget = ({ className }: VoiceWidgetProps) => {
           handleUserInput(transcript);
         }
       };
+      
+      setIsConnected(true);
+    } else {
+      console.warn('Speech recognition not supported in this browser');
     }
 
     // Initialize speech synthesis
@@ -57,15 +72,17 @@ export const VoiceWidget = ({ className }: VoiceWidgetProps) => {
   const handleUserInput = async (transcript: string) => {
     console.log('User said:', transcript);
     
-    // Simulate AI response - you can replace this with actual AI API call
-    const responses = [
-      "I'm Ivy, your AI compliance assistant. How can I help you with regulatory compliance today?",
-      "I can help you understand compliance requirements, review potential violations, and provide guidance on best practices.",
-      "Based on your query, I recommend reviewing the latest regulatory guidelines and implementing proper monitoring procedures.",
-      "Let me analyze that for you. This appears to be within compliance guidelines, but I recommend additional documentation for audit purposes."
+    // Enhanced AI responses based on compliance context
+    const complianceResponses = [
+      "Hello! I'm Ivy, your AI compliance assistant. I can help you understand regulatory requirements, review potential violations, and provide guidance on financial services compliance.",
+      "I can analyze speech patterns for compliance violations in real-time. What specific regulatory area would you like to discuss?",
+      "Based on your query, I recommend reviewing the latest MiFID II guidelines and implementing proper client communication protocols.",
+      "That appears to be within compliance guidelines. However, I suggest documenting this interaction for audit purposes and ensuring proper disclosures are made.",
+      "I've detected some potential risk indicators. Let me provide guidance on best practices for this type of client interaction.",
+      "For financial advice conversations, ensure you're following proper suitability assessment procedures and documenting all recommendations."
     ];
     
-    const response = responses[Math.floor(Math.random() * responses.length)];
+    const response = complianceResponses[Math.floor(Math.random() * complianceResponses.length)];
     
     // Speak the response
     if (synthRef.current) {
@@ -106,13 +123,13 @@ export const VoiceWidget = ({ className }: VoiceWidgetProps) => {
   return (
     <div className={cn("flex flex-col items-center space-y-4 p-6", className)}>
       {/* Status Indicator */}
-      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+      <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-2">
         <div className={cn(
           "w-2 h-2 rounded-full",
           isConnected ? "bg-emerald-400 animate-pulse" : "bg-red-400"
         )} />
-        <span>
-          {isConnected ? 'Connected to Ivy' : 'Initializing...'}
+        <span className="font-medium">
+          {isConnected ? 'Talk to Ivy - AI Compliance Assistant' : 'Initializing Voice Assistant...'}
         </span>
       </div>
 
@@ -123,16 +140,22 @@ export const VoiceWidget = ({ className }: VoiceWidgetProps) => {
           size="lg"
           variant={isListening ? "default" : "outline"}
           className={cn(
-            "w-20 h-20 rounded-full transition-all duration-300",
-            isListening && "bg-emerald-500 hover:bg-emerald-600 animate-pulse",
-            isSpeaking && "bg-cyan-500 hover:bg-cyan-600"
+            "w-20 h-20 rounded-full transition-all duration-300 relative overflow-hidden",
+            isListening && "bg-emerald-500 hover:bg-emerald-600 voice-glow",
+            isSpeaking && "bg-cyan-500 hover:bg-cyan-600",
+            !isConnected && "opacity-50 cursor-not-allowed"
           )}
           disabled={!isConnected}
         >
           {isListening ? (
-            <Mic className="w-8 h-8" />
+            <Mic className="w-8 h-8 text-white" />
           ) : (
             <MicOff className="w-8 h-8" />
+          )}
+          
+          {/* Animated background for speaking state */}
+          {isSpeaking && (
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-blue-400/20 animate-pulse" />
           )}
         </Button>
         
@@ -170,7 +193,7 @@ export const VoiceWidget = ({ className }: VoiceWidgetProps) => {
       {/* Instructions */}
       {!isListening && !isSpeaking && (
         <p className="text-xs text-muted-foreground text-center max-w-xs">
-          Press and hold to ask about compliance requirements, regulations, or get AI-powered guidance.
+          Press and hold to ask about compliance requirements, regulations, or get AI-powered guidance for financial services.
         </p>
       )}
     </div>

@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -475,5 +476,15 @@ All colors MUST be HSL.
     100% {
       background-position: -200% 0;
     }
+  }
+
+  /* Enhanced animations for voice widget */
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px hsl(var(--emerald-500) / 0.5); }
+    50% { box-shadow: 0 0 40px hsl(var(--emerald-500) / 0.8), 0 0 80px hsl(var(--emerald-400) / 0.4); }
+  }
+
+  .voice-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
   }
 }
