@@ -16,7 +16,8 @@ import {
   Activity,
   AlertTriangle,
   History,
-  Settings
+  Settings,
+  Phone
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -685,6 +686,33 @@ export const LandingPage = () => {
               </div>
             </Card>
             </div>
+            </motion.section>
+
+          {/* Talk to Ivy - AI Agent Section */}
+          <motion.section className="text-center py-16" variants={itemVariants}>
+            <Card className="max-w-2xl mx-auto p-8 bg-card/60 backdrop-blur-sm border border-border/30 hover:border-emerald-500/30 transition-all duration-300">
+              <div className="flex flex-col items-center space-y-6">
+                <div className="p-4 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+                  <Phone className="w-8 h-8 text-emerald-400" />
+                </div>
+                <div>
+                  <h3 className="text-2xl lg:text-3xl font-bold text-foreground mb-3">
+                    Talk to Ivy - Our AI Agent
+                  </h3>
+                  <p className="text-muted-foreground mb-6 leading-relaxed">
+                    Get instant support and answers from our AI compliance expert. 
+                    Available 24/7 for real-time guidance.
+                  </p>
+                  <motion.div 
+                    className="text-3xl lg:text-4xl font-bold text-emerald-400 font-mono tracking-wider"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    +1 (936) 241 8008
+                  </motion.div>
+                </div>
+              </div>
+            </Card>
           </motion.section>
 
           {/* Final CTA - Research Grade */}
