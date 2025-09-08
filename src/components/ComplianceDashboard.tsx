@@ -430,29 +430,34 @@ export const ComplianceDashboard = () => {
                 </p>
               </div>
               <div className="flex justify-center">
-                <vapi-widget
-                  public-key="5109d358-3f22-41c2-bd0e-70e059604e6a"
-                  assistant-id="e263a068-6f1c-44dd-adc7-bfef527f50bb"
-                  mode="voice"
-                  theme="dark"
-                  base-bg-color="#000000"
-                  accent-color="#14B8A6"
-                  cta-button-color="#000000"
-                  cta-button-text-color="#ffffff"
-                  border-radius="large"
-                  size="medium"
-                  position="inline"
-                  title="TALK WITH AI"
-                  start-button-text="Start"
-                  end-button-text="End Call"
-                  chat-first-message="Hey, how can I help you with compliance today?"
-                  chat-placeholder="Type your message..."
-                  voice-show-transcript="true"
-                  consent-required="true"
-                  consent-title="Terms and conditions"
-                  consent-content="By clicking Agree, and each time I interact with this AI agent, I consent to the recording, storage, and sharing of my communications with third-party service providers, and as otherwise described in our Terms of Service."
-                  consent-storage-key="vapi_widget_consent"
-                ></vapi-widget>
+                <div className="w-full max-w-md mx-auto p-4 border-2 border-dashed border-indigo-500/50 rounded-lg bg-indigo-500/5">
+                  <vapi-widget
+                    public-key="5109d358-3f22-41c2-bd0e-70e059604e6a"
+                    assistant-id="e263a068-6f1c-44dd-adc7-bfef527f50bb"
+                    mode="voice"
+                    theme="dark"
+                    base-bg-color="#000000"
+                    accent-color="#14B8A6"
+                    cta-button-color="#000000"
+                    cta-button-text-color="#ffffff"
+                    border-radius="large"
+                    size="medium"
+                    position="inline"
+                    title="TALK WITH AI"
+                    start-button-text="Start"
+                    end-button-text="End Call"
+                    chat-first-message="Hey, how can I help you with compliance today?"
+                    chat-placeholder="Type your message..."
+                    voice-show-transcript="true"
+                    consent-required="true"
+                    consent-title="Terms and conditions"
+                    consent-content="By clicking Agree, and each time I interact with this AI agent, I consent to the recording, storage, and sharing of my communications with third-party service providers, and as otherwise described in our Terms of Service."
+                    consent-storage-key="vapi_widget_consent"
+                  ></vapi-widget>
+                  <p className="text-xs text-muted-foreground text-center mt-2">
+                    If widget doesn't appear, the Vapi script may still be loading
+                  </p>
+                </div>
               </div>
             </CardContent>
           </Card>
