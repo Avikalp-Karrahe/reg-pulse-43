@@ -250,15 +250,8 @@ export const LandingPage = () => {
       )}
 
       <div className="relative z-10">
-        {/* Theme Toggle & Vapi Badge - Fixed Position */}
-        <div className="fixed top-6 right-6 z-50 flex flex-col items-end space-y-3">
-          <Badge
-            variant="outline"
-            className="bg-gradient-to-r from-purple-500/10 via-indigo-500/10 to-blue-500/10 text-purple-400 border border-purple-500/30 px-3 py-1 text-xs font-medium backdrop-blur-sm"
-          >
-            <Sparkles className="w-3 h-3 mr-1" />
-            Powered by Vapi
-          </Badge>
+        {/* Theme Toggle - Fixed Position */}
+        <div className="fixed top-6 right-6 z-50">
           <ThemeToggle />
         </div>
 
@@ -696,87 +689,30 @@ export const LandingPage = () => {
             </motion.section>
 
           {/* Talk to Ivy - AI Agent Section */}
-          <motion.section className="relative py-20" variants={itemVariants}>
-            {/* Ambient glow background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-cyan-500/5 to-indigo-500/5 rounded-3xl blur-3xl" />
-            
-            <div className="relative max-w-4xl mx-auto">
-              {/* Glass morphism container */}
-              <motion.div 
-                className="relative overflow-hidden rounded-3xl backdrop-blur-md bg-gradient-to-br from-card/40 via-card/60 to-card/40 border border-emerald-500/20 shadow-2xl"
-                whileHover={{ 
-                  boxShadow: "0 0 100px hsla(var(--emerald-500), 0.3), 0 0 200px hsla(var(--cyan-500), 0.2)",
-                  scale: 1.02
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                {/* Animated border gradient */}
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-emerald-500/20 via-cyan-500/20 to-indigo-500/20 opacity-50" />
-                <div className="absolute inset-[1px] rounded-3xl bg-gradient-to-br from-background/80 via-background/40 to-background/80" />
-                
-                {/* Content */}
-                <div className="relative p-12 text-center">
-                  {/* Icon with animated glow */}
-                  <motion.div 
-                    className="inline-flex p-6 rounded-full bg-gradient-to-r from-emerald-500/20 via-cyan-500/20 to-indigo-500/20 border border-emerald-500/30 mb-8"
-                    animate={{
-                      boxShadow: [
-                        "0 0 30px hsla(var(--emerald-500), 0.3)",
-                        "0 0 60px hsla(var(--cyan-500), 0.4)",
-                        "0 0 30px hsla(var(--emerald-500), 0.3)"
-                      ]
-                    }}
-                    transition={{ duration: 3, repeat: Infinity }}
-                  >
-                    <Phone className="w-10 h-10 text-emerald-400" />
-                  </motion.div>
-                  
-                  {/* Heading */}
-                  <h3 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-                    Talk to <span className="text-transparent bg-gradient-to-r from-emerald-400 via-cyan-400 to-indigo-400 bg-clip-text">Ivy</span>
-                    <span className="text-muted-foreground/60 text-lg ml-2">— Our AI Agent</span>
+          <motion.section className="text-center py-16" variants={itemVariants}>
+            <Card className="max-w-2xl mx-auto p-8 bg-card/60 backdrop-blur-sm border border-border/30 hover:border-emerald-500/30 transition-all duration-300">
+              <div className="flex flex-col items-center space-y-6">
+                <div className="p-4 rounded-full bg-emerald-500/10 border border-emerald-500/30">
+                  <Phone className="w-8 h-8 text-emerald-400" />
+                </div>
+                <div>
+                  <h3 className="text-2xl lg:text-3xl font-bold text-foreground mb-3">
+                    Talk to Ivy - Our AI Agent
                   </h3>
-                  
-                  {/* Subtitle */}
-                  <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-                    Get instant support from our AI compliance expert. 
-                    <span className="text-emerald-400 font-medium"> Available 24/7</span> for real-time guidance and regulatory insights.
+                  <p className="text-muted-foreground mb-6 leading-relaxed">
+                    Get instant support and answers from our AI compliance expert. 
+                    Available 24/7 for real-time guidance.
                   </p>
-                  
-                  {/* Phone number with enhanced styling */}
                   <motion.div 
-                    className="relative inline-block"
+                    className="text-3xl lg:text-4xl font-bold text-emerald-400 font-mono tracking-wider"
                     whileHover={{ scale: 1.05 }}
                     transition={{ type: "spring", stiffness: 300 }}
                   >
-                    {/* Glow effect */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/30 via-emerald-300/30 to-emerald-400/30 rounded-2xl blur-xl" />
-                    
-                    {/* Phone number container */}
-                    <div className="relative px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500/10 via-emerald-400/10 to-emerald-500/10 border border-emerald-400/30 backdrop-blur-sm">
-                      <div className="text-4xl lg:text-5xl font-bold text-emerald-400 font-mono tracking-wider drop-shadow-sm">
-                        +1 (936) 241 8008
-                      </div>
-                      <div className="text-sm text-emerald-400/70 font-mono mt-1 tracking-widest">
-                        TAP TO CALL
-                      </div>
-                    </div>
+                    +1 (936) 241 8008
                   </motion.div>
-                  
-                  {/* Decorative elements */}
-                  <div className="flex justify-center items-center space-x-6 mt-8 text-muted-foreground/50">
-                    <div className="flex items-center space-x-2 text-xs font-mono">
-                      <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-                      <span>LIVE</span>
-                    </div>
-                    <div className="w-px h-4 bg-border" />
-                    <div className="text-xs font-mono">24/7 AVAILABILITY</div>
-                    <div className="w-px h-4 bg-border" />
-                    <div className="text-xs font-mono">INSTANT RESPONSE</div>
-                  </div>
                 </div>
-              </motion.div>
-            </div>
+              </div>
+            </Card>
           </motion.section>
 
           {/* Final CTA - Research Grade */}
