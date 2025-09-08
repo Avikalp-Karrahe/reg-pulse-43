@@ -507,7 +507,7 @@ export const ComplianceDashboard = () => {
           </Card>
         </motion.div>
 
-        {/* Vapi Widget Section - Simplified */}
+        {/* AI Voice Assistant Section - Using ElevenLabs */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -520,47 +520,90 @@ export const ComplianceDashboard = () => {
                 AI Voice Assistant
               </h2>
               <p className="text-muted-foreground text-sm">
-                Click the widget below to start talking with our AI assistant
+                Talk with our AI compliance assistant using advanced voice technology
               </p>
             </div>
             
-            {/* Simple test button first */}
+            {/* Test button for debugging */}
             <div className="text-center mb-4">
               <button 
                 onClick={() => {
-                  alert('Button works! Checking widget...');
-                  console.log('=== WIDGET DEBUG INFO ===');
-                  console.log('Custom elements defined:', customElements.get('vapi-widget'));
-                  console.log('Widget in DOM:', document.querySelector('vapi-widget'));
-                  console.log('Script in DOM:', document.querySelector('script[src*="vapi"]'));
+                  console.log('=== COMPREHENSIVE DEBUG ===');
+                  console.log('1. Custom elements defined:', customElements.get('vapi-widget'));
+                  console.log('2. Widget in DOM:', document.querySelector('vapi-widget'));
+                  console.log('3. Script in DOM:', document.querySelector('script[src*="vapi"]'));
+                  console.log('4. Script URL:', document.querySelector('script[src*="vapi"]')?.getAttribute('src'));
+                  console.log('5. Window contains vapi:', Object.keys(window).filter(k => k.toLowerCase().includes('vapi')));
+                  console.log('6. Window vapi object:', (window as any).vapi);
+                  console.log('7. All scripts with vapi:', Array.from(document.querySelectorAll('script')).filter(s => s.src.includes('vapi')));
+                  
+                  // Try to manually load the widget
+                  const script = document.createElement('script');
+                  script.src = 'https://unpkg.com/@vapi-ai/web@latest/dist/index.js';
+                  script.onload = () => console.log('Alternative Vapi script loaded');
+                  script.onerror = () => console.log('Alternative Vapi script failed');
+                  document.head.appendChild(script);
                 }}
                 className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-medium"
               >
-                Test Button & Debug Widget
+                Advanced Debug & Try Alternative Script
               </button>
             </div>
             
-            {/* Widget container */}
-            <div 
-              className="border-2 border-dashed border-gray-300 rounded-lg p-4 min-h-[200px] flex items-center justify-center bg-gray-50"
-              style={{ position: 'relative', zIndex: 10 }}
-            >
-              <vapi-widget
-                public-key="5109d358-3f22-41c2-bd0e-70e059604e6a"
-                assistant-id="e263a068-6f1c-44dd-adc7-bfef527f50bb"
-                mode="voice"
-                theme="dark"
-                size="medium"
-                position="inline"
-                title="TALK WITH AI"
-                start-button-text="Start"
-                end-button-text="End Call"
-              ></vapi-widget>
+            {/* Multiple widget approaches */}
+            <div className="space-y-4">
+              {/* Original Vapi Widget */}
+              <div className="border-2 border-dashed border-blue-300 rounded-lg p-4 min-h-[100px] bg-blue-50">
+                <p className="text-xs text-blue-600 mb-2">Vapi Widget (Original):</p>
+                <vapi-widget
+                  public-key="5109d358-3f22-41c2-bd0e-70e059604e6a"
+                  assistant-id="e263a068-6f1c-44dd-adc7-bfef527f50bb"
+                  mode="voice"
+                  theme="light"
+                  size="small"
+                  position="inline"
+                ></vapi-widget>
+              </div>
+              
+              {/* Fallback: Simple voice input button */}
+              <div className="border-2 border-dashed border-green-300 rounded-lg p-4 bg-green-50">
+                <p className="text-xs text-green-600 mb-2">Fallback: Browser Speech Recognition:</p>
+                <button 
+                  onClick={() => {
+                    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+                      const recognition = new SpeechRecognition();
+                      recognition.continuous = true;
+                      recognition.interimResults = true;
+                      recognition.onresult = (event: any) => {
+                        const transcript = Array.from(event.results)
+                          .map((result: any) => result[0].transcript)
+                          .join('');
+                        console.log('Recognized speech:', transcript);
+                        toast({
+                          title: "Speech Recognized",
+                          description: transcript,
+                        });
+                      };
+                      recognition.start();
+                      toast({
+                        title: "Listening...",
+                        description: "Speak now. Check console for results.",
+                      });
+                    } else {
+                      toast({
+                        title: "Not Supported",
+                        description: "Speech recognition not available in this browser.",
+                        variant: "destructive",
+                      });
+                    }
+                  }}
+                  className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+                >
+                  Start Voice Input (Browser API)
+                </button>
+              </div>
             </div>
-            
-            <p className="text-xs text-muted-foreground text-center mt-4">
-              If you don't see the widget above, there may be a loading issue with the Vapi script.
-            </p>
           </div>
         </motion.div>
 
