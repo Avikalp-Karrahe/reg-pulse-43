@@ -207,9 +207,12 @@ with zero downside risk through advanced quantitative modeling."
 ## 🚀 **Getting Started**
 
 ### **Quick Links**
-- 🌐 **[Live Demo](https://preview--reg-pulse-ai.lovable.app/)**
+- 🌐 **[Main Website](https://bit.ly/reg-pulse)**
+- 🚀 **[Live Demo](https://preview--reg-pulse-ai.lovable.app/)**
 - 📂 **[GitHub Repository](https://github.com/Avikalp-Karrahe/reg-pulse-43)**
+- 🏗️ **[Project Details](https://bit.ly/reg-pulse-build-club)**
 - 💼 **[LinkedIn](https://www.linkedin.com/in/avikalp/)**
+- 🤖 **Talk to Ivy (AI Agent): [+1 (936) 241-8008](tel:+19362418008)**
 
 ### **Project Status**
 - **Stage**: Prototyping Phase
@@ -241,8 +244,11 @@ with zero downside risk through advanced quantitative modeling."
 
 *Transforming compliance from reactive to proactive, one conversation at a time.*
 
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Avikalp-Karrahe/reg-pulse-43)
-[![Demo](https://img.shields.io/badge/Live_Demo-FF6B6B?style=for-the-badge&logo=rocket&logoColor=white)](https://preview--reg-pulse-ai.lovable.app/)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/avikalp/)
+[![Website](https://img.shields.io/badge/🌐_Main_Website-4ECDC4?style=for-the-badge&logo=globe&logoColor=white)](https://bit.ly/reg-pulse)
+[![Demo](https://img.shields.io/badge/🚀_Live_Demo-FF6B6B?style=for-the-badge&logo=rocket&logoColor=white)](https://preview--reg-pulse-ai.lovable.app/)
+[![Project](https://img.shields.io/badge/🏗️_Project_Details-9B59B6?style=for-the-badge&logo=building&logoColor=white)](https://bit.ly/reg-pulse-build-club)
+[![GitHub](https://img.shields.io/badge/📂_GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Avikalp-Karrahe/reg-pulse-43)
+[![Ivy AI](https://img.shields.io/badge/🤖_Talk_to_Ivy-45B7D1?style=for-the-badge&logo=phone&logoColor=white)](tel:+19362418008)
+[![LinkedIn](https://img.shields.io/badge/💼_LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/avikalp/)
 
 </div>
