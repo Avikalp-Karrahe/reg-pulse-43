@@ -15,6 +15,16 @@
 
 ---
 
+## 🚀 **Quick Links**
+- 🌐 **[Main Website](https://bit.ly/reg-pulse)**
+- 🚀 **[Live Demo](https://preview--reg-pulse-ai.lovable.app/)**
+- 📂 **[GitHub Repository](https://github.com/Avikalp-Karrahe/reg-pulse-43)**
+- 🏗️ **[Project Details](https://bit.ly/reg-pulse-build-club)**
+- 💼 **[LinkedIn](https://www.linkedin.com/in/avikalp/)**
+- 🤖 **Talk to Ivy (AI Agent): [+1 (936) 241-8008](tel:+19362418008)**
+
+---
+
 ## 🛠️ **Technology Stack**
 
 <div align="center">
@@ -205,14 +215,6 @@ with zero downside risk through advanced quantitative modeling."
 ---
 
 ## 🚀 **Getting Started**
-
-### **Quick Links**
-- 🌐 **[Main Website](https://bit.ly/reg-pulse)**
-- 🚀 **[Live Demo](https://preview--reg-pulse-ai.lovable.app/)**
-- 📂 **[GitHub Repository](https://github.com/Avikalp-Karrahe/reg-pulse-43)**
-- 🏗️ **[Project Details](https://bit.ly/reg-pulse-build-club)**
-- 💼 **[LinkedIn](https://www.linkedin.com/in/avikalp/)**
-- 🤖 **Talk to Ivy (AI Agent): [+1 (936) 241-8008](tel:+19362418008)**
 
 ### **Project Status**
 - **Stage**: Prototyping Phase
