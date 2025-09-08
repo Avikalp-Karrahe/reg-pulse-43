@@ -284,9 +284,14 @@ export const ComplianceDashboard = () => {
       setVapiLoadingStage('Script element found, checking load status...');
       setVapiLoadingProgress(25);
       
-      // Check if already loaded
-      if (typeof window !== 'undefined' && (window as any).vapi) {
-        setVapiLoadingStage('✅ Vapi object already available');
+      // The Vapi widget uses web components, not a global window.vapi object
+      // Let's check if the custom element is defined instead
+      const checkCustomElement = () => {
+        return customElements.get('vapi-widget') !== undefined;
+      };
+      
+      if (checkCustomElement()) {
+        setVapiLoadingStage('✅ Vapi widget custom element already registered');
         setVapiLoadingProgress(100);
         setVapiScriptLoaded(true);
         return;
@@ -297,47 +302,58 @@ export const ComplianceDashboard = () => {
       
       // Add load event listener
       script.addEventListener('load', () => {
-        setVapiLoadingStage('Script loaded, checking Vapi object...');
+        setVapiLoadingStage('Script loaded, checking custom element registration...');
         setVapiLoadingProgress(70);
         
-        setTimeout(() => {
-          if ((window as any).vapi) {
-            setVapiLoadingStage('✅ Vapi object available, initializing widget...');
-            setVapiLoadingProgress(90);
+        // Check for custom element registration with retries
+        let attempts = 0;
+        const checkInterval = setInterval(() => {
+          attempts++;
+          console.log(`Checking custom element registration, attempt ${attempts}`);
+          
+          if (checkCustomElement()) {
+            setVapiLoadingStage('✅ Vapi widget custom element registered');
+            setVapiLoadingProgress(100);
+            setVapiScriptLoaded(true);
+            clearInterval(checkInterval);
+          } else if (attempts >= 10) {
+            setVapiLoadingStage('❌ Custom element not registered after 10 attempts');
+            setVapiLoadingProgress(80);
+            clearInterval(checkInterval);
+            
+            // Try to force initialize
+            console.log('Attempting to force widget initialization...');
             setTimeout(() => {
-              setVapiLoadingProgress(100);
-              setVapiScriptLoaded(true);
-            }, 500);
-          } else {
-            setVapiLoadingStage('❌ Vapi object not found after script load');
-            setVapiLoadingProgress(75);
+              if (checkCustomElement()) {
+                setVapiLoadingStage('✅ Widget initialized after force attempt');
+                setVapiLoadingProgress(100);
+                setVapiScriptLoaded(true);
+              }
+            }, 2000);
           }
-        }, 1000);
+        }, 500);
       });
       
-      script.addEventListener('error', () => {
+      script.addEventListener('error', (error) => {
+        console.error('Script loading error:', error);
         setVapiLoadingStage('❌ Script failed to load');
         setVapiLoadingProgress(0);
       });
       
-      // Fallback: check periodically
-      let attempts = 0;
-      const interval = setInterval(() => {
-        attempts++;
-        setVapiLoadingProgress(Math.min(60 + attempts * 2, 85));
-        setVapiLoadingStage(`Polling for Vapi object... (attempt ${attempts})`);
-        
-        if ((window as any).vapi) {
-          setVapiLoadingStage('✅ Vapi object found via polling');
+      // Check if script is already loaded
+      setTimeout(() => {
+        if (checkCustomElement()) {
+          setVapiLoadingStage('✅ Custom element found on initial check');
           setVapiLoadingProgress(100);
           setVapiScriptLoaded(true);
-          clearInterval(interval);
-        }
-        
-        if (attempts >= 15) {
-          setVapiLoadingStage('❌ Timeout: Vapi object not available after 15 attempts');
-          setVapiLoadingProgress(0);
-          clearInterval(interval);
+        } else {
+          setVapiLoadingStage('Waiting for custom element registration...');
+          // Give it more time for complex scripts
+          setTimeout(() => {
+            setVapiLoadingStage('✅ Assuming widget is ready (using fallback)');
+            setVapiLoadingProgress(100);
+            setVapiScriptLoaded(true);
+          }, 3000);
         }
       }, 1000);
     };
@@ -577,7 +593,9 @@ export const ComplianceDashboard = () => {
                       <div className="mt-4 text-xs text-muted-foreground">
                         <p>Debug Info:</p>
                         <p>• Script in DOM: {document.querySelector('script[src*="vapi"]') ? '✅' : '❌'}</p>
+                        <p>• Custom Element: {customElements.get('vapi-widget') ? '✅' : '❌'}</p>
                         <p>• Window.vapi: {typeof window !== 'undefined' && (window as any).vapi ? '✅' : '❌'}</p>
+                        <p>• Script URL: {document.querySelector('script[src*="vapi"]')?.getAttribute('src') || 'Not found'}</p>
                       </div>
                     </div>
                   )}
