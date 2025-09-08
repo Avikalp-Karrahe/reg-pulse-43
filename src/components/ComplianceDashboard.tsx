@@ -528,77 +528,32 @@ export const ComplianceDashboard = () => {
               </div>
               <div className="flex justify-center">
                 <div className="w-full max-w-md mx-auto p-4 border-2 border-dashed border-indigo-500/50 rounded-lg bg-indigo-500/5">
-                  {vapiScriptLoaded ? (
-                    <vapi-widget
-                      public-key="5109d358-3f22-41c2-bd0e-70e059604e6a"
-                      assistant-id="e263a068-6f1c-44dd-adc7-bfef527f50bb"
-                      mode="voice"
-                      theme="dark"
-                      base-bg-color="#000000"
-                      accent-color="#14B8A6"
-                      cta-button-color="#000000"
-                      cta-button-text-color="#ffffff"
-                      border-radius="large"
-                      size="medium"
-                      position="inline"
-                      title="TALK WITH AI"
-                      start-button-text="Start"
-                      end-button-text="End Call"
-                      chat-first-message="Hey, how can I help you with compliance today?"
-                      chat-placeholder="Type your message..."
-                      voice-show-transcript="true"
-                      consent-required="true"
-                      consent-title="Terms and conditions"
-                      consent-content="By clicking Agree, and each time I interact with this AI agent, I consent to the recording, storage, and sharing of my communications with third-party service providers, and as otherwise described in our Terms of Service."
-                      consent-storage-key="vapi_widget_consent"
-                    ></vapi-widget>
-                  ) : (
-                    <div className="text-center py-8">
-                      <div className="relative w-24 h-24 mx-auto mb-6">
-                        {/* Outer ring */}
-                        <div className="absolute inset-0 rounded-full border-4 border-indigo-500/20"></div>
-                        {/* Progress ring */}
-                        <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 96 96">
-                          <circle
-                            cx="48"
-                            cy="48"
-                            r="44"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                            fill="none"
-                            className="text-indigo-500/20"
-                          />
-                          <circle
-                            cx="48"
-                            cy="48"
-                            r="44"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                            fill="none"
-                            strokeDasharray={`${2 * Math.PI * 44}`}
-                            strokeDashoffset={`${2 * Math.PI * 44 * (1 - vapiLoadingProgress / 100)}`}
-                            className="text-indigo-400 transition-all duration-300"
-                            strokeLinecap="round"
-                          />
-                        </svg>
-                        {/* Percentage */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <span className="text-lg font-bold text-indigo-400">{vapiLoadingProgress}%</span>
-                        </div>
-                      </div>
-                      <p className="text-sm text-indigo-400 font-medium mb-2">Loading AI Assistant...</p>
-                      <p className="text-xs text-muted-foreground max-w-xs mx-auto leading-relaxed">
-                        {vapiLoadingStage}
-                      </p>
-                      <div className="mt-4 text-xs text-muted-foreground">
-                        <p>Debug Info:</p>
-                        <p>• Script in DOM: {document.querySelector('script[src*="vapi"]') ? '✅' : '❌'}</p>
-                        <p>• Custom Element: {customElements.get('vapi-widget') ? '✅' : '❌'}</p>
-                        <p>• Window.vapi: {typeof window !== 'undefined' && (window as any).vapi ? '✅' : '❌'}</p>
-                        <p>• Script URL: {document.querySelector('script[src*="vapi"]')?.getAttribute('src') || 'Not found'}</p>
-                      </div>
-                    </div>
-                  )}
+                  <vapi-widget
+                    public-key="5109d358-3f22-41c2-bd0e-70e059604e6a"
+                    assistant-id="e263a068-6f1c-44dd-adc7-bfef527f50bb"
+                    mode="voice"
+                    theme="dark"
+                    base-bg-color="#000000"
+                    accent-color="#14B8A6"
+                    cta-button-color="#000000"
+                    cta-button-text-color="#ffffff"
+                    border-radius="large"
+                    size="medium"
+                    position="inline"
+                    title="TALK WITH AI"
+                    start-button-text="Start"
+                    end-button-text="End Call"
+                    chat-first-message="Hey, how can I help you with compliance today?"
+                    chat-placeholder="Type your message..."
+                    voice-show-transcript="true"
+                    consent-required="true"
+                    consent-title="Terms and conditions"
+                    consent-content="By clicking Agree, and each time I interact with this AI agent, I consent to the recording, storage, and sharing of my communications with third-party service providers, and as otherwise described in our Terms of Service."
+                    consent-storage-key="vapi_widget_consent"
+                  ></vapi-widget>
+                  <p className="text-xs text-muted-foreground text-center mt-2">
+                    AI Voice Assistant - Click to start
+                  </p>
                 </div>
               </div>
             </CardContent>
