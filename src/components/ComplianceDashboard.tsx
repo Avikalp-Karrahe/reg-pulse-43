@@ -507,88 +507,61 @@ export const ComplianceDashboard = () => {
           </Card>
         </motion.div>
 
-        {/* Vapi Widget Section */}
+        {/* Vapi Widget Section - Simplified */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35, duration: 0.6 }}
+          className="relative z-10"
         >
-          <Card className="card-premium border-indigo-500/30 overflow-hidden">
-            <CardContent className="p-8">
-              <div className="text-center mb-6">
-                <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-indigo-500/20 via-purple-500/20 to-cyan-500/20 flex items-center justify-center mx-auto mb-4">
-                  <Phone className="w-8 h-8 text-indigo-400" />
-                </div>
-                <h2 className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-2">
-                  Talk with AI Assistant
-                </h2>
-                <p className="text-muted-foreground">
-                  Get instant compliance guidance and support through our advanced AI voice assistant
-                </p>
-              </div>
-              <div className="flex justify-center">
-                <div className="w-full max-w-md mx-auto p-4 border-2 border-dashed border-indigo-500/50 rounded-lg bg-indigo-500/5">
-                  <div 
-                    onClick={() => {
-                      console.log('Widget area clicked');
-                      const widget = document.querySelector('vapi-widget');
-                      console.log('Widget element found:', widget);
-                      if (widget) {
-                        console.log('Widget attributes:', [...widget.attributes].map(attr => `${attr.name}="${attr.value}"`));
-                      }
-                    }}
-                    className="cursor-pointer"
-                  >
-                    <vapi-widget
-                      public-key="5109d358-3f22-41c2-bd0e-70e059604e6a"
-                      assistant-id="e263a068-6f1c-44dd-adc7-bfef527f50bb"
-                      mode="voice"
-                      theme="dark"
-                      base-bg-color="#000000"
-                      accent-color="#14B8A6"
-                      cta-button-color="#000000"
-                      cta-button-text-color="#ffffff"
-                      border-radius="large"
-                      size="medium"
-                      position="inline"
-                      title="TALK WITH AI"
-                      start-button-text="Start"
-                      end-button-text="End Call"
-                      chat-first-message="Hey, how can I help you with compliance today?"
-                      chat-placeholder="Type your message..."
-                      voice-show-transcript="true"
-                      consent-required="true"
-                      consent-title="Terms and conditions"
-                      consent-content="By clicking Agree, and each time I interact with this AI agent, I consent to the recording, storage, and sharing of my communications with third-party service providers, and as otherwise described in our Terms of Service."
-                      consent-storage-key="vapi_widget_consent"
-                    ></vapi-widget>
-                  </div>
-                  <p className="text-xs text-muted-foreground text-center mt-2">
-                    AI Voice Assistant - Click to start
-                  </p>
-                  <div className="mt-2 text-xs text-gray-500">
-                    <button 
-                      onClick={() => {
-                        console.log('=== WIDGET DEBUG INFO ===');
-                        console.log('Custom elements defined:', customElements.get('vapi-widget'));
-                        console.log('Widget in DOM:', document.querySelector('vapi-widget'));
-                        console.log('Script in DOM:', document.querySelector('script[src*="vapi"]'));
-                        const script = document.querySelector('script[src*="vapi"]') as HTMLScriptElement;
-                        if (script) {
-                          console.log('Script src:', script.src);
-                          console.log('Script onload event:', script.onload);
-                        }
-                        console.log('Window object keys containing vapi:', Object.keys(window).filter(k => k.toLowerCase().includes('vapi')));
-                      }}
-                      className="text-xs bg-gray-600 text-white px-2 py-1 rounded"
-                    >
-                      Debug Widget
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="bg-card border border-border rounded-lg p-6">
+            <div className="text-center mb-6">
+              <h2 className="text-xl font-bold text-foreground mb-2">
+                AI Voice Assistant
+              </h2>
+              <p className="text-muted-foreground text-sm">
+                Click the widget below to start talking with our AI assistant
+              </p>
+            </div>
+            
+            {/* Simple test button first */}
+            <div className="text-center mb-4">
+              <button 
+                onClick={() => {
+                  alert('Button works! Checking widget...');
+                  console.log('=== WIDGET DEBUG INFO ===');
+                  console.log('Custom elements defined:', customElements.get('vapi-widget'));
+                  console.log('Widget in DOM:', document.querySelector('vapi-widget'));
+                  console.log('Script in DOM:', document.querySelector('script[src*="vapi"]'));
+                }}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded font-medium"
+              >
+                Test Button & Debug Widget
+              </button>
+            </div>
+            
+            {/* Widget container */}
+            <div 
+              className="border-2 border-dashed border-gray-300 rounded-lg p-4 min-h-[200px] flex items-center justify-center bg-gray-50"
+              style={{ position: 'relative', zIndex: 10 }}
+            >
+              <vapi-widget
+                public-key="5109d358-3f22-41c2-bd0e-70e059604e6a"
+                assistant-id="e263a068-6f1c-44dd-adc7-bfef527f50bb"
+                mode="voice"
+                theme="dark"
+                size="medium"
+                position="inline"
+                title="TALK WITH AI"
+                start-button-text="Start"
+                end-button-text="End Call"
+              ></vapi-widget>
+            </div>
+            
+            <p className="text-xs text-muted-foreground text-center mt-4">
+              If you don't see the widget above, there may be a loading issue with the Vapi script.
+            </p>
+          </div>
         </motion.div>
 
         {/* Main Action Center */}
