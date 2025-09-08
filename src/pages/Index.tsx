@@ -40,7 +40,11 @@ const Index = () => {
         </div>
 
         {/* Vapi Widget */}
-        <div className="mt-12">
+        <div className="mt-12 mb-8">
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-primary mb-2">Talk with AI Assistant</h2>
+            <p className="text-muted-foreground">Get instant compliance guidance and support</p>
+          </div>
           <vapi-widget
             public-key="5109d358-3f22-41c2-bd0e-70e059604e6a"
             assistant-id="e263a068-6f1c-44dd-adc7-bfef527f50bb"
@@ -51,8 +55,8 @@ const Index = () => {
             cta-button-color="#000000"
             cta-button-text-color="#ffffff"
             border-radius="large"
-            size="full"
-            position="bottom-right"
+            size="medium"
+            position="inline"
             title="TALK WITH AI"
             start-button-text="Start"
             end-button-text="End Call"
