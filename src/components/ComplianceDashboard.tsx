@@ -46,6 +46,8 @@ export const ComplianceDashboard = () => {
   const [uploadedIssues, setUploadedIssues] = useState<any[]>([]);
   const [uploadedRiskScore, setUploadedRiskScore] = useState<number>(0);
   const [vapiScriptLoaded, setVapiScriptLoaded] = useState(false);
+  const [vapiLoadingProgress, setVapiLoadingProgress] = useState(0);
+  const [vapiLoadingStage, setVapiLoadingStage] = useState('Initializing...');
   const { toast } = useToast();
   const saveCall = useSaveCall();
   
@@ -265,28 +267,79 @@ export const ComplianceDashboard = () => {
     loadAudioState();
   }, []);
 
-  // Check if Vapi script is loaded
+  // Check if Vapi script is loaded with detailed progress tracking
   useEffect(() => {
-    const checkVapiScript = () => {
+    const checkVapiScript = async () => {
+      setVapiLoadingStage('Checking script element...');
+      setVapiLoadingProgress(10);
+      
+      // Check if script element exists
+      const script = document.querySelector('script[src*="vapi"]');
+      if (!script) {
+        setVapiLoadingStage('❌ Vapi script element not found in HTML');
+        setVapiLoadingProgress(0);
+        return;
+      }
+      
+      setVapiLoadingStage('Script element found, checking load status...');
+      setVapiLoadingProgress(25);
+      
+      // Check if already loaded
       if (typeof window !== 'undefined' && (window as any).vapi) {
+        setVapiLoadingStage('✅ Vapi object already available');
+        setVapiLoadingProgress(100);
         setVapiScriptLoaded(true);
-      } else {
-        // Check if the script element exists
-        const script = document.querySelector('script[src*="vapi"]');
-        if (script) {
-          script.addEventListener('load', () => setVapiScriptLoaded(true));
-        }
-        // Fallback: check periodically
-        const interval = setInterval(() => {
+        return;
+      }
+      
+      setVapiLoadingStage('Waiting for script to load...');
+      setVapiLoadingProgress(40);
+      
+      // Add load event listener
+      script.addEventListener('load', () => {
+        setVapiLoadingStage('Script loaded, checking Vapi object...');
+        setVapiLoadingProgress(70);
+        
+        setTimeout(() => {
           if ((window as any).vapi) {
-            setVapiScriptLoaded(true);
-            clearInterval(interval);
+            setVapiLoadingStage('✅ Vapi object available, initializing widget...');
+            setVapiLoadingProgress(90);
+            setTimeout(() => {
+              setVapiLoadingProgress(100);
+              setVapiScriptLoaded(true);
+            }, 500);
+          } else {
+            setVapiLoadingStage('❌ Vapi object not found after script load');
+            setVapiLoadingProgress(75);
           }
         }, 1000);
+      });
+      
+      script.addEventListener('error', () => {
+        setVapiLoadingStage('❌ Script failed to load');
+        setVapiLoadingProgress(0);
+      });
+      
+      // Fallback: check periodically
+      let attempts = 0;
+      const interval = setInterval(() => {
+        attempts++;
+        setVapiLoadingProgress(Math.min(60 + attempts * 2, 85));
+        setVapiLoadingStage(`Polling for Vapi object... (attempt ${attempts})`);
         
-        // Clear interval after 10 seconds
-        setTimeout(() => clearInterval(interval), 10000);
-      }
+        if ((window as any).vapi) {
+          setVapiLoadingStage('✅ Vapi object found via polling');
+          setVapiLoadingProgress(100);
+          setVapiScriptLoaded(true);
+          clearInterval(interval);
+        }
+        
+        if (attempts >= 15) {
+          setVapiLoadingStage('❌ Timeout: Vapi object not available after 15 attempts');
+          setVapiLoadingProgress(0);
+          clearInterval(interval);
+        }
+      }, 1000);
     };
     
     checkVapiScript();
@@ -485,11 +538,47 @@ export const ComplianceDashboard = () => {
                     ></vapi-widget>
                   ) : (
                     <div className="text-center py-8">
-                      <div className="animate-spin w-8 h-8 border-2 border-indigo-400 border-t-transparent rounded-full mx-auto mb-4"></div>
-                      <p className="text-sm text-indigo-400 font-medium">Loading AI Assistant...</p>
-                      <p className="text-xs text-muted-foreground mt-2">
-                        Vapi script status: {vapiScriptLoaded ? 'Loaded' : 'Loading...'}
+                      <div className="relative w-24 h-24 mx-auto mb-6">
+                        {/* Outer ring */}
+                        <div className="absolute inset-0 rounded-full border-4 border-indigo-500/20"></div>
+                        {/* Progress ring */}
+                        <svg className="w-24 h-24 transform -rotate-90" viewBox="0 0 96 96">
+                          <circle
+                            cx="48"
+                            cy="48"
+                            r="44"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                            className="text-indigo-500/20"
+                          />
+                          <circle
+                            cx="48"
+                            cy="48"
+                            r="44"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            fill="none"
+                            strokeDasharray={`${2 * Math.PI * 44}`}
+                            strokeDashoffset={`${2 * Math.PI * 44 * (1 - vapiLoadingProgress / 100)}`}
+                            className="text-indigo-400 transition-all duration-300"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                        {/* Percentage */}
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="text-lg font-bold text-indigo-400">{vapiLoadingProgress}%</span>
+                        </div>
+                      </div>
+                      <p className="text-sm text-indigo-400 font-medium mb-2">Loading AI Assistant...</p>
+                      <p className="text-xs text-muted-foreground max-w-xs mx-auto leading-relaxed">
+                        {vapiLoadingStage}
                       </p>
+                      <div className="mt-4 text-xs text-muted-foreground">
+                        <p>Debug Info:</p>
+                        <p>• Script in DOM: {document.querySelector('script[src*="vapi"]') ? '✅' : '❌'}</p>
+                        <p>• Window.vapi: {typeof window !== 'undefined' && (window as any).vapi ? '✅' : '❌'}</p>
+                      </div>
                     </div>
                   )}
                 </div>
