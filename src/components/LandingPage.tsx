@@ -693,6 +693,25 @@ export const LandingPage = () => {
             <p className="text-xl text-emerald-400 mb-4 max-w-4xl mx-auto leading-relaxed">
               Switch on compliant conversations. Live voice AI that flags violations 
             </p>
+
+            {/* Vapi Voice Widget */}
+            <motion.div 
+              className="mb-8 flex justify-center"
+              variants={itemVariants}
+            >
+              <div className="bg-card/30 backdrop-blur-sm border border-emerald-500/30 rounded-2xl p-6">
+                <h3 className="text-lg font-semibold text-emerald-400 mb-3">Talk to Ivy - AI Compliance Assistant</h3>
+                <div 
+                  dangerouslySetInnerHTML={{
+                    __html: `<vapi-widget 
+                      assistant-id="e263a068-6f1c-44dd-adc7-bfef527f50bb" 
+                      public-key="5109d358-3f22-41c2-bd0e-70e059604e6a">
+                    </vapi-widget>`
+                  }}
+                />
+              </div>
+            </motion.div>
+            
             <div className="flex justify-center">
               <Button 
                 asChild
